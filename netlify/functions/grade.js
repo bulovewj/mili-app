@@ -120,11 +120,14 @@ exports.handler = async (event) => {
     'Content-Type': 'application/json',
   };
 
+  console.log('[MIRI] method:', event.httpMethod, '| origin:', requestOrigin);
+
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers: corsHeaders, body: '' };
   }
 
   if (!originOk) {
+    console.error('[MIRI] 403 origin blocked:', requestOrigin);
     return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: 'Origin not allowed' }) };
   }
 
@@ -137,16 +140,20 @@ exports.handler = async (event) => {
   try {
     parsed = JSON.parse(event.body);
   } catch (_) {
+    console.error('[MIRI] 400 invalid JSON, body:', event.body);
     return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
   const { activityId, studentAnswer } = parsed;
+  console.log('[MIRI] activityId:', activityId, '| answerLen:', studentAnswer && studentAnswer.length);
 
   // 입력값 검증
   if (!ALLOWED_IDS.includes(activityId)) {
+    console.error('[MIRI] 400 invalid activityId:', activityId);
     return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: 'Invalid activityId' }) };
   }
   if (!studentAnswer || typeof studentAnswer !== 'string' || studentAnswer.trim().length === 0) {
+    console.error('[MIRI] 400 missing answer');
     return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: 'Missing studentAnswer' }) };
   }
   if (studentAnswer.length > MAX_ANSWER_LENGTH) {
@@ -156,8 +163,10 @@ exports.handler = async (event) => {
   // API 키 확인
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
+    console.error('[MIRI] 503 no API key');
     return { statusCode: 503, headers: corsHeaders, body: JSON.stringify({ error: 'Service not configured' }) };
   }
+  console.log('[MIRI] calling Claude, model:', MODEL);
 
   const isSummary = activityId === 'summary';
   const reqBody = JSON.stringify({
@@ -175,10 +184,10 @@ exports.handler = async (event) => {
     if (isSummary) {
       return { statusCode: 200, headers: corsHeaders, body: JSON.stringify({ summary: text }) };
     }
-    // 채점 활동: Claude가 JSON을 반환 — 파싱 후 재직렬화로 안전하게 전달
     const gradeData = JSON.parse(text);
     return { statusCode: 200, headers: corsHeaders, body: JSON.stringify(gradeData) };
-  } catch (_) {
+  } catch (err) {
+    console.error('[MIRI] Claude call failed:', err.message);
     return { statusCode: 502, headers: corsHeaders, body: JSON.stringify({ error: 'AI service unavailable' }) };
   }
 };
