@@ -1,0 +1,2771 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>미리(MIRI) — 미디어 탐정</title>
+  <meta name="description" content="초등학생을 위한 AI 미디어 리터러시 탐정 앱! 클릭베이트, 가짜뉴스, 숨은광고를 찾아라 🔍">
+  <meta name="theme-color" content="#FF6B6B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="미리">
+  <meta property="og:title" content="미리(MIRI) — 미디어 탐정">
+  <meta property="og:description" content="초등학생을 위한 AI 미디어 리터러시 탐정 앱! 클릭베이트, 가짜뉴스, 숨은광고를 찾아라 🔍">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* ============================
+       CSS 변수 (CLAUDE.md 기준)
+    ============================ */
+    :root {
+      --color-primary: #FF6B6B;
+      --color-primary-light: #FFE5E5;
+      --color-secondary: #4ECDC4;
+      --color-accent: #FFE66D;
+      --color-bg: #FFF9F0;
+      --color-card: #FFFFFF;
+      --color-text: #2D2D2D;
+      --color-text-sub: #888888;
+      --color-border: #F0E8D8;
+      --color-youtube: #FF4444;
+      --color-news: #4488FF;
+      --color-ad: #FFB800;
+      --color-ai: #9B59B6;
+      --color-cardnews: #27AE60;
+    }
+
+    /* ============================
+       리셋 & 베이스
+    ============================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+    }
+
+    /* ============================
+       화면 라우팅
+    ============================ */
+    .screen {
+      display: none;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+      min-height: 100vh;
+      background: var(--color-bg);
+    }
+
+    .screen.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    #screen-start.active,
+    #screen-diagnosis-result.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================
+       공통 버튼
+    ============================ */
+    .btn-primary {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 16px 32px;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 56px;
+      width: 100%;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.1s;
+    }
+
+    .btn-primary:active  { transform: scale(0.98); opacity: 0.88; }
+    .btn-primary:disabled { background: #CCCCCC; cursor: not-allowed; transform: none; opacity: 1; }
+
+    .btn-secondary {
+      background: white;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      border-radius: 16px;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 56px;
+      width: 100%;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.15s;
+      margin-top: 10px;
+    }
+
+    .btn-secondary:active { transform: scale(0.98); }
+
+    .back-btn {
+      background: none;
+      border: none;
+      font-size: 15px;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: var(--color-text-sub);
+      cursor: pointer;
+      padding: 4px 0 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ============================
+       공통 카드
+    ============================ */
+    .card {
+      background: var(--color-card);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+      margin-bottom: 12px;
+    }
+
+    /* ============================
+       SCREEN 1 — 시작 화면
+    ============================ */
+    #screen-start {
+      gap: 36px;
+    }
+
+    .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-svg {
+      width: 96px;
+      height: 96px;
+      filter: drop-shadow(0 6px 16px rgba(255,107,107,0.25));
+    }
+
+    .app-title {
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--color-primary);
+      letter-spacing: -1px;
+    }
+
+    .app-subtitle {
+      font-size: 16px;
+      color: var(--color-text-sub);
+      margin-top: 2px;
+    }
+
+    .start-input-area {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .input-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-text);
+      text-align: left;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 16px 18px;
+      font-size: 18px;
+      font-family: 'Noto Sans KR', sans-serif;
+      border: 2px solid var(--color-border);
+      border-radius: 16px;
+      background: white;
+      color: var(--color-text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .text-input:focus {
+      border-color: var(--color-primary);
+    }
+
+    /* ============================
+       SCREEN 2 — 앱 소개
+    ============================ */
+    .intro-greeting {
+      font-size: 26px;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .intro-desc {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--color-text);
+      margin-bottom: 28px;
+    }
+
+    .intro-activities {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      border-radius: 20px;
+      padding: 20px 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      margin-bottom: 32px;
+    }
+
+    .act-icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .act-icon-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .act-icon-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-text-sub);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ============================
+       SCREEN 3 — 진단 퀴즈
+    ============================ */
+    .quiz-header {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--color-text);
+      margin-bottom: 18px;
+    }
+
+    .quiz-progress-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .quiz-progress-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-text-sub);
+      white-space: nowrap;
+    }
+
+    .quiz-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .quiz-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--color-border);
+      background: transparent;
+      transition: all 0.3s;
+    }
+
+    .quiz-dot.done   { background: var(--color-primary);   border-color: var(--color-primary); }
+    .quiz-dot.active { background: var(--color-secondary); border-color: var(--color-secondary); }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.65;
+      color: var(--color-text);
+      margin-bottom: 22px;
+    }
+
+    .choices-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .choice-btn {
+      background: white;
+      border: 2px solid var(--color-border);
+      border-radius: 16px;
+      padding: 15px 18px;
+      font-size: 16px;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: var(--color-text);
+      text-align: left;
+      cursor: pointer;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .choice-btn.selected {
+      border-color: var(--color-secondary);
+      background: #E8FAF8;
+      font-weight: 700;
+    }
+
+    .choice-num {
+      font-weight: 900;
+      color: var(--color-primary);
+      font-size: 18px;
+      min-width: 26px;
+    }
+
+    /* ============================
+       SCREEN 4 — 진단 결과
+    ============================ */
+    #screen-diagnosis-result {
+      gap: 0;
+      padding-top: 48px;
+      padding-bottom: 48px;
+    }
+
+    .result-name-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--color-text);
+      margin-bottom: 32px;
+    }
+
+    .result-grade-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .result-grade-emoji {
+      font-size: 88px;
+      line-height: 1;
+      animation: bounceIn 0.5s ease;
+    }
+
+    @keyframes bounceIn {
+      0%   { transform: scale(0.5); opacity: 0; }
+      70%  { transform: scale(1.15); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .result-grade-name {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--color-primary);
+    }
+
+    .result-score-chip {
+      background: var(--color-accent);
+      border-radius: 20px;
+      padding: 5px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .result-message {
+      width: 100%;
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--color-text);
+      margin-bottom: 32px;
+      text-align: left;
+      white-space: pre-line;
+    }
+
+    /* ============================
+       SCREEN 5 — 홈 런처
+    ============================ */
+    .home-header {
+      margin-bottom: 20px;
+    }
+
+    .home-title {
+      font-size: 21px;
+      font-weight: 900;
+      color: var(--color-text);
+      margin-bottom: 14px;
+    }
+
+    .progress-track {
+      background: var(--color-border);
+      border-radius: 8px;
+      height: 12px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+      border-radius: 8px;
+      transition: width 0.6s ease;
+      min-width: 0;
+    }
+
+    .progress-text {
+      font-size: 13px;
+      color: var(--color-text-sub);
+      font-weight: 700;
+    }
+
+    .activity-card {
+      background: var(--color-card);
+      border-radius: 20px;
+      padding: 16px 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-left: 5px solid transparent;
+      transition: opacity 0.3s;
+    }
+
+    .activity-card.completed {
+      opacity: 0.6;
+    }
+
+    .act-card-emoji {
+      font-size: 30px;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .act-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .act-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 3px;
+    }
+
+    .act-card-desc {
+      font-size: 13px;
+      color: var(--color-text-sub);
+    }
+
+    .act-card-btn {
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 44px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.1s;
+    }
+
+    .act-card-btn:active { transform: scale(0.95); }
+
+    .grade-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--color-accent);
+      color: var(--color-text);
+      margin-left: 4px;
+    }
+
+    .btn-radar {
+      background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 16px 32px;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 56px;
+      width: 100%;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.1s, opacity 0.1s;
+    }
+
+    .btn-radar:active   { transform: scale(0.98); }
+    .btn-radar:disabled { background: #CCCCCC; cursor: not-allowed; transform: none; }
+
+    /* ============================
+       플레이스홀더 화면 (v0.2 예정)
+    ============================ */
+    .placeholder-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .ph-emoji { font-size: 72px; }
+
+    .ph-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--color-text);
+    }
+
+    .ph-desc {
+      font-size: 15px;
+      color: var(--color-text-sub);
+      line-height: 1.6;
+    }
+
+    .ph-badge {
+      background: var(--color-accent);
+      border-radius: 20px;
+      padding: 5px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    /* ============================
+       공통 — 활동 미션 배너
+    ============================ */
+    .mission-banner {
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .mission-banner-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .mission-banner-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0.92;
+    }
+
+    /* ============================
+       공통 — 서술형 입력 영역
+    ============================ */
+    .answer-section {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      margin-top: 16px;
+    }
+
+    .answer-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 12px;
+    }
+
+    .answer-textarea {
+      width: 100%;
+      min-height: 100px;
+      border: 2px solid var(--color-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: var(--color-text);
+      resize: vertical;
+      box-sizing: border-box;
+      line-height: 1.6;
+      transition: border-color 0.2s;
+    }
+
+    .answer-textarea:focus {
+      outline: none;
+      border-color: var(--color-secondary);
+    }
+
+    .char-counter {
+      font-size: 13px;
+      color: var(--color-text-sub);
+      text-align: right;
+      margin-top: 6px;
+      margin-bottom: 16px;
+    }
+
+    .char-counter.ok { color: var(--color-secondary); font-weight: 700; }
+
+    .btn-submit {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 56px;
+      width: 100%;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:disabled {
+      background: #CCCCCC;
+      cursor: not-allowed;
+    }
+
+    .btn-submit.loading {
+      background: var(--color-secondary);
+      cursor: not-allowed;
+    }
+
+    .btn-submit:not(:disabled):active { transform: scale(0.98); }
+
+    /* ============================
+       SCREEN 6 — 유튜브 탐정
+    ============================ */
+    .yt-bar {
+      background: white;
+      border-radius: 12px 12px 0 0;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .yt-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--color-youtube);
+    }
+
+    .yt-logo-icon {
+      width: 28px;
+      height: 20px;
+      background: var(--color-youtube);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .yt-logo-icon::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 10px solid white;
+      margin-left: 2px;
+    }
+
+    .yt-actions {
+      display: flex;
+      gap: 14px;
+      font-size: 20px;
+      color: #606060;
+    }
+
+    .yt-feed {
+      background: white;
+      border-radius: 0 0 12px 12px;
+      padding: 8px 12px 12px;
+    }
+
+    .yt-video-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .yt-video-item:last-child { border-bottom: none; }
+
+    .yt-thumb {
+      border-radius: 8px;
+      height: 170px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: outline 0.15s;
+    }
+
+    .yt-video-item.selected .yt-thumb {
+      outline: 3px solid var(--color-youtube);
+      outline-offset: -3px;
+    }
+
+    .yt-check-badge {
+      display: none;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--color-youtube);
+      color: white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .yt-video-item.selected .yt-check-badge { display: flex; }
+
+    .thumb-a {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+
+    .thumb-b {
+      background: linear-gradient(135deg, #ff0000 0%, #ff6600 100%);
+    }
+
+    .thumb-b::before {
+      content: '❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗';
+      position: absolute;
+      font-size: 22px;
+      opacity: 0.25;
+      word-break: break-all;
+      line-height: 1.4;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: flex-start;
+      padding: 4px;
+    }
+
+    .thumb-b-text {
+      position: relative;
+      color: white;
+      font-weight: 900;
+      font-size: 19px;
+      text-align: center;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+      padding: 8px;
+      line-height: 1.4;
+    }
+
+    .thumb-c {
+      background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+    }
+
+    .yt-video-meta {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .yt-channel-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .yt-video-info { flex: 1; }
+
+    .yt-video-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f0f0f;
+      line-height: 1.4;
+      margin-bottom: 3px;
+    }
+
+    .yt-video-sub {
+      font-size: 12px;
+      color: #606060;
+    }
+
+    /* ============================
+       SCREEN 11 — AI 채점 결과 (공통)
+    ============================ */
+    .result-activity-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--color-text);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .result-grade-big {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .result-grade-big-emoji {
+      font-size: 72px;
+      line-height: 1;
+      animation: bounceIn 0.5s ease;
+    }
+
+    .result-grade-big-label {
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    .result-grade-big-score {
+      background: var(--color-accent);
+      border-radius: 20px;
+      padding: 5px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .result-feedback-card {
+      background: white;
+      border-radius: 20px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      margin-bottom: 12px;
+    }
+
+    .result-feedback-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-text-sub);
+      margin-bottom: 10px;
+    }
+
+    .result-feedback-text {
+      font-size: 15px;
+      color: var(--color-text);
+      line-height: 1.7;
+    }
+
+    .result-question-card {
+      background: var(--color-primary-light);
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+
+    .result-question-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 8px;
+    }
+
+    .result-question-text {
+      font-size: 15px;
+      color: var(--color-text);
+      line-height: 1.6;
+      font-weight: 700;
+    }
+
+    /* ============================
+       태블릿 대응 (768px+)
+    ============================ */
+    @media (min-width: 768px) {
+      body { background: #EDE8DF; }
+      .screen {
+        max-width: 560px;
+        padding: 48px 40px 64px;
+        margin: 40px auto;
+        border-radius: 28px;
+        box-shadow: 0 8px 48px rgba(0,0,0,0.12);
+      }
+      .app-title { font-size: 44px; }
+      .act-icon-circle { width: 60px; height: 60px; font-size: 28px; }
+      .act-icon-label { font-size: 12px; }
+      .intro-activities { padding: 24px 16px; }
+      .btn-primary, .btn-submit, .btn-secondary, .btn-reset, .btn-radar { font-size: 17px; }
+      .mission-banner-title { font-size: 22px; }
+      .answer-textarea { font-size: 17px; }
+    }
+
+    /* ============================
+       SCREEN 7 — 뉴스 비교
+    ============================ */
+    .news-tabs {
+      display: flex;
+      margin: 16px 0 0;
+      border-bottom: 2px solid var(--color-border);
+    }
+    .news-tab {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text-sub);
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .news-tab.active {
+      color: var(--color-news);
+      border-bottom-color: var(--color-news);
+    }
+    .news-article {
+      background: var(--color-card);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 12px 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .news-source {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-text-sub);
+      margin-bottom: 12px;
+    }
+    .news-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .news-img-a {
+      background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+      height: 160px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+    .news-img-b {
+      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+      height: 160px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+    .news-headline {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--color-text);
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .news-divider {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: 10px 0;
+    }
+    .news-body {
+      font-size: 15px;
+      color: var(--color-text);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .news-byline {
+      font-size: 13px;
+      color: var(--color-text-sub);
+    }
+    .news-read-hint {
+      background: var(--color-primary-light);
+      border-radius: 16px;
+      padding: 16px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 1.6;
+      text-align: center;
+      margin: 8px 0;
+    }
+
+    /* ============================
+       SCREEN 8 — 광고 탐정 (SNS 피드)
+    ============================ */
+    .sns-post {
+      background: var(--color-card);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 10px 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .sns-post.selected { border-color: var(--color-ad); }
+    .sns-profile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .sns-profile-left { display: flex; align-items: center; gap: 8px; }
+    .sns-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 900; color: white; flex-shrink: 0;
+    }
+    .sns-username { font-weight: 700; font-size: 14px; color: var(--color-text); }
+    .sns-more { color: var(--color-text-sub); font-size: 22px; line-height: 1; }
+    .sns-ad-badge {
+      display: inline-block;
+      background: var(--color-accent);
+      color: #2D2D2D;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .sns-img {
+      height: 200px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 64px; margin-bottom: 12px;
+    }
+    .sns-body { font-size: 15px; line-height: 1.65; color: var(--color-text); margin-bottom: 10px; }
+    .sns-actions { display: flex; gap: 16px; color: var(--color-text-sub); font-size: 14px; }
+    .sns-check-row {
+      display: flex; justify-content: flex-end; align-items: center; gap: 8px;
+      margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--color-border);
+    }
+    .sns-checkbox {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 2px solid var(--color-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; transition: all 0.2s;
+    }
+    .sns-post.selected .sns-checkbox { background: var(--color-ad); border-color: var(--color-ad); color: white; }
+    .sns-check-label { font-size: 14px; color: var(--color-text-sub); font-weight: 700; }
+    .sns-post.selected .sns-check-label { color: #B8860B; }
+
+    /* ============================
+       SCREEN 9 — AI 탐정 (카카오톡)
+    ============================ */
+    .kakao-wrap {
+      border-radius: 12px; overflow: hidden; margin: 12px 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    }
+    .kakao-header {
+      background: #F9E000; padding: 12px 16px;
+      font-weight: 700; font-size: 15px; color: #3C1E1E;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .kakao-chat { background: #B2C7D9; padding: 12px; max-height: 420px; overflow-y: auto; }
+    .chat-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .chat-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: white;
+    }
+    .chat-content { flex: 1; min-width: 0; }
+    .chat-name-time { font-size: 12px; font-weight: 700; color: #3C3C3C; margin-bottom: 4px; }
+    .chat-bubble {
+      background: white; border-radius: 0 12px 12px 12px;
+      padding: 10px 14px; max-width: 85%;
+      font-size: 15px; line-height: 1.5; display: inline-block;
+    }
+    .chat-bubble.suspicious { background: #FFFACD; border: 2px solid #FFD700; }
+    .fake-news-card {
+      background: #f0f0f0; border-radius: 8px; padding: 8px; margin-top: 8px;
+      font-size: 13px; color: #666; border: 1px solid #ddd;
+    }
+    .ai-tip-card {
+      background: #EEF2FF; border-radius: 16px; padding: 14px 16px;
+      font-size: 14px; line-height: 1.6; color: var(--color-ai); font-weight: 700;
+      margin: 10px 0; border-left: 4px solid var(--color-ai);
+    }
+
+    /* ============================
+       SCREEN 10 — 카드뉴스 만들기
+    ============================ */
+    .cn-preview-wrap {
+      background: var(--color-card); border-radius: 16px; padding: 16px;
+      margin: 12px 0; box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .cn-preview-label { font-size: 13px; font-weight: 700; color: var(--color-text-sub); margin-bottom: 10px; }
+    .cn-preview-card { border-radius: 12px; overflow: hidden; border: 2px solid var(--color-border); }
+    .cn-preview-img {
+      height: 160px; display: flex; align-items: center; justify-content: center;
+      font-size: 64px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      transition: background 0.3s;
+    }
+    .cn-preview-body { padding: 12px 14px; background: white; }
+    .cn-preview-title { font-size: 16px; font-weight: 900; color: var(--color-text); margin-bottom: 6px; min-height: 20px; word-break: break-all; }
+    .cn-preview-msg   { font-size: 14px; color: var(--color-text-sub); line-height: 1.5; min-height: 18px; word-break: break-all; }
+    .cn-form {
+      background: var(--color-card); border-radius: 16px; padding: 16px;
+      margin: 8px 0; box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .cn-form-label { font-size: 14px; font-weight: 700; color: var(--color-text); margin-bottom: 10px; display: block; }
+    .cn-img-options { display: flex; gap: 10px; margin-bottom: 4px; }
+    .cn-img-option {
+      flex: 1; background: var(--color-bg); border: 2px solid var(--color-border);
+      border-radius: 12px; padding: 10px 4px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      cursor: pointer; transition: all 0.2s; font-size: 30px;
+    }
+    .cn-img-option .img-label { font-size: 12px; font-weight: 700; color: var(--color-text-sub); }
+    .cn-img-option.selected { border-color: var(--color-cardnews); background: #E9F9EE; }
+    .cn-input {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--color-border); border-radius: 10px;
+      font-size: 16px; font-family: 'Noto Sans KR', sans-serif; color: var(--color-text);
+      background: var(--color-bg); box-sizing: border-box; outline: none;
+    }
+    .cn-input:focus { border-color: var(--color-cardnews); }
+    .cn-textarea {
+      width: 100%; min-height: 80px; padding: 12px 14px; border: 1.5px solid var(--color-border);
+      border-radius: 10px; font-size: 16px; font-family: 'Noto Sans KR', sans-serif;
+      color: var(--color-text); background: var(--color-bg); box-sizing: border-box;
+      resize: vertical; outline: none; line-height: 1.6;
+    }
+    .cn-textarea:focus { border-color: var(--color-cardnews); }
+    .cn-char-count { font-size: 12px; color: var(--color-text-sub); text-align: right; margin: 4px 0 12px; }
+    .cn-char-count.ok { color: var(--color-cardnews); font-weight: 700; }
+
+    /* ============================
+       SCREEN 12 — 역량 지형도
+    ============================ */
+    .radar-title   { font-size: 22px; font-weight: 900; color: var(--color-text); text-align: center; margin-bottom: 4px; }
+    .radar-subtitle { font-size: 15px; color: var(--color-text-sub); text-align: center; margin-bottom: 12px; }
+    .radar-canvas-wrap {
+      background: var(--color-card); border-radius: 20px; padding: 12px;
+      display: flex; justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 12px;
+    }
+    .radar-result-list {
+      background: var(--color-card); border-radius: 16px; padding: 4px 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 12px;
+    }
+    .radar-result-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid var(--color-border); font-size: 15px;
+    }
+    .radar-result-item:last-child { border-bottom: none; }
+    .radar-result-name  { font-weight: 700; }
+    .radar-result-grade { font-size: 14px; color: var(--color-text-sub); }
+    .radar-result-grade.done { color: var(--color-secondary); font-weight: 700; }
+    .radar-summary-card {
+      background: var(--color-card); border-radius: 16px; padding: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 16px;
+    }
+    .radar-summary-label { font-size: 14px; font-weight: 700; color: var(--color-text-sub); margin-bottom: 8px; }
+    .radar-summary-text  { font-size: 15px; line-height: 1.7; color: var(--color-text); }
+    .btn-reset {
+      width: 100%; background: var(--color-bg); color: var(--color-text-sub);
+      border: 2px solid var(--color-border); border-radius: 16px; padding: 16px;
+      font-size: 16px; font-weight: 700; min-height: 56px; cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif; transition: all 0.2s;
+    }
+    .btn-reset:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  </style>
+</head>
+<body>
+
+  <div id="offline-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#FF6B6B;color:white;text-align:center;padding:12px 16px;font-size:14px;font-weight:800;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+    📶 인터넷 연결이 없어! 와이파이나 데이터를 켜봐
+  </div>
+
+  <!-- ============================
+       SCREEN 1 — 시작 화면
+  ============================ -->
+  <div id="screen-start" class="screen">
+    <div class="logo-wrap">
+      <!-- 돋보기 + 미디어 SVG 로고 -->
+      <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#FFE5E5"/>
+        <!-- 돋보기 테두리 -->
+        <circle cx="43" cy="43" r="22" fill="white" stroke="#FF6B6B" stroke-width="6"/>
+        <!-- 돋보기 손잡이 -->
+        <line x1="59" y1="61" x2="76" y2="78" stroke="#FF6B6B" stroke-width="7" stroke-linecap="round"/>
+        <!-- 화면 아이콘 (미디어) -->
+        <rect x="32" y="35" width="22" height="16" rx="3" fill="#FF6B6B" opacity="0.15"/>
+        <!-- 재생 삼각형 -->
+        <polygon points="38,38 38,50 52,44" fill="#FF6B6B"/>
+      </svg>
+      <div>
+        <div class="app-title">미리(MIRI)</div>
+        <div class="app-subtitle">미디어를 똑똑하게 읽는 탐정 🔍</div>
+      </div>
+    </div>
+
+    <div class="start-input-area">
+      <label class="input-label" for="name-input">이름을 알려줘! (닉네임도 OK 👍)</label>
+      <input
+        type="text"
+        id="name-input"
+        class="text-input"
+        placeholder="예) 민준, 수아탐정, 미디어왕"
+        maxlength="10"
+        autocomplete="off"
+        inputmode="text"
+      />
+      <button id="start-btn" class="btn-primary" disabled>시작하기 🚀</button>
+    </div>
+  </div>
+
+  <!-- ============================
+       SCREEN 2 — 앱 소개
+  ============================ -->
+  <div id="screen-intro" class="screen">
+    <div class="intro-greeting" id="intro-greeting"></div>
+    <div class="intro-desc">
+      미리는 <strong>가짜 뉴스, 클릭베이트, 광고</strong>를<br>
+      찾아내는 <strong>미디어 탐정 앱</strong>이야! 🕵️<br><br>
+      5가지 미션을 완료하면<br>
+      <strong>너만의 역량 지형도</strong>가 완성돼! 🗺️
+    </div>
+
+    <div class="intro-activities">
+      <div class="act-icon-item">
+        <div class="act-icon-circle" style="background:#FFE5E5">📺</div>
+        <div class="act-icon-label">유튜브<br>탐정</div>
+      </div>
+      <div class="act-icon-item">
+        <div class="act-icon-circle" style="background:#E5EEFF">📰</div>
+        <div class="act-icon-label">뉴스<br>비교</div>
+      </div>
+      <div class="act-icon-item">
+        <div class="act-icon-circle" style="background:#FFF6E0">🔍</div>
+        <div class="act-icon-label">광고<br>탐정</div>
+      </div>
+      <div class="act-icon-item">
+        <div class="act-icon-circle" style="background:#F5E8FF">🤖</div>
+        <div class="act-icon-label">AI<br>탐정</div>
+      </div>
+      <div class="act-icon-item">
+        <div class="act-icon-circle" style="background:#E5FFE8">✏️</div>
+        <div class="act-icon-label">카드<br>뉴스</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="goToDiagnosis()">미션 시작! 🎯</button>
+  </div>
+
+  <!-- ============================
+       SCREEN 3 — 진단 퀴즈
+  ============================ -->
+  <div id="screen-diagnosis" class="screen">
+    <div class="quiz-header">🔍 미디어 탐정 실력 테스트</div>
+    <div class="quiz-progress-row">
+      <div class="quiz-dots" id="quiz-dots"></div>
+      <div class="quiz-progress-label" id="quiz-progress-label">1 / 4</div>
+    </div>
+    <div class="question-text" id="quiz-question"></div>
+    <div class="choices-list" id="quiz-choices"></div>
+    <button id="quiz-next-btn" class="btn-primary" disabled onclick="nextQuestion()">다음 →</button>
+  </div>
+
+  <!-- ============================
+       SCREEN 4 — 진단 결과
+  ============================ -->
+  <div id="screen-diagnosis-result" class="screen">
+    <div class="result-name-title" id="result-name-title"></div>
+    <div class="result-grade-wrap">
+      <div class="result-grade-emoji" id="result-grade-emoji"></div>
+      <div class="result-grade-name" id="result-grade-name"></div>
+      <div class="result-score-chip" id="result-score-chip"></div>
+    </div>
+    <div class="result-message" id="result-message"></div>
+    <button class="btn-primary" onclick="goToHome()">5가지 미션 도전하기! 🎯</button>
+  </div>
+
+  <!-- ============================
+       SCREEN 5 — 홈 런처
+  ============================ -->
+  <div id="screen-home" class="screen">
+    <div class="home-header">
+      <div class="home-title" id="home-title"></div>
+      <div class="progress-track">
+        <div class="progress-fill" id="home-progress-fill" style="width:0%"></div>
+      </div>
+      <div class="progress-text" id="home-progress-text">0 / 5 완료</div>
+    </div>
+
+    <div id="act-card-youtube" class="activity-card" style="border-left-color:var(--color-youtube)">
+      <div class="act-card-emoji">📺</div>
+      <div class="act-card-info">
+        <div class="act-card-title">유튜브 탐정</div>
+        <div class="act-card-desc" id="desc-youtube">클릭베이트를 찾아라!</div>
+      </div>
+      <button class="act-card-btn" style="background:var(--color-youtube)" onclick="goToActivity('screen-youtube')">도전!</button>
+    </div>
+
+    <div id="act-card-news" class="activity-card" style="border-left-color:var(--color-news)">
+      <div class="act-card-emoji">📰</div>
+      <div class="act-card-info">
+        <div class="act-card-title">뉴스 비교</div>
+        <div class="act-card-desc" id="desc-news">편향성을 발견하라!</div>
+      </div>
+      <button class="act-card-btn" style="background:var(--color-news)" onclick="goToActivity('screen-news')">도전!</button>
+    </div>
+
+    <div id="act-card-ad" class="activity-card" style="border-left-color:var(--color-ad)">
+      <div class="act-card-emoji">🔍</div>
+      <div class="act-card-info">
+        <div class="act-card-title">광고 탐정</div>
+        <div class="act-card-desc" id="desc-ad">숨은 광고를 잡아라!</div>
+      </div>
+      <button class="act-card-btn" style="background:var(--color-ad);color:#2D2D2D" onclick="goToActivity('screen-ad')">도전!</button>
+    </div>
+
+    <div id="act-card-ai" class="activity-card" style="border-left-color:var(--color-ai)">
+      <div class="act-card-emoji">🤖</div>
+      <div class="act-card-info">
+        <div class="act-card-title">AI 탐정</div>
+        <div class="act-card-desc" id="desc-ai">가짜 정보를 탐지하라!</div>
+      </div>
+      <button class="act-card-btn" style="background:var(--color-ai)" onclick="goToActivity('screen-ai')">도전!</button>
+    </div>
+
+    <div id="act-card-cardnews" class="activity-card" style="border-left-color:var(--color-cardnews)">
+      <div class="act-card-emoji">✏️</div>
+      <div class="act-card-info">
+        <div class="act-card-title">카드뉴스 만들기</div>
+        <div class="act-card-desc" id="desc-cardnews">진짜 뉴스를 만들어라!</div>
+      </div>
+      <button class="act-card-btn" style="background:var(--color-cardnews)" onclick="goToActivity('screen-cardnews')">도전!</button>
+    </div>
+
+    <button id="radar-btn" class="btn-radar" disabled onclick="showRadar()">🗺️ 역량 지형도 보기</button>
+  </div>
+
+  <!-- ============================
+       SCREEN 6 — 유튜브 탐정
+  ============================ -->
+  <div id="screen-youtube" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+
+    <div class="mission-banner" style="background:var(--color-youtube)">
+      <div class="mission-banner-title">📺 유튜브 탐정</div>
+      <div class="mission-banner-desc">
+        클릭베이트 영상을 찾아라!<br>
+        아래 3개 영상 중 클릭베이트가 숨어있어.<br>
+        찾아서 이유를 써봐! 🔍
+      </div>
+    </div>
+
+    <!-- 유튜브 UI 재현 -->
+    <div style="border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08)">
+      <div class="yt-bar">
+        <div class="yt-logo">
+          <div class="yt-logo-icon"></div>
+          YouTube
+        </div>
+        <div class="yt-actions">🔍 🔔</div>
+      </div>
+      <div class="yt-feed">
+
+        <!-- 영상 A: 우주/행성 (정상) -->
+        <div class="yt-video-item" id="yt-item-A" onclick="selectYoutubeThumb('A')">
+          <div class="yt-thumb thumb-a">
+            <span style="font-size:56px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5))">🪐</span>
+            <div class="yt-check-badge">✓</div>
+          </div>
+          <div class="yt-video-meta">
+            <div class="yt-channel-avatar" style="background:#4488FF">🔬</div>
+            <div class="yt-video-info">
+              <div class="yt-video-title">초등학생도 쉽게 배우는 태양계 행성 이야기</div>
+              <div class="yt-video-sub">사이언스키즈TV · 조회수 12만회</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 영상 B: 클릭베이트 (빨간 배경) -->
+        <div class="yt-video-item" id="yt-item-B" onclick="selectYoutubeThumb('B')">
+          <div class="yt-thumb thumb-b">
+            <div class="thumb-b-text">이거 보면 진짜 충격...<br>학교에서 절대 안 알려주는<br>비밀 (100%실화)</div>
+            <div class="yt-check-badge">✓</div>
+          </div>
+          <div class="yt-video-meta">
+            <div class="yt-channel-avatar" style="background:#FF4444">❗</div>
+            <div class="yt-video-info">
+              <div class="yt-video-title">이거 보면 진짜 충격... 학교에서 절대 안 알려주는 비밀 (100%실화)</div>
+              <div class="yt-video-sub">충격영상모음 · 조회수 987만회</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 영상 C: 전통놀이 (정상) -->
+        <div class="yt-video-item" id="yt-item-C" onclick="selectYoutubeThumb('C')">
+          <div class="yt-thumb thumb-c">
+            <span style="font-size:56px">🎎</span>
+            <div class="yt-check-badge">✓</div>
+          </div>
+          <div class="yt-video-meta">
+            <div class="yt-channel-avatar" style="background:#27AE60">🏛️</div>
+            <div class="yt-video-info">
+              <div class="yt-video-title">우리나라 전통 놀이 종류와 방법 소개</div>
+              <div class="yt-video-sub">문화유산채널 · 조회수 3.2만회</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 서술형 입력 -->
+    <div class="answer-section">
+      <div class="answer-label">왜 클릭베이트라고 생각했어? 이유를 써봐! ✍️</div>
+      <textarea
+        id="yt-answer"
+        class="answer-textarea"
+        placeholder="영상 제목이나 내용에서 수상한 점을 써봐!"
+        oninput="checkYoutubeBtn()"
+      ></textarea>
+      <div class="char-counter" id="yt-char-counter">0 / 10자 이상</div>
+      <button id="yt-submit-btn" class="btn-submit" disabled onclick="submitYoutube()">
+        탐정 보고서 제출하기! 🕵️
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================
+       플레이스홀더: 뉴스 비교
+  ============================ -->
+  <!-- ============================
+       SCREEN 7 — 뉴스 비교
+  ============================ -->
+  <div id="screen-news" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+
+    <!-- 미션 배너 -->
+    <div class="mission-banner" style="background: var(--color-news)">
+      <div class="mission-banner-title">📰 뉴스 비교</div>
+      <div class="mission-banner-desc">같은 사건, 다른 시각!<br>두 기사를 읽고 차이점을 찾아봐! 🧐</div>
+    </div>
+
+    <!-- 탭 버튼 -->
+    <div class="news-tabs">
+      <button id="news-tab-a" class="news-tab active" onclick="switchNewsTab('A')">기사 A</button>
+      <button id="news-tab-b" class="news-tab" onclick="switchNewsTab('B')">기사 B</button>
+    </div>
+
+    <!-- 기사 A -->
+    <div id="news-article-a" class="news-article">
+      <div class="news-source">
+        <span class="news-dot" style="background:#4488FF"></span>건강한급식신문
+      </div>
+      <div class="news-img-a">🥗</div>
+      <div class="news-headline">학교 급식에 채식 선택제 도입,<br>학생 건강과 환경 모두 잡는다</div>
+      <hr class="news-divider">
+      <div class="news-body">전문가들은 채식 급식이 건강에 유익하며 탄소 배출 감소에 기여한다고 밝혔다. 시범학교 학생들의 만족도는 78%로 높게 나타났다.</div>
+      <div class="news-byline">2025.03.15 &nbsp;|&nbsp; 교육팀 기자</div>
+    </div>
+
+    <!-- 기사 B -->
+    <div id="news-article-b" class="news-article" style="display:none">
+      <div class="news-source">
+        <span class="news-dot" style="background:#FF4444"></span>학부모뉴스
+      </div>
+      <div class="news-img-b">😤</div>
+      <div class="news-headline">채식 급식 강요 논란...<br>'먹고 싶은 것도 못 먹나'<br>학생 불만 폭발</div>
+      <hr class="news-divider">
+      <div class="news-body">일부 학생들은 "반찬 선택이 줄었다"며 불만을 토로했다. 학부모들도 영양 불균형을 우려하는 목소리가 높아지고 있다.</div>
+      <div class="news-byline">2025.03.15 &nbsp;|&nbsp; 사회팀 기자</div>
+    </div>
+
+    <!-- 두 기사 모두 읽기 안내 -->
+    <div id="news-read-hint" class="news-read-hint">
+      💡 두 기사를 모두 읽은 후에<br>질문이 나타나요! 기사 B 탭도 눌러봐! 👆
+    </div>
+
+    <!-- 서술형 입력 (탭 B 클릭 후 표시) -->
+    <div id="news-answer-section" class="answer-section" style="display:none">
+      <div class="answer-label">✍️ 탐정 노트</div>
+      <p style="color:var(--color-text-sub);font-size:15px;margin:0 0 12px">두 기사는 어떻게 다르게 보도하고 있어?<br>왜 그런 차이가 생겼을까?</p>
+      <textarea id="news-answer" class="answer-textarea" placeholder="(최소 15자 이상 입력)" oninput="checkNewsBtn()"></textarea>
+      <div id="news-char-counter" class="char-counter">0 / 15자 이상</div>
+      <button id="news-submit-btn" class="btn-submit" disabled onclick="submitNews()">탐정 보고서 제출하기! 🕵️</button>
+    </div>
+  </div>
+
+  <!-- ============================
+       플레이스홀더: 광고 탐정
+  ============================ -->
+  <!-- ============================
+       SCREEN 8 — 광고 탐정
+  ============================ -->
+  <div id="screen-ad" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+
+    <!-- 미션 배너 -->
+    <div class="mission-banner" style="background: var(--color-ad); color: #2D2D2D">
+      <div class="mission-banner-title" style="color:#2D2D2D">🔍 광고 탐정</div>
+      <div class="mission-banner-desc" style="color:#4A3800">숨은 광고를 잡아라!<br>아래 게시물 중 광고나 협찬이 숨어있어. 찾아봐! 💰</div>
+    </div>
+
+    <!-- 게시물 A: 일반 게시물 -->
+    <div class="sns-post" id="ad-post-A" onclick="toggleAdPost('A')">
+      <div class="sns-profile">
+        <div class="sns-profile-left">
+          <div class="sns-avatar" style="background:#27AE60">탐</div>
+          <span class="sns-username">초등탐구생활</span>
+        </div>
+        <span class="sns-more">···</span>
+      </div>
+      <div class="sns-img" style="background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)">🌿</div>
+      <div class="sns-body">오늘 과학 시간에 배운 광합성 실험! 잎에서 산소가 나오는 거 눈으로 봤어요 🌿</div>
+      <div class="sns-actions">
+        <span>♡ 좋아요 234</span>
+        <span>💬 댓글 12</span>
+      </div>
+      <div class="sns-check-row">
+        <span class="sns-check-label">선택</span>
+        <div class="sns-checkbox">✓</div>
+      </div>
+    </div>
+
+    <!-- 게시물 B: 명시적 광고 -->
+    <div class="sns-post" id="ad-post-B" onclick="toggleAdPost('B')">
+      <div class="sns-profile">
+        <div class="sns-profile-left">
+          <div class="sns-avatar" style="background:#E6B800">민</div>
+          <span class="sns-username">키즈인플루언서_민준</span>
+        </div>
+        <span class="sns-more">···</span>
+      </div>
+      <span class="sns-ad-badge">🏷️ 광고</span>
+      <div class="sns-img" style="background: linear-gradient(135deg, #FFED4D 0%, #FFB700 100%)">✏️</div>
+      <div class="sns-body">[광고] ○○문구점 협찬 받았어요! 이 형광펜 색이 너무 예쁘지 않나요? 링크는 프로필에 ✨</div>
+      <div class="sns-actions">
+        <span>♡ 좋아요 1,204</span>
+        <span>💬 댓글 87</span>
+      </div>
+      <div class="sns-check-row">
+        <span class="sns-check-label">선택</span>
+        <div class="sns-checkbox">✓</div>
+      </div>
+    </div>
+
+    <!-- 게시물 C: 숨은 광고 (표시 없음) -->
+    <div class="sns-post" id="ad-post-C" onclick="toggleAdPost('C')">
+      <div class="sns-profile">
+        <div class="sns-profile-left">
+          <div class="sns-avatar" style="background:#4488FF">수</div>
+          <span class="sns-username">책읽는아이_수아</span>
+        </div>
+        <span class="sns-more">···</span>
+      </div>
+      <div class="sns-img" style="background: linear-gradient(135deg, #89CFF0 0%, #4488FF 100%)">📚</div>
+      <div class="sns-body">요즘 이 문제집 풀고 있는데 진짜 너무 좋아요... 설명이 쉽고 문제도 딱 맞아요! 다들 써보세요~ 👍</div>
+      <div class="sns-actions">
+        <span>♡ 좋아요 456</span>
+        <span>💬 댓글 34</span>
+      </div>
+      <div class="sns-check-row">
+        <span class="sns-check-label">선택</span>
+        <div class="sns-checkbox">✓</div>
+      </div>
+    </div>
+
+    <!-- 서술형 입력 -->
+    <div class="answer-section">
+      <div class="answer-label">어떤 게시물이 광고 같아? 그 이유는 뭐야? 🔍</div>
+      <textarea id="ad-answer" class="answer-textarea" placeholder="(최소 10자 이상 입력)" oninput="checkAdBtn()"></textarea>
+      <div id="ad-char-counter" class="char-counter">0 / 10자 이상</div>
+      <button id="ad-submit-btn" class="btn-submit" disabled onclick="submitAd()">탐정 보고서 제출하기! 🕵️</button>
+    </div>
+  </div>
+
+  <!-- ============================
+       플레이스홀더: AI 탐정
+  ============================ -->
+  <!-- ============================
+       SCREEN 9 — AI 탐정
+  ============================ -->
+  <div id="screen-ai" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+
+    <!-- 미션 배너 -->
+    <div class="mission-banner" style="background: var(--color-ai)">
+      <div class="mission-banner-title">🤖 AI 탐정</div>
+      <div class="mission-banner-desc">가짜 정보를 탐지하라!<br>단톡방에 이상한 정보가 있어. 의심스러운 걸 찾아봐! 🚨</div>
+    </div>
+
+    <!-- 카카오톡 UI -->
+    <div class="kakao-wrap">
+      <div class="kakao-header">
+        <span>←</span>
+        <span>6학년 1반 단톡방</span>
+        <span style="margin-left:auto">👥 28</span>
+      </div>
+      <div class="kakao-chat">
+
+        <!-- 민준 메시지 1 -->
+        <div class="chat-row">
+          <div class="chat-avatar" style="background:#FF8C42">민</div>
+          <div class="chat-content">
+            <div class="chat-name-time">민준 &nbsp;오후 2:14</div>
+            <div class="chat-bubble">얘들아 내일 학교 안 온대!<br>태풍 온다고</div>
+          </div>
+        </div>
+
+        <!-- 수아 메시지 -->
+        <div class="chat-row">
+          <div class="chat-avatar" style="background:#27AE60">수</div>
+          <div class="chat-content">
+            <div class="chat-name-time">수아 &nbsp;오후 2:14</div>
+            <div class="chat-bubble">진짜? 어디서 봤어?</div>
+          </div>
+        </div>
+
+        <!-- 민준 메시지 2 -->
+        <div class="chat-row">
+          <div class="chat-avatar" style="background:#FF8C42">민</div>
+          <div class="chat-content">
+            <div class="chat-name-time">민준 &nbsp;오후 2:15</div>
+            <div class="chat-bubble">인스타에서 봤어 ㅋㅋ<br>공유 엄청 됐던데</div>
+          </div>
+        </div>
+
+        <!-- 지호 의심 메시지 -->
+        <div class="chat-row">
+          <div class="chat-avatar" style="background:#E74C3C">지</div>
+          <div class="chat-content">
+            <div class="chat-name-time">지호 &nbsp;오후 2:15</div>
+            <div class="chat-bubble suspicious">
+              🚨속보🚨<br>
+              내일 전국 모든 학교 휴교!!<br>
+              기상청 발표
+              <div class="fake-news-card">
+                📰 &nbsp;<strong>긴급 공지</strong><br>
+                <span style="color:#999">출처: 알 수 없음...</span><br>
+                <span style="font-size:11px;color:#aaa">※ 공식 기관 미확인</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 하은 메시지 -->
+        <div class="chat-row">
+          <div class="chat-avatar" style="background:#F1C40F;color:#3C1E1E">하</div>
+          <div class="chat-content">
+            <div class="chat-name-time">하은 &nbsp;오후 2:16</div>
+            <div class="chat-bubble">와 진짜? 신난다!! 😆</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 탐정 팁 -->
+    <div class="ai-tip-card">
+      💡 탐정 팁!<br>
+      "가짜인지 확실히 모르겠어도 괜찮아!<br>
+      왜 의심스러운지 그 이유를 써주면 돼 😊"
+    </div>
+
+    <!-- 서술형 입력 -->
+    <div class="answer-section">
+      <div class="answer-label">이 채팅방에서 가짜 정보일 수 있는 게 뭐야? 왜 의심스러워? 🤔</div>
+      <textarea id="ai-answer" class="answer-textarea" placeholder="(최소 10자 이상 입력)" oninput="checkAiBtn()"></textarea>
+      <div id="ai-char-counter" class="char-counter">0 / 10자 이상</div>
+      <button id="ai-submit-btn" class="btn-submit" disabled onclick="submitAi()">탐정 보고서 제출하기! 🕵️</button>
+    </div>
+  </div>
+
+  <!-- ============================
+       플레이스홀더: 카드뉴스 만들기
+  ============================ -->
+  <!-- ============================
+       SCREEN 10 — 카드뉴스 만들기
+  ============================ -->
+  <div id="screen-cardnews" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+
+    <!-- 미션 배너 -->
+    <div class="mission-banner" style="background: var(--color-cardnews)">
+      <div class="mission-banner-title">✏️ 카드뉴스 만들기</div>
+      <div class="mission-banner-desc">진짜 뉴스를 만들어라!<br>지구 환경을 주제로 카드뉴스를 직접 만들어봐! 🌍</div>
+    </div>
+
+    <!-- 미리보기 카드 -->
+    <div class="cn-preview-wrap">
+      <div class="cn-preview-label">📋 내 카드뉴스 미리보기</div>
+      <div class="cn-preview-card">
+        <div class="cn-preview-img" id="cn-prev-img">🌍</div>
+        <div class="cn-preview-body">
+          <div class="cn-preview-title" id="cn-prev-title">제목을 입력해줘!</div>
+          <div class="cn-preview-msg"   id="cn-prev-msg">핵심 메시지를 입력해줘!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 입력 폼 -->
+    <div class="cn-form">
+      <!-- 1. 이미지 선택 -->
+      <span class="cn-form-label">1️⃣ 이미지 선택</span>
+      <div class="cn-img-options">
+        <div class="cn-img-option" id="cn-img-earth" onclick="selectCnImg('earth')">🌍<span class="img-label">지구</span></div>
+        <div class="cn-img-option" id="cn-img-tree"  onclick="selectCnImg('tree')">🌳<span class="img-label">나무</span></div>
+        <div class="cn-img-option" id="cn-img-trash" onclick="selectCnImg('trash')">🗑️<span class="img-label">쓰레기</span></div>
+      </div>
+
+      <!-- 2. 제목 -->
+      <span class="cn-form-label" style="margin-top:16px">2️⃣ 카드뉴스 제목<br><small style="font-weight:400;color:var(--color-text-sub)">클릭베이트 없이, 구체적으로!</small></span>
+      <input id="cn-title" class="cn-input" type="text" maxlength="30" placeholder="예: 북극 빙하, 50년 전보다 40% 줄었어요" oninput="updateCnPreview()">
+      <div class="cn-char-count" id="cn-title-count">0 / 30자</div>
+
+      <!-- 3. 핵심 메시지 -->
+      <span class="cn-form-label">3️⃣ 핵심 메시지<br><small style="font-weight:400;color:var(--color-text-sub)">수치나 사실을 넣으면 더 좋아!</small></span>
+      <textarea id="cn-message" class="cn-textarea" maxlength="100" placeholder="예: 지구 온도가 매년 0.2도씩 올라가고 있어요. 지금 행동하지 않으면 우리 세대가 위험해요!" oninput="updateCnPreview()"></textarea>
+      <div class="cn-char-count" id="cn-message-count">0 / 100자</div>
+
+      <!-- 4. 이미지 이유 -->
+      <span class="cn-form-label">4️⃣ 이미지 선택 이유<br><small style="font-weight:400;color:var(--color-text-sub)">왜 이 이미지를 골랐어?</small></span>
+      <input id="cn-reason" class="cn-input" type="text" placeholder="(최소 10자 이상 입력)" oninput="updateCnPreview()">
+      <div class="cn-char-count" id="cn-reason-count">0 / 10자 이상</div>
+
+      <button id="cn-submit-btn" class="btn-submit" style="margin-top:8px" disabled onclick="submitCardnews()">카드뉴스 완성! 🎉</button>
+    </div>
+  </div>
+
+  <!-- ============================
+       SCREEN 11 — AI 채점 결과 (공통)
+  ============================ -->
+  <div id="screen-result" class="screen">
+    <div class="result-activity-title" id="result-act-title"></div>
+    <div class="result-grade-big">
+      <div class="result-grade-big-emoji" id="result-act-emoji"></div>
+      <div class="result-grade-big-label" id="result-act-label"></div>
+      <div class="result-grade-big-score" id="result-act-score"></div>
+    </div>
+    <div class="result-feedback-card">
+      <div class="result-feedback-label">💬 AI 선생님 피드백</div>
+      <div class="result-feedback-text" id="result-act-feedback"></div>
+    </div>
+    <div class="result-question-card">
+      <div class="result-question-label">🤔 생각해볼 질문</div>
+      <div class="result-question-text" id="result-act-question"></div>
+    </div>
+    <button class="btn-primary" onclick="goHomeFromResult()">홈으로 돌아가기 🏠</button>
+    <button class="btn-secondary" onclick="retryCurrentActivity()">다시 도전하기 🔄</button>
+  </div>
+
+  <!-- ============================
+       플레이스홀더: 역량 지형도
+  ============================ -->
+  <!-- ============================
+       SCREEN 12 — 역량 지형도
+  ============================ -->
+  <div id="screen-radar" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+
+    <div class="radar-title" id="radar-title">○○의 미디어 탐정</div>
+    <div class="radar-subtitle">역량 지도! 🗺️</div>
+
+    <!-- 레이더 차트 -->
+    <div class="radar-canvas-wrap">
+      <canvas id="radar-canvas" width="280" height="280"></canvas>
+    </div>
+
+    <!-- 활동별 결과 목록 -->
+    <div class="radar-result-list">
+      <div class="radar-result-item">
+        <span class="radar-result-name">📺 유튜브 탐정</span>
+        <span class="radar-result-grade" id="radar-grade-youtube">⬜ 미완료</span>
+      </div>
+      <div class="radar-result-item">
+        <span class="radar-result-name">📰 뉴스 비교</span>
+        <span class="radar-result-grade" id="radar-grade-news">⬜ 미완료</span>
+      </div>
+      <div class="radar-result-item">
+        <span class="radar-result-name">🔍 광고 탐정</span>
+        <span class="radar-result-grade" id="radar-grade-ad">⬜ 미완료</span>
+      </div>
+      <div class="radar-result-item">
+        <span class="radar-result-name">🤖 AI 탐정</span>
+        <span class="radar-result-grade" id="radar-grade-ai">⬜ 미완료</span>
+      </div>
+      <div class="radar-result-item">
+        <span class="radar-result-name">✏️ 카드뉴스</span>
+        <span class="radar-result-grade" id="radar-grade-cardnews">⬜ 미완료</span>
+      </div>
+    </div>
+
+    <!-- 종합 피드백 -->
+    <div class="radar-summary-card">
+      <div class="radar-summary-label">🤖 AI 선생님 종합 피드백</div>
+      <div class="radar-summary-text" id="radar-summary">AI 선생님이 열심히 분석 중이야! v0.3에서 진짜 맞춤 피드백이 나올 거야 😊 지금은 연습 모드!</div>
+    </div>
+
+    <button class="btn-reset" onclick="resetApp()">처음부터 다시 도전하기! 🔄</button>
+  </div>
+
+  <!-- ============================
+       JAVASCRIPT
+  ============================ -->
+  <script>
+    /* ============================
+       localStorage 키
+    ============================ */
+    const STORAGE_KEYS = {
+      NAME:              'miri_student_name',
+      DIAGNOSIS_SCORE:   'miri_diagnosis_score',
+      DIAGNOSIS_GRADE:   'miri_diagnosis_grade',
+      ACTIVITY_YOUTUBE:  'miri_activity_youtube',
+      ACTIVITY_NEWS:     'miri_activity_news',
+      ACTIVITY_AD:       'miri_activity_ad',
+      ACTIVITY_AI:       'miri_activity_ai',
+      ACTIVITY_CARDNEWS: 'miri_activity_cardnews',
+    };
+
+    /* ============================
+       진단 퀴즈 문항
+    ============================ */
+    const QUIZ_QUESTIONS = [
+      {
+        q: "Q1. 다음 유튜브 영상 제목 중 클릭베이트일 가능성이 가장 높은 것은?",
+        choices: [
+          "과학자들이 발견한 새로운 공룡 화석 이야기",
+          "이걸 보면 절대 안 믿겠지만...충격 실화 (100% 사실!!!)",
+          "우리나라 전통 놀이 종류와 방법 소개",
+          "태양계 행성의 크기를 비교해봤어요"
+        ],
+        answer: 1
+      },
+      {
+        q: "Q2. 같은 사건을 다룬 두 기사가 서로 다른 내용을 강조하고 있다면, 그 이유로 가장 적절한 것은?",
+        choices: [
+          "기자가 실수로 잘못 썼기 때문에",
+          "기사를 쓴 매체마다 관점과 입장이 다를 수 있기 때문에",
+          "한쪽 기사는 반드시 거짓이기 때문에",
+          "같은 사건이 두 번 일어났기 때문에"
+        ],
+        answer: 1
+      },
+      {
+        q: "Q3. 유튜버가 영상에서 '이 영상은 ○○브랜드 협찬을 받았습니다'라고 밝혔어. 이 영상을 볼 때 어떤 태도가 가장 좋을까?",
+        choices: [
+          "협찬을 받았으니 영상 내용이 모두 거짓이다",
+          "협찬 사실과 관계없이 내용을 그대로 믿는다",
+          "협찬을 받았으므로 제품에 유리하게 만들어졌을 수 있다고 생각하며 본다",
+          "협찬 영상은 절대 보지 않는 것이 좋다"
+        ],
+        answer: 2
+      },
+      {
+        q: "Q4. 친구가 단체 채팅방에 '○○ 먹으면 감기 낫는다!'는 메시지를 보냈어. 가장 올바른 행동은?",
+        choices: [
+          "나도 빠르게 다른 친구들에게 전달한다",
+          "재미있으니까 그냥 웃고 넘긴다",
+          "공식 기관(질병청, 뉴스 등)에서 확인한 후 판단한다",
+          "친구를 믿으니까 사실이라고 생각한다"
+        ],
+        answer: 2
+      }
+    ];
+
+    const GRADE_INFO = {
+      '상': {
+        emoji: '🏆',
+        name: '수석 탐정',
+        msg: '미디어를 꿰뚫어 보는 눈이 있구나! 5가지 미션으로 실력을 증명해봐! 💪'
+      },
+      '중': {
+        emoji: '🕵️',
+        name: '탐정',
+        msg: '미디어 정보를 꽤 잘 읽는구나! 5가지 미션으로 실력을 더 키워보자! 🌟'
+      },
+      '하': {
+        emoji: '🔰',
+        name: '탐정 견습생',
+        msg: '걱정 마! 미리와 함께라면 미디어 탐정이 될 수 있어! 함께 시작해보자! 🚀'
+      }
+    };
+
+    /* ============================
+       퀴즈 상태
+    ============================ */
+    let currentQ = 0;
+    let quizAnswers = [];
+    let selectedChoice = null;
+
+    /* ============================
+       유틸리티
+    ============================ */
+    function addPostposition(name) {
+      const code = name.charCodeAt(name.length - 1);
+      const hasBatchim = (code - 0xAC00) % 28 !== 0;
+      return name + (hasBatchim ? '아' : '야');
+    }
+
+    function getName() {
+      return localStorage.getItem(STORAGE_KEYS.NAME) || '';
+    }
+
+    function getActivity(key) {
+      try {
+        const d = localStorage.getItem(key);
+        return d ? JSON.parse(d) : null;
+      } catch { return null; }
+    }
+
+    function getCompletedCount() {
+      return [
+        STORAGE_KEYS.ACTIVITY_YOUTUBE,
+        STORAGE_KEYS.ACTIVITY_NEWS,
+        STORAGE_KEYS.ACTIVITY_AD,
+        STORAGE_KEYS.ACTIVITY_AI,
+        STORAGE_KEYS.ACTIVITY_CARDNEWS,
+      ].filter(k => { const d = getActivity(k); return d && d.completed; }).length;
+    }
+
+    /* ============================
+       화면 라우팅
+    ============================ */
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    /* ============================
+       SCREEN 1 — 시작 화면 로직
+    ============================ */
+    const nameInput = document.getElementById('name-input');
+    const startBtn  = document.getElementById('start-btn');
+
+    nameInput.addEventListener('input', () => {
+      startBtn.disabled = nameInput.value.trim().length === 0;
+    });
+
+    nameInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && nameInput.value.trim()) onStartClick();
+    });
+
+    startBtn.addEventListener('click', onStartClick);
+
+    function onStartClick() {
+      const name = nameInput.value.trim();
+      if (!name) return;
+      localStorage.setItem(STORAGE_KEYS.NAME, name);
+      document.getElementById('intro-greeting').textContent = `${addPostposition(name)}, 반가워! 👋`;
+      showScreen('screen-intro');
+    }
+
+    /* ============================
+       SCREEN 3 — 진단 퀴즈 로직
+    ============================ */
+    function goToDiagnosis() {
+      currentQ = 0;
+      quizAnswers = [];
+      selectedChoice = null;
+      renderQuestion(0);
+      showScreen('screen-diagnosis');
+    }
+
+    function renderQuestion(idx) {
+      const q = QUIZ_QUESTIONS[idx];
+      selectedChoice = null;
+
+      document.getElementById('quiz-progress-label').textContent = `${idx + 1} / ${QUIZ_QUESTIONS.length}`;
+
+      document.getElementById('quiz-dots').innerHTML = QUIZ_QUESTIONS.map((_, i) => {
+        let cls = 'quiz-dot';
+        if (i < idx)      cls += ' done';
+        else if (i === idx) cls += ' active';
+        return `<div class="${cls}"></div>`;
+      }).join('');
+
+      document.getElementById('quiz-question').textContent = q.q;
+
+      const nums = ['①', '②', '③', '④'];
+      document.getElementById('quiz-choices').innerHTML = q.choices.map((c, i) =>
+        `<button class="choice-btn" onclick="selectChoice(${i})">
+          <span class="choice-num">${nums[i]}</span>
+          <span>${c}</span>
+        </button>`
+      ).join('');
+
+      document.getElementById('quiz-next-btn').disabled = true;
+    }
+
+    function selectChoice(idx) {
+      selectedChoice = idx;
+      document.querySelectorAll('.choice-btn').forEach((btn, i) => {
+        btn.classList.toggle('selected', i === idx);
+      });
+      document.getElementById('quiz-next-btn').disabled = false;
+    }
+
+    function nextQuestion() {
+      if (selectedChoice === null) return;
+      quizAnswers.push(selectedChoice);
+      currentQ++;
+
+      if (currentQ < QUIZ_QUESTIONS.length) {
+        renderQuestion(currentQ);
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      const score = quizAnswers.filter((ans, i) => ans === QUIZ_QUESTIONS[i].answer).length;
+      const grade = score === 4 ? '상' : score >= 2 ? '중' : '하';
+
+      localStorage.setItem(STORAGE_KEYS.DIAGNOSIS_SCORE, String(score));
+      localStorage.setItem(STORAGE_KEYS.DIAGNOSIS_GRADE, grade);
+
+      showDiagnosisResult(score, grade);
+    }
+
+    /* ============================
+       SCREEN 4 — 진단 결과 로직
+    ============================ */
+    function showDiagnosisResult(score, grade) {
+      const name = getName();
+      const info = GRADE_INFO[grade];
+
+      document.getElementById('result-name-title').textContent = `${name}의 미디어 탐정 레벨`;
+      document.getElementById('result-grade-emoji').textContent = info.emoji;
+      document.getElementById('result-grade-name').textContent  = info.name;
+      document.getElementById('result-score-chip').textContent  = `${score} / 4 정답`;
+      document.getElementById('result-message').textContent     = info.msg;
+
+      showScreen('screen-diagnosis-result');
+    }
+
+    /* ============================
+       SCREEN 5 — 홈 런처 로직
+    ============================ */
+    function goToHome() {
+      updateHomeScreen();
+      showScreen('screen-home');
+    }
+
+    const SCREEN_TO_ACTIVITY = {
+      'screen-youtube': 'youtube',
+      'screen-news':    'news',
+      'screen-ad':      'ad',
+      'screen-ai':      'ai',
+      'screen-cardnews':'cardnews',
+    };
+
+    function goToActivity(screenId) {
+      const actId = SCREEN_TO_ACTIVITY[screenId];
+      if (actId) {
+        const data = getActivity(ACTIVITY_STORAGE_MAP[actId]);
+        if (data && data.completed) {
+          showActivityChoiceModal(actId, screenId);
+          return;
+        }
+      }
+      if (screenId === 'screen-news')     resetNewsScreen();
+      if (screenId === 'screen-ad')       resetAdScreen();
+      if (screenId === 'screen-ai')       resetAiScreen();
+      if (screenId === 'screen-cardnews') resetCardnewsScreen();
+      showScreen(screenId);
+    }
+
+    function showActivityChoiceModal(actId, screenId) {
+      const existing = document.getElementById('activity-choice-modal');
+      if (existing) existing.remove();
+      const data = getActivity(ACTIVITY_STORAGE_MAP[actId]);
+      const grade = (data && data.grade) ? data.grade : '중';
+      const gd = GRADE_DISPLAY[grade];
+      const modal = document.createElement('div');
+      modal.id = 'activity-choice-modal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:24px;';
+      modal.innerHTML = `
+        <div style="background:white;border-radius:20px;padding:28px 24px;max-width:360px;width:100%;text-align:center;">
+          <div style="font-size:48px;margin-bottom:8px;">${gd.emoji}</div>
+          <div style="font-size:18px;font-weight:800;color:var(--color-text);margin-bottom:8px;">이미 완료한 활동이야! 🎉</div>
+          <div style="font-size:14px;color:var(--color-text-sub);margin-bottom:24px;">${gd.label.trim()} 받았어 😊</div>
+          <button id="modal-view-btn" style="width:100%;height:56px;border-radius:16px;border:none;background:var(--color-secondary);color:white;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;">결과 다시 보기 👀</button>
+          <button id="modal-retry-btn" style="width:100%;height:56px;border-radius:16px;border:2px solid var(--color-border);background:white;color:var(--color-text);font-size:16px;font-weight:800;cursor:pointer;margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;">다시 도전하기 🔄</button>
+          <button id="modal-cancel-btn" style="width:100%;height:40px;border-radius:12px;border:none;background:none;color:var(--color-text-sub);font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">취소</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('modal-view-btn').addEventListener('click', function() { modal.remove(); goToResult(actId); });
+      document.getElementById('modal-retry-btn').addEventListener('click', function() { modal.remove(); retryActivity(screenId); });
+      document.getElementById('modal-cancel-btn').addEventListener('click', function() { modal.remove(); });
+    }
+
+    function retryActivity(screenId) {
+      if (screenId === 'screen-youtube') {
+        ytSelectedThumb = null;
+        document.getElementById('yt-answer').value = '';
+        checkYoutubeBtn();
+      }
+      if (screenId === 'screen-news')     resetNewsScreen();
+      if (screenId === 'screen-ad')       resetAdScreen();
+      if (screenId === 'screen-ai')       resetAiScreen();
+      if (screenId === 'screen-cardnews') resetCardnewsScreen();
+      showScreen(screenId);
+    }
+
+    function retryCurrentActivity() {
+      if (!currentActivity) { goToHome(); return; }
+      retryActivity('screen-' + currentActivity);
+    }
+
+    function updateHomeScreen() {
+      const name = getName();
+      document.getElementById('home-title').textContent = `${name}의 미션 현황 🗂️`;
+
+      const done = getCompletedCount();
+      document.getElementById('home-progress-fill').style.width = `${(done / 5) * 100}%`;
+      document.getElementById('home-progress-text').textContent = `${done} / 5 완료`;
+
+      const activities = [
+        { key: STORAGE_KEYS.ACTIVITY_YOUTUBE,  cardId: 'act-card-youtube',  descId: 'desc-youtube' },
+        { key: STORAGE_KEYS.ACTIVITY_NEWS,     cardId: 'act-card-news',     descId: 'desc-news' },
+        { key: STORAGE_KEYS.ACTIVITY_AD,       cardId: 'act-card-ad',       descId: 'desc-ad' },
+        { key: STORAGE_KEYS.ACTIVITY_AI,       cardId: 'act-card-ai',       descId: 'desc-ai' },
+        { key: STORAGE_KEYS.ACTIVITY_CARDNEWS, cardId: 'act-card-cardnews', descId: 'desc-cardnews' },
+      ];
+
+      activities.forEach(({ key, cardId, descId }) => {
+        const data = getActivity(key);
+        const card = document.getElementById(cardId);
+        const desc = document.getElementById(descId);
+        if (data && data.completed) {
+          card.classList.add('completed');
+          desc.innerHTML = `✅ 완료! <span class="grade-badge">${data.grade}</span>`;
+        } else {
+          card.classList.remove('completed');
+        }
+      });
+
+      document.getElementById('radar-btn').disabled = done < 3;
+    }
+
+    /* ============================
+       공통 — 더미 채점 상수
+    ============================ */
+    const GRADE_DISPLAY = {
+      '상': { emoji: '🥇', color: '#FFD700', label: '상  (85점)', score: 85 },
+      '중': { emoji: '🥈', color: '#4488FF', label: '중  (65점)', score: 65 },
+      '하': { emoji: '🥉', color: '#FF8C42', label: '하  (50점)', score: 50 },
+    };
+
+    const ACTIVITY_META = {
+      youtube:  { title: '📺 유튜브 탐정 결과',   question: '클릭베이트 영상을 만드는 사람들은 왜 이런 제목을 쓰는 걸까?' },
+      news:     { title: '📰 뉴스 비교 결과',      question: '기사를 쓸 때 완전히 공정하게 쓰는 게 가능할까?' },
+      ad:       { title: '🔍 광고 탐정 결과',      question: '광고라는 걸 표시하지 않는 게 왜 문제가 될까?' },
+      ai:       { title: '🤖 AI 탐정 결과',        question: '정보를 퍼뜨리기 전에 어떻게 확인하는 습관을 만들 수 있을까?' },
+      cardnews: { title: '✏️ 카드뉴스 만들기 결과', question: '좋은 카드뉴스 제목은 클릭베이트 제목과 어떻게 다를까?' },
+    };
+
+    let currentActivity = null;
+
+    /* ============================
+       v0.3 — API 호출 공통 함수 (서버리스 프록시 경유)
+    ============================ */
+    async function callClaudeAPI(activityId, studentAnswer, format) {
+      if (!navigator.onLine) throw new Error('OFFLINE');
+      const fmt = format || 'json';
+
+      let lastError;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const res = await fetch('/.netlify/functions/grade', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ activityId, studentAnswer }),
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          if (data.error) throw new Error(data.error);
+          return fmt === 'text' ? (data.summary || '') : data;
+        } catch (e) {
+          lastError = e;
+          if (attempt === 0) await new Promise(r => setTimeout(r, 1500));
+        }
+      }
+      throw lastError;
+    }
+
+    function getSubmitErrorMsg(e) {
+      return (e && e.message === 'OFFLINE')
+        ? '인터넷 연결이 없어! 와이파이를 확인해봐 📶'
+        : 'AI 선생님이 잠깐 바빠 😅 잠시 후 다시 눌러봐!';
+    }
+
+    function setSubmitLoading(btnId, isLoading) {
+      const btn = document.getElementById(btnId);
+      if (isLoading) {
+        btn.dataset.original = btn.textContent;
+        btn.textContent = 'AI 선생님이 답변 중이에요... ⏳';
+        btn.disabled = true;
+        btn.classList.add('loading');
+      } else {
+        if (btn.dataset.original) btn.textContent = btn.dataset.original;
+        btn.classList.remove('loading');
+      }
+    }
+
+    function showInlineMsg(btnId, msg, isError) {
+      const btn = document.getElementById(btnId);
+      const existing = btn.parentNode.querySelector('.api-inline-msg');
+      if (existing) existing.remove();
+      const div = document.createElement('div');
+      div.className = 'api-inline-msg';
+      div.style.cssText = 'background:' + (isError ? '#FFE5E5' : '#FFF9E0') + ';border:1.5px solid ' + (isError ? 'var(--color-primary)' : '#FFD700') + ';border-radius:10px;padding:10px 14px;margin-top:8px;font-size:14px;font-weight:700;color:' + (isError ? 'var(--color-primary)' : 'var(--color-text)') + ';text-align:center;';
+      div.textContent = msg;
+      btn.insertAdjacentElement('afterend', div);
+      setTimeout(function() { if (div.parentNode) div.remove(); }, 5000);
+    }
+
+    /* ============================
+       공통 — 결과 화면
+    ============================ */
+    const ACTIVITY_STORAGE_MAP = {
+      youtube:  'miri_activity_youtube',
+      news:     'miri_activity_news',
+      ad:       'miri_activity_ad',
+      ai:       'miri_activity_ai',
+      cardnews: 'miri_activity_cardnews',
+    };
+
+    function goToResult(activityId) {
+      currentActivity = activityId;
+      const meta = ACTIVITY_META[activityId];
+      const data = getActivity(ACTIVITY_STORAGE_MAP[activityId]);
+      const grade = (data && data.grade) ? data.grade : '중';
+      const gd = GRADE_DISPLAY[grade];
+
+      document.getElementById('result-act-title').textContent    = meta.title;
+      document.getElementById('result-act-emoji').textContent    = gd.emoji;
+      document.getElementById('result-act-label').textContent    = gd.label;
+      document.getElementById('result-act-label').style.color    = gd.color;
+      document.getElementById('result-act-score').textContent    = ((data && data.score) ? data.score : gd.score) + '점';
+      document.getElementById('result-act-feedback').textContent =
+        (data && data.feedback) ? data.feedback : 'AI 선생님이 곧 진짜 피드백을 줄 거야! 지금은 연습 모드야 😊';
+      document.getElementById('result-act-question').textContent =
+        '"' + ((data && data.question) ? data.question : meta.question) + '"';
+
+      showScreen('screen-result');
+    }
+
+    function goHomeFromResult() {
+      goToHome();
+    }
+
+    /* ============================
+       SCREEN 6 — 유튜브 탐정
+    ============================ */
+    let ytSelectedThumb = null;
+
+    function selectYoutubeThumb(id) {
+      ytSelectedThumb = id;
+      ['A', 'B', 'C'].forEach(t => {
+        document.getElementById(`yt-item-${t}`).classList.toggle('selected', t === id);
+      });
+      checkYoutubeBtn();
+    }
+
+    function checkYoutubeBtn() {
+      const text = document.getElementById('yt-answer').value;
+      const len  = text.length;
+      const counter = document.getElementById('yt-char-counter');
+      counter.textContent = `${len} / 10자 이상`;
+      counter.className = 'char-counter' + (len >= 10 ? ' ok' : '');
+      document.getElementById('yt-submit-btn').disabled = !(ytSelectedThumb && len >= 10);
+    }
+
+    async function submitYoutube() {
+      const answer = document.getElementById('yt-answer').value;
+      setSubmitLoading('yt-submit-btn', true);
+      try {
+        const res = await callClaudeAPI('youtube', '선택한 영상: ' + ytSelectedThumb + '\n이유: ' + answer);
+        if (res.unsafe) {
+          showInlineMsg('yt-submit-btn', '⚠️ 다시 써줘! 좋은 말로 이유를 설명해줘 😊', true);
+          setSubmitLoading('yt-submit-btn', false);
+          checkYoutubeBtn();
+          return;
+        }
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_YOUTUBE, JSON.stringify({
+          selectedThumb: ytSelectedThumb, answer,
+          score: res.score, grade: res.grade, feedback: res.feedback, question: res.question,
+          completed: true,
+        }));
+        ytSelectedThumb = null;
+        document.getElementById('yt-answer').value = '';
+        checkYoutubeBtn();
+        goToResult('youtube');
+      } catch (e) {
+        showInlineMsg('yt-submit-btn', getSubmitErrorMsg(e), false);
+        setSubmitLoading('yt-submit-btn', false);
+        checkYoutubeBtn();
+      }
+    }
+
+    /* ============================
+       SCREEN 7 — 뉴스 비교
+    ============================ */
+    let newsReadBoth = false;
+
+    function resetNewsScreen() {
+      newsReadBoth = false;
+      document.getElementById('news-tab-a').classList.add('active');
+      document.getElementById('news-tab-b').classList.remove('active');
+      document.getElementById('news-article-a').style.display = 'block';
+      document.getElementById('news-article-b').style.display = 'none';
+      document.getElementById('news-read-hint').style.display = 'block';
+      document.getElementById('news-answer-section').style.display = 'none';
+      document.getElementById('news-answer').value = '';
+      checkNewsBtn();
+    }
+
+    function switchNewsTab(tab) {
+      document.getElementById('news-tab-a').classList.toggle('active', tab === 'A');
+      document.getElementById('news-tab-b').classList.toggle('active', tab === 'B');
+      document.getElementById('news-article-a').style.display = tab === 'A' ? 'block' : 'none';
+      document.getElementById('news-article-b').style.display = tab === 'B' ? 'block' : 'none';
+
+      if (tab === 'B' && !newsReadBoth) {
+        newsReadBoth = true;
+        document.getElementById('news-read-hint').style.display = 'none';
+        document.getElementById('news-answer-section').style.display = 'block';
+      }
+    }
+
+    function checkNewsBtn() {
+      const text = document.getElementById('news-answer').value;
+      const len  = text.length;
+      const counter = document.getElementById('news-char-counter');
+      counter.textContent = `${len} / 15자 이상`;
+      counter.className = 'char-counter' + (len >= 15 ? ' ok' : '');
+      document.getElementById('news-submit-btn').disabled = len < 15;
+    }
+
+    async function submitNews() {
+      const answer = document.getElementById('news-answer').value;
+      setSubmitLoading('news-submit-btn', true);
+      try {
+        const res = await callClaudeAPI('news', '학생 서술: ' + answer);
+        if (res.unsafe) {
+          showInlineMsg('news-submit-btn', '⚠️ 다시 써줘! 좋은 말로 이유를 설명해줘 😊', true);
+          setSubmitLoading('news-submit-btn', false);
+          checkNewsBtn();
+          return;
+        }
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_NEWS, JSON.stringify({
+          answer, score: res.score, grade: res.grade, feedback: res.feedback, question: res.question, completed: true,
+        }));
+        resetNewsScreen();
+        goToResult('news');
+      } catch (e) {
+        showInlineMsg('news-submit-btn', getSubmitErrorMsg(e), false);
+        setSubmitLoading('news-submit-btn', false);
+        checkNewsBtn();
+      }
+    }
+
+    /* ============================
+       SCREEN 8 — 광고 탐정
+    ============================ */
+    let adSelectedPosts = new Set();
+
+    function toggleAdPost(id) {
+      if (adSelectedPosts.has(id)) {
+        adSelectedPosts.delete(id);
+        document.getElementById(`ad-post-${id}`).classList.remove('selected');
+      } else {
+        adSelectedPosts.add(id);
+        document.getElementById(`ad-post-${id}`).classList.add('selected');
+      }
+      checkAdBtn();
+    }
+
+    function checkAdBtn() {
+      const text = document.getElementById('ad-answer').value;
+      const len  = text.length;
+      const counter = document.getElementById('ad-char-counter');
+      counter.textContent = `${len} / 10자 이상`;
+      counter.className = 'char-counter' + (len >= 10 ? ' ok' : '');
+      document.getElementById('ad-submit-btn').disabled = !(adSelectedPosts.size > 0 && len >= 10);
+    }
+
+    function resetAdScreen() {
+      adSelectedPosts = new Set();
+      ['A', 'B', 'C'].forEach(id => {
+        document.getElementById(`ad-post-${id}`).classList.remove('selected');
+      });
+      document.getElementById('ad-answer').value = '';
+      checkAdBtn();
+    }
+
+    async function submitAd() {
+      const answer = document.getElementById('ad-answer').value;
+      const selected = [...adSelectedPosts];
+      setSubmitLoading('ad-submit-btn', true);
+      try {
+        const res = await callClaudeAPI('ad', '선택한 게시물: ' + selected.join(', ') + '\n이유: ' + answer);
+        if (res.unsafe) {
+          showInlineMsg('ad-submit-btn', '⚠️ 다시 써줘! 좋은 말로 이유를 설명해줘 😊', true);
+          setSubmitLoading('ad-submit-btn', false);
+          checkAdBtn();
+          return;
+        }
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_AD, JSON.stringify({
+          selectedPosts: selected, answer, score: res.score, grade: res.grade, feedback: res.feedback, question: res.question, completed: true,
+        }));
+        resetAdScreen();
+        goToResult('ad');
+      } catch (e) {
+        showInlineMsg('ad-submit-btn', getSubmitErrorMsg(e), false);
+        setSubmitLoading('ad-submit-btn', false);
+        checkAdBtn();
+      }
+    }
+
+    /* ============================
+       SCREEN 9 — AI 탐정
+    ============================ */
+    function checkAiBtn() {
+      const text = document.getElementById('ai-answer').value;
+      const len  = text.length;
+      const counter = document.getElementById('ai-char-counter');
+      counter.textContent = `${len} / 10자 이상`;
+      counter.className = 'char-counter' + (len >= 10 ? ' ok' : '');
+      document.getElementById('ai-submit-btn').disabled = len < 10;
+    }
+
+    function resetAiScreen() {
+      document.getElementById('ai-answer').value = '';
+      checkAiBtn();
+    }
+
+    async function submitAi() {
+      const answer = document.getElementById('ai-answer').value;
+      setSubmitLoading('ai-submit-btn', true);
+      try {
+        const res = await callClaudeAPI('ai', '학생 서술: ' + answer);
+        if (res.unsafe) {
+          showInlineMsg('ai-submit-btn', '⚠️ 다시 써줘! 좋은 말로 이유를 설명해줘 😊', true);
+          setSubmitLoading('ai-submit-btn', false);
+          checkAiBtn();
+          return;
+        }
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_AI, JSON.stringify({
+          answer, score: res.score, grade: res.grade, feedback: res.feedback, question: res.question, completed: true,
+        }));
+        resetAiScreen();
+        goToResult('ai');
+      } catch (e) {
+        showInlineMsg('ai-submit-btn', getSubmitErrorMsg(e), false);
+        setSubmitLoading('ai-submit-btn', false);
+        checkAiBtn();
+      }
+    }
+
+    /* ============================
+       SCREEN 10 — 카드뉴스 만들기
+    ============================ */
+    const CN_IMG_CONFIG = {
+      earth: { emoji: '🌍', bg: 'linear-gradient(135deg, #1a1a2e 0%, #2980B9 50%, #27AE60 100%)' },
+      tree:  { emoji: '🌳', bg: 'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)' },
+      trash: { emoji: '🗑️', bg: 'linear-gradient(135deg, #8e9eab 0%, #eef2f3 100%)' },
+    };
+    let cnSelectedImg = null;
+
+    function selectCnImg(id) {
+      cnSelectedImg = id;
+      ['earth', 'tree', 'trash'].forEach(k => {
+        document.getElementById(`cn-img-${k}`).classList.toggle('selected', k === id);
+      });
+      const cfg = CN_IMG_CONFIG[id];
+      const prevImg = document.getElementById('cn-prev-img');
+      prevImg.style.background = cfg.bg;
+      prevImg.textContent = cfg.emoji;
+      checkCnBtn();
+    }
+
+    function updateCnPreview() {
+      const title   = document.getElementById('cn-title').value;
+      const message = document.getElementById('cn-message').value;
+      const reason  = document.getElementById('cn-reason').value;
+
+      document.getElementById('cn-prev-title').textContent = title   || '제목을 입력해줘!';
+      document.getElementById('cn-prev-msg').textContent   = message || '핵심 메시지를 입력해줘!';
+
+      document.getElementById('cn-title-count').textContent   = `${title.length} / 30자`;
+      document.getElementById('cn-message-count').textContent = `${message.length} / 100자`;
+
+      const reasonLen   = reason.length;
+      const reasonCount = document.getElementById('cn-reason-count');
+      reasonCount.textContent = `${reasonLen} / 10자 이상`;
+      reasonCount.className = 'cn-char-count' + (reasonLen >= 10 ? ' ok' : '');
+
+      checkCnBtn();
+    }
+
+    function checkCnBtn() {
+      const title   = document.getElementById('cn-title').value;
+      const message = document.getElementById('cn-message').value;
+      const reason  = document.getElementById('cn-reason').value;
+      const valid = cnSelectedImg !== null && title.length >= 5 && message.length >= 10 && reason.length >= 10;
+      document.getElementById('cn-submit-btn').disabled = !valid;
+    }
+
+    function resetCardnewsScreen() {
+      cnSelectedImg = null;
+      ['earth', 'tree', 'trash'].forEach(k => {
+        document.getElementById(`cn-img-${k}`).classList.remove('selected');
+      });
+      const prevImg = document.getElementById('cn-prev-img');
+      prevImg.style.background = '';
+      prevImg.textContent = '🌍';
+      document.getElementById('cn-title').value   = '';
+      document.getElementById('cn-message').value = '';
+      document.getElementById('cn-reason').value  = '';
+      updateCnPreview();
+    }
+
+    async function submitCardnews() {
+      const title   = document.getElementById('cn-title').value;
+      const message = document.getElementById('cn-message').value;
+      const reason  = document.getElementById('cn-reason').value;
+      setSubmitLoading('cn-submit-btn', true);
+      const userMsg = '선택한 이미지: ' + cnSelectedImg + '\n제목: ' + title + '\n핵심 메시지: ' + message + '\n이미지 선택 이유: ' + reason;
+      try {
+        const res = await callClaudeAPI('cardnews', userMsg);
+        if (res.unsafe) {
+          showInlineMsg('cn-submit-btn', '⚠️ 다시 써줘! 좋은 말로 이유를 설명해줘 😊', true);
+          setSubmitLoading('cn-submit-btn', false);
+          checkCnBtn();
+          return;
+        }
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_CARDNEWS, JSON.stringify({
+          selectedImage: cnSelectedImg, title, message, imageReason: reason,
+          score: res.score, grade: res.grade, feedback: res.feedback, question: res.question, completed: true,
+        }));
+        resetCardnewsScreen();
+        goToResult('cardnews');
+      } catch (e) {
+        showInlineMsg('cn-submit-btn', getSubmitErrorMsg(e), false);
+        setSubmitLoading('cn-submit-btn', false);
+        checkCnBtn();
+      }
+    }
+
+    /* ============================
+       SCREEN 12 — 역량 지형도
+    ============================ */
+    function showRadar() {
+      const name = getName();
+      document.getElementById('radar-title').textContent = name + '의 미디어 탐정';
+
+      const activityMap = [
+        { key: 'youtube',  storageKey: STORAGE_KEYS.ACTIVITY_YOUTUBE,  elemId: 'radar-grade-youtube' },
+        { key: 'news',     storageKey: STORAGE_KEYS.ACTIVITY_NEWS,     elemId: 'radar-grade-news' },
+        { key: 'ad',       storageKey: STORAGE_KEYS.ACTIVITY_AD,       elemId: 'radar-grade-ad' },
+        { key: 'ai',       storageKey: STORAGE_KEYS.ACTIVITY_AI,       elemId: 'radar-grade-ai' },
+        { key: 'cardnews', storageKey: STORAGE_KEYS.ACTIVITY_CARDNEWS, elemId: 'radar-grade-cardnews' },
+      ];
+
+      const scores = {};
+      const activityResults = {};
+      activityMap.forEach(function(item) {
+        const data = getActivity(item.storageKey);
+        scores[item.key] = (data && data.completed) ? (data.score || 65) : 0;
+        activityResults[item.key] = data;
+        const el = document.getElementById(item.elemId);
+        if (data && data.completed) {
+          el.textContent = GRADE_DISPLAY[data.grade].emoji + ' ' + data.grade;
+          el.classList.add('done');
+        } else {
+          el.textContent = '⬜ 미완료';
+          el.classList.remove('done');
+        }
+      });
+
+      drawRadarChart(document.getElementById('radar-canvas'), scores);
+      showScreen('screen-radar');
+      generateRadarSummary(name, activityResults);
+    }
+
+    async function generateRadarSummary(name, activityResults) {
+      const summaryEl = document.getElementById('radar-summary');
+      summaryEl.textContent = 'AI 선생님이 열심히 분석 중이야... ⏳';
+
+      const labels = { youtube: '유튜브 탐정', news: '뉴스 비교', ad: '광고 탐정', ai: 'AI 탐정', cardnews: '카드뉴스' };
+      const lines = Object.keys(labels).map(function(key) {
+        const d = activityResults[key];
+        if (!d || !d.completed) return labels[key] + ': 미완료';
+        return labels[key] + ': ' + d.grade + '등급' + (d.feedback ? ' / ' + d.feedback.slice(0, 40) : '');
+      });
+
+      const userMsg = '학생 이름: ' + name + '\n활동 결과:\n' + lines.join('\n');
+
+      try {
+        const text = await callClaudeAPI('summary', userMsg, 'text');
+        summaryEl.textContent = text;
+      } catch (e) {
+        summaryEl.textContent = '지금까지 정말 열심히 했어! 🎉 미디어를 볼 때 한 번 더 생각하는 습관이 생겼길 바라 😊';
+      }
+    }
+
+    function drawRadarChart(canvas, scores) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const r  = 100;
+      const n  = 5;
+      const labels = ['클릭베이트\n탐지', '편향성\n분석', '광고\n식별', '허위정보\n탐지', '비판적\n표현'];
+      const keys   = ['youtube', 'news', 'ad', 'ai', 'cardnews'];
+
+      function ang(i) { return (Math.PI * 2 * i) / n - Math.PI / 2; }
+
+      // 배경 격자
+      [50, 65, 85].forEach(level => {
+        ctx.beginPath();
+        const ratio = level / 100;
+        for (let i = 0; i < n; i++) {
+          const x = cx + r * ratio * Math.cos(ang(i));
+          const y = cy + r * ratio * Math.sin(ang(i));
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = '#D4C9B8';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+
+      // 중심선
+      for (let i = 0; i < n; i++) {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + r * Math.cos(ang(i)), cy + r * Math.sin(ang(i)));
+        ctx.strokeStyle = '#D4C9B8';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // 학생 점수 다각형
+      ctx.beginPath();
+      keys.forEach((key, i) => {
+        const ratio = (scores[key] || 0) / 100;
+        const x = cx + r * ratio * Math.cos(ang(i));
+        const y = cy + r * ratio * Math.sin(ang(i));
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(78, 205, 196, 0.35)';
+      ctx.fill();
+      ctx.strokeStyle = '#4ECDC4';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // 꼭짓점 점
+      keys.forEach((key, i) => {
+        const score = scores[key] || 0;
+        const ratio = score / 100;
+        const x = cx + r * ratio * Math.cos(ang(i));
+        const y = cy + r * ratio * Math.sin(ang(i));
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = score > 0 ? '#4ECDC4' : '#CCCCCC';
+        ctx.fill();
+      });
+
+      // 라벨
+      ctx.font = 'bold 11px Noto Sans KR';
+      ctx.fillStyle = '#2D2D2D';
+      ctx.textAlign = 'center';
+      labels.forEach((label, i) => {
+        const labelR = r + 30;
+        const x = cx + labelR * Math.cos(ang(i));
+        const y = cy + labelR * Math.sin(ang(i));
+        label.split('\n').forEach((line, li) => {
+          ctx.fillText(line, x, y + li * 14);
+        });
+      });
+    }
+
+    function resetApp() {
+      Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
+      showScreen('screen-start');
+    }
+
+    /* ============================
+       앱 초기화
+    ============================ */
+    function init() {
+      const savedName = getName();
+
+      if (savedName) {
+        updateHomeScreen();
+        showScreen('screen-home');
+      } else {
+        showScreen('screen-start');
+      }
+
+      const offlineBanner = document.getElementById('offline-banner');
+      window.addEventListener('offline', () => { offlineBanner.style.display = 'block'; });
+      window.addEventListener('online',  () => { offlineBanner.style.display = 'none'; });
+      if (!navigator.onLine) offlineBanner.style.display = 'block';
+    }
+
+    init();
+  </script>
+</body>
+</html>
