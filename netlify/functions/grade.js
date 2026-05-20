@@ -112,24 +112,19 @@ const RUBRICS = {
 exports.handler = async (event) => {
   const allowedOrigin = process.env.ALLOWED_ORIGIN || '';
   const requestOrigin = event.headers.origin || event.headers.Origin || '';
-  const responseOrigin = allowedOrigin && requestOrigin === allowedOrigin ? requestOrigin : '';
+  const originOk = !allowedOrigin || requestOrigin === allowedOrigin;
+  const corsOrigin = originOk ? (requestOrigin || '*') : '';
   const corsHeaders = {
+    'Access-Control-Allow-Origin': corsOrigin || '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Content-Type': 'application/json',
   };
-  if (responseOrigin) {
-    corsHeaders['Access-Control-Allow-Origin'] = responseOrigin;
-  }
 
   if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: responseOrigin ? 200 : 403,
-      headers: corsHeaders,
-      body: '',
-    };
+    return { statusCode: 200, headers: corsHeaders, body: '' };
   }
 
-  if (allowedOrigin && requestOrigin !== allowedOrigin) {
+  if (!originOk) {
     return { statusCode: 403, headers: corsHeaders, body: JSON.stringify({ error: 'Origin not allowed' }) };
   }
 
