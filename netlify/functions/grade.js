@@ -4,7 +4,7 @@
 
 const https = require('https');
 
-const MODEL       = 'claude-sonnet-4-20250514';
+const MODEL       = 'claude-sonnet-4-5';
 const TEMPERATURE = 0;
 const MAX_ANSWER_LENGTH = 1000;
 const ALLOWED_IDS = ['youtube', 'news', 'ad', 'ai', 'cardnews', 'summary'];
@@ -210,6 +210,7 @@ function callClaude(apiKey, body) {
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
         if (res.statusCode !== 200) {
+          console.error('[MIRI] Claude API status:', res.statusCode, '| body:', data);
           reject(new Error('Claude API error ' + res.statusCode));
         } else {
           resolve(JSON.parse(data));
