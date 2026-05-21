@@ -179,7 +179,9 @@ exports.handler = async (event) => {
 
   try {
     const claudeRes = await callClaude(apiKey, reqBody);
-    const text = claudeRes.content[0].text.trim();
+    let text = claudeRes.content[0].text.trim();
+    // 모델이 ```json ... ``` 으로 감쌀 경우 제거
+    text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
 
     if (isSummary) {
       return { statusCode: 200, headers: corsHeaders, body: JSON.stringify({ summary: text }) };
