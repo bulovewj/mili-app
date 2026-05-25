@@ -733,8 +733,8 @@
 
     .yt-thumb {
       border-radius: 8px;
-      height: 170px;
       width: 100%;
+      aspect-ratio: 16 / 9;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -742,6 +742,7 @@
       position: relative;
       overflow: hidden;
       transition: outline 0.15s;
+      background: #000;
     }
 
     .yt-video-item.selected .yt-thumb {
@@ -2125,6 +2126,7 @@
       // explanation이 있으면 개념 설명 박스 표시
       if (q.explanation) {
         const expBox = document.createElement('div');
+        expBox.id = 'quiz-explanation-box';
         expBox.style.cssText = 'background:#FFFBEB;border:1.5px solid #FFD700;border-radius:12px;padding:14px 16px;margin-bottom:12px;font-size:14px;color:var(--color-text);line-height:1.7;white-space:pre-line;';
         expBox.textContent = q.explanation;
         fb.insertAdjacentElement('afterend', expBox);
@@ -2140,12 +2142,9 @@
 
       // 피드백/설명 박스 제거
       const fb = document.getElementById('quiz-feedback-box');
-      if (fb) {
-        // explanation 박스도 같이 제거 (다음 형제 노드)
-        const next = fb.nextElementSibling;
-        if (next && next.style.background && next.style.background.includes('FFFBEB')) next.remove();
-        fb.remove();
-      }
+      const expBox = document.getElementById('quiz-explanation-box');
+      if (expBox) expBox.remove();
+      if (fb) fb.remove();
 
       if (currentQ < QUIZ_QUESTIONS.length) {
         renderQuestion(currentQ);
@@ -2419,7 +2418,7 @@
       {
         id: 'C',
         img: 'contents/youtube3.png',
-        title: '여러분!! 교실에서 스마트폰 써도 됩니다!! (선생님들 이거 보세요🔥)',
+        title: '⚡무조건 시청!! 교실 스마트폰 전면 허용?! 안보면 손해!! 🔥 (충격 실화)',
         channel: '어린이크리에이터_뚜뚜',
         views: '1,204만회',
         badge: null,
@@ -2434,7 +2433,7 @@
       feed.innerHTML = ytShuffled.map(t => `
         <div class="yt-video-item" id="yt-item-${t.id}" onclick="selectYoutubeThumb('${t.id}')">
           <div class="yt-thumb" style="position:relative;overflow:hidden;">
-            <img src="${t.img}" style="width:100%;height:100%;object-fit:cover;display:block;" alt="${t.title}">
+            <img src="${t.img}" style="width:100%;height:100%;object-fit:contain;display:block;" alt="${t.title}">
             ${t.badge ? `<div style="position:absolute;top:8px;left:8px;background:${t.badge.bg};color:${t.badge.color};font-size:11px;font-weight:900;padding:3px 8px;border-radius:4px;">${t.badge.text}</div>` : ''}
             <div class="yt-check-badge">✓</div>
           </div>
