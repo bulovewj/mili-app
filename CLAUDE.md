@@ -127,7 +127,7 @@ const STORAGE_KEYS = {
 
 ### 4-5. Claude API 규칙
 
-> API 보안 규칙은 반드시 `security.md`를 최우선으로 따른다.
+> API 보안 규칙은 반드시 `miri_app_instructions.md` 섹션 9를 따른다.
 > 실제 API 키는 `index.html` 또는 브라우저 코드에 절대 넣지 않는다.
 
 ```javascript

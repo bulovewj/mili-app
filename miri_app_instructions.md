@@ -1,6 +1,11 @@
 # 미리(MIRI) 앱 개발 지시서
 > 초등 비판적 미디어 리터러시 역량 개발 AI 기반 교육 앱  
-> Claude Code 전달용 완전 명세서
+> Claude Code / Claude Chat 전달용 완전 명세서
+
+> **현재 상태 (v1.0.0)**: 배포 완료  
+> Netlify: `https://shimmering-biscochitos-0d662a.netlify.app`  
+> GitHub: `https://github.com/bulovewj/mili-app`  
+> 서버리스 함수: `netlify/functions/grade.js` (Claude API 프록시)
 
 ---
 
@@ -305,9 +310,9 @@
 **Claude API 연동 명세**:
 
 ```
-model: claude-sonnet-4-20250514
+model: claude-sonnet-4-5
 temperature: 0
-max_tokens: 1000
+max_tokens: 300 (채점 활동) / 400 (종합 피드백)
 ```
 
 **시스템 프롬프트 (활동별 루브릭 삽입)**:
@@ -374,10 +379,10 @@ AI 탐정:
 - "홈으로 돌아가기" 버튼 (활동 완료 처리 후 이동)
 
 **API 키 처리**:
-- `security.md`를 최우선으로 따른다.
-- HTML, CSS, JS, localStorage, sessionStorage에 실제 API 키를 절대 넣지 않는다.
+- `index.html` 또는 브라우저 접근 가능한 어떤 위치에도 실제 API 키를 절대 넣지 않는다.
 - 실제 API 키는 Netlify 환경변수 `ANTHROPIC_API_KEY`에만 저장한다.
 - 브라우저는 `/.netlify/functions/grade` 서버리스 함수만 호출한다.
+- 서버리스 함수(`grade.js`)가 루브릭 시스템 프롬프트를 보관하고 Claude API를 호출한다.
 - API 호출 실패 시: "AI 선생님이 잠깐 바빠요! 잠시 후 다시 시도해줘 😊" 안내
 
 ---
@@ -467,7 +472,7 @@ const summaryPrompt = `
 
 1. **단일 파일**: 모든 HTML, CSS, JS를 index.html 1개에 구현
 2. **외부 의존성 최소화**: CDN은 구글 폰트만 허용, 나머지는 순수 JS
-3. **API 키**: `security.md`를 최우선으로 따르며, 실제 키는 Netlify 환경변수 `ANTHROPIC_API_KEY`에만 저장
+3. **API 키**: 실제 키는 Netlify 환경변수 `ANTHROPIC_API_KEY`에만 저장, 브라우저 코드에 절대 포함 금지
 4. **오프라인 대응**: API 호출 실패 시 앱이 멈추지 않고 에러 메시지만 표시
 5. **모바일 최적화**: viewport meta 태그 필수, 터치 이벤트 처리, 스크롤 자연스럽게
 6. **한국어 전용**: 모든 텍스트, 안내문, 버튼 한국어로
@@ -476,15 +481,79 @@ const summaryPrompt = `
 
 ---
 
-## 8. 파일 구조
+## 8. 파일 구조 (v1.0.0 현재)
 
 ```
-index.html          ← 이 파일 1개만 완성하면 됨
+miri-app/
+├── index.html                     ← 앱 전체 (HTML + CSS + JS)
+├── CLAUDE.md                      ← Claude Code 작업 규칙
+├── miri_app_instructions.md       ← 이 파일 (앱 전체 명세서)
+├── netlify.toml                   ← Netlify 빌드 설정
+├── .env.example                   ← 환경변수 예시 (실제 키 없음)
+└── netlify/
+    └── functions/
+        └── grade.js               ← Claude API 프록시 서버리스 함수
 ```
-
-Netlify 배포 시 이 파일을 드래그앤드롭으로 업로드하면 완료.
 
 ---
 
-*본 지시서는 Claude Code에게 전달하여 앱을 구현하기 위한 완전 명세서입니다.*  
+## 9. API 보안 규칙
+
+### 핵심 원칙
+
+실제 API 키를 프론트엔드 코드에 절대 넣지 않는다.
+
+아래 위치는 모두 공개 접근 가능하므로 시크릿 보관 금지:
+- `index.html`, 인라인 JS, 번들 JS
+- `localStorage`, `sessionStorage`, URL/쿼리스트링
+- HTML 주석, 공개 Git 저장소
+
+### 보안 아키텍처
+
+```
+브라우저(index.html)
+  → POST /.netlify/functions/grade
+       { activityId, studentAnswer }
+  → netlify/functions/grade.js
+       (API 키 읽기, 루브릭 보관, Claude 호출)
+  → api.anthropic.com/v1/messages
+```
+
+브라우저 코드에서 `https://api.anthropic.com`을 직접 호출하는 패턴은 절대 사용 금지.
+
+### 서버리스 함수 필수 검증 항목
+
+```javascript
+// grade.js 에서 반드시 검증
+- activityId 허용 목록: ['youtube', 'news', 'ad', 'ai', 'cardnews', 'summary']
+- studentAnswer 길이 제한: 최대 1000자
+- 빈 답변 거부
+- 모델명 서버 고정: claude-sonnet-4-5
+- max_tokens 서버 고정: 채점 300, 요약 400
+- temperature 서버 고정: 0
+```
+
+### 환경변수 설정 (Netlify)
+
+```
+ANTHROPIC_API_KEY=sk-ant-...   ← Netlify 대시보드에만 입력, 코드에 절대 금지
+ALLOWED_ORIGIN=https://shimmering-biscochitos-0d662a.netlify.app
+```
+
+### API 키가 노출된 경우
+
+1. 즉시 Anthropic 대시보드에서 해당 키 폐기
+2. 새 키 발급 → Netlify 환경변수에만 저장
+3. 노출된 키가 포함된 커밋 히스토리 정리
+4. 사용 로그 확인
+
+### 학생 데이터 프라이버시
+
+- Claude API에는 답변 텍스트만 전송 (이름 포함 금지)
+- 채점 결과는 localStorage에만 저장 (서버 전송 없음)
+- 서버 프로덕션 로그에 학생 답변 내용 기록 금지
+
+---
+
+*본 명세서는 Claude Code/Claude Chat에게 전달하여 앱을 구현·수정하기 위한 완전 명세서입니다.*  
 *설계안 원본: 김원진, 부산대학교 AI융합교육전공 석사과정*
