@@ -1518,18 +1518,35 @@
       <div id="news-q1-feedback" style="display:none"></div>
     </div>
 
-    <!-- Q2 서술형 (Q1 정답 후 표시) -->
+    <!-- Q2 선택형 (Q1 정답 후 표시) -->
     <div id="news-q2-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q2. 두 기사에서 기자의 의견이 드러난 부분을 각각 찾아 적어봐!</div>
-      <div style="font-size:14px;color:var(--color-text-sub);margin-bottom:12px;">💡 힌트: "~해야 한다", "~우려된다" 같은 표현을 찾아봐!</div>
-      <textarea id="news-q2" class="answer-textarea" placeholder="(최소 15자 이상 입력)" oninput="checkNewsBtn()"></textarea>
-      <div id="news-q2-counter" class="char-counter">0 / 15자 이상</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:12px;">Q2. 두 기사에서 의견이 드러난 문장을 각각 골라봐!</div>
+
+      <!-- 기사 A -->
+      <div style="font-size:14px;font-weight:700;color:#4488FF;margin-bottom:8px;">🔵 기사 A — 디지털교육신문</div>
+      <div id="news-q2a-choices" class="choices-list">
+        <button class="choice-btn" onclick="selectNewsQ2A(0)"><span class="choice-num">①</span><span>초등학생의 74%가 AI 검색 덕분에 공부할 때 막히는 부분을 빠르게 해결할 수 있다고 응답했다.</span></button>
+        <button class="choice-btn" onclick="selectNewsQ2A(1)"><span class="choice-num">②</span><span>교사들도 학생들이 스스로 궁금증을 해결하려는 시도가 늘었다고 밝혔다.</span></button>
+        <button class="choice-btn" onclick="selectNewsQ2A(2)"><span class="choice-num">③</span><span>이를 적극 활용하도록 돕는 것이 교육의 방향이 되어야 한다.</span></button>
+      </div>
+      <div id="news-q2a-feedback" style="display:none;margin-bottom:4px;"></div>
+
+      <!-- 기사 B -->
+      <div style="margin-top:16px;">
+        <div style="font-size:14px;font-weight:700;color:#FF4444;margin-bottom:8px;">🔴 기사 B — 책사랑뉴스</div>
+        <div id="news-q2b-choices" class="choices-list">
+          <button class="choice-btn" onclick="selectNewsQ2B(0)"><span class="choice-num">①</span><span>전국 초등학교 도서관 이용률이 3년 새 41% 감소한 것으로 나타났다.</span></button>
+          <button class="choice-btn" onclick="selectNewsQ2B(1)"><span class="choice-num">②</span><span>예전엔 쉬는 시간마다 아이들로 북적였는데 요즘은 하루 종일 손님이 없는 날도 있다.</span></button>
+          <button class="choice-btn" onclick="selectNewsQ2B(2)"><span class="choice-num">③</span><span>책을 통해 스스로 생각하는 힘을 잃어가고 있는 것은 아닌지 깊이 우려된다.</span></button>
+        </div>
+        <div id="news-q2b-feedback" style="display:none;"></div>
+      </div>
     </div>
 
     <!-- Q3 서술형 (Q2 입력 중 표시) -->
     <div id="news-q3-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
       <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 같은 '기사'라는 매체인데 왜 두 기사의 관점이 서로 다를까?</div>
-      <div style="font-size:14px;color:var(--color-text-sub);margin-bottom:12px;">💡 힌트: 기사를 쓴 사람의 의도나 관점이 포함되기 때문이야!</div>
+      <div style="font-size:14px;color:var(--color-text-sub);margin-bottom:12px;">💡 기사를 쓴 사람은 모두 같은 생각을 가지고 있을까요?</div>
       <textarea id="news-q3" class="answer-textarea" placeholder="(최소 15자 이상 입력)" oninput="checkNewsBtn()"></textarea>
       <div id="news-q3-counter" class="char-counter">0 / 15자 이상</div>
       <button id="news-submit-btn" class="btn-submit" style="margin-top:16px" disabled onclick="submitNews()">탐정 보고서 제출하기! 🕵️</button>
@@ -1634,7 +1651,7 @@
 
     <!-- Q3 서술형 (Q2 정답 후 표시) -->
     <div id="ad-q3-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 게시물 C처럼 광고인 것을 교묘히 숨긴 광고를 '뒷광고'라고 해. 이런 광고에는 어떤 문제가 있을 수 있을까?</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 광고인지 드러내지 않았지만 사실 제품을 광고하는 것을 '뒷광고'라고 해. 이런 뒷광고에는 어떤 문제가 생길 수 있을까?</div>
       <textarea id="ad-q3" class="answer-textarea" placeholder="(최소 10자 이상 입력)" oninput="checkAdBtn()"></textarea>
       <div id="ad-q3-counter" class="char-counter">0 / 10자 이상</div>
       <button id="ad-submit-btn" class="btn-submit" style="margin-top:16px" disabled onclick="submitAd()">탐정 보고서 제출하기! 🕵️</button>
@@ -1662,30 +1679,31 @@
       </div>
       <div class="kakao-chat">
 
-        <!-- 민준 메시지 1 -->
-        <div class="chat-row">
-          <div class="chat-avatar" style="background:#FF8C42">민</div>
-          <div class="chat-content">
-            <div class="chat-name-time">민준 &nbsp;오후 2:14</div>
-            <div class="chat-bubble">얘들아 내일 학교 안 온대!<br>태풍 온다고</div>
-          </div>
-        </div>
 
         <!-- 수아 메시지 -->
         <div class="chat-row">
           <div class="chat-avatar" style="background:#27AE60">수</div>
           <div class="chat-content">
             <div class="chat-name-time">수아 &nbsp;오후 2:14</div>
-            <div class="chat-bubble">진짜? 어디서 봤어?</div>
+            <div class="chat-bubble">얘들아 내일 태풍 엄청 온다는데<br>혹시 학교 못가는 거 아냐?</div>
           </div>
         </div>
 
-        <!-- 민준 메시지 2 -->
+        <!-- 민준 메시지 -->
         <div class="chat-row">
-          <div class="chat-avatar" style="background:#FF8C42">민</div>
+          <div class="chat-avatar" style="background:#4488FF">민</div>
           <div class="chat-content">
-            <div class="chat-name-time">민준 &nbsp;오후 2:15</div>
-            <div class="chat-bubble">인스타에서 봤어 ㅋㅋ<br>공유 엄청 됐던데</div>
+            <div class="chat-name-time">민준 &nbsp;오후 2:14</div>
+            <div class="chat-bubble">에이 설마ㅋㅋ<br>아직 뉴스나 선생님 말씀이 없었는데?</div>
+          </div>
+        </div>
+
+        <!-- 다예 메시지 -->
+        <div class="chat-row">
+          <div class="chat-avatar" style="background:#E6B800">다</div>
+          <div class="chat-content">
+            <div class="chat-name-time">다예 &nbsp;오후 2:15</div>
+            <div class="chat-bubble">인스타에서는 본 것 같기도 한데..</div>
           </div>
         </div>
 
@@ -1696,8 +1714,7 @@
             <div class="chat-name-time">지호 &nbsp;오후 2:15</div>
             <div class="chat-bubble suspicious">
               🚨속보🚨<br>
-              내일 전국 모든 학교 휴교!!<br>
-              학교 안 가도 됨
+              여기서 학교 안간대! 내일 논다!!
               <div class="fake-news-card">
                 📰 &nbsp;<strong>긴급 공지</strong><br>
                 <span style="color:#999">출처: 알 수 없음...</span><br>
@@ -1712,7 +1729,7 @@
           <div class="chat-avatar" style="background:#F1C40F;color:#3C1E1E">하</div>
           <div class="chat-content">
             <div class="chat-name-time">하은 &nbsp;오후 2:16</div>
-            <div class="chat-bubble">와 진짜? 신난다!! 😆</div>
+            <div class="chat-bubble">이거 제대로 된 정보 맞아?</div>
           </div>
         </div>
 
@@ -1721,24 +1738,24 @@
 
     <!-- Q1 객관식 -->
     <div id="ai-q1-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q1. 단톡방에서 가짜 정보일 가능성이 가장 높은 메시지는?</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q1. '속보'라고 올린 지호가 잘못한 점은 무엇일까요?</div>
       <div id="ai-q1-choices" class="choices-list">
-        <button class="choice-btn" onclick="selectAiQ1(0)"><span class="choice-num">①</span><span>민준: "얘들아 내일 학교 안 온대! 태풍 온다고"</span></button>
-        <button class="choice-btn" onclick="selectAiQ1(1)"><span class="choice-num">②</span><span>수아: "진짜? 어디서 봤어?"</span></button>
-        <button class="choice-btn" onclick="selectAiQ1(2)"><span class="choice-num">③</span><span>지호: "🚨속보🚨 내일 전국 모든 학교 휴교!! 학교 안 가도 됨"</span></button>
-        <button class="choice-btn" onclick="selectAiQ1(3)"><span class="choice-num">④</span><span>하은: "와 진짜? 신난다!!"</span></button>
+        <button class="choice-btn" onclick="selectAiQ1(0)"><span class="choice-num">①</span><span>확인되지 않은 정보를 '속보'라며 사실처럼 퍼뜨렸다</span></button>
+        <button class="choice-btn" onclick="selectAiQ1(1)"><span class="choice-num">②</span><span>태풍 소식을 처음으로 단톡방에 꺼냈다</span></button>
+        <button class="choice-btn" onclick="selectAiQ1(2)"><span class="choice-num">③</span><span>내일 학교에 가기 싫어서 가짜 정보를 만들었다</span></button>
+        <button class="choice-btn" onclick="selectAiQ1(3)"><span class="choice-num">④</span><span>친구들에게 학교 소식을 빠르게 알려주려 했다</span></button>
       </div>
       <div id="ai-q1-feedback" style="display:none"></div>
     </div>
 
     <!-- Q2 객관식 (Q1 정답 후 표시) -->
     <div id="ai-q2-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q2. 지호의 메시지를 의심해야 하는 이유로 옳지 않은 것은?</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q2. 지호의 '속보' 메시지를 의심해야 하는 이유로 옳지 않은 것은?</div>
       <div id="ai-q2-choices" class="choices-list">
-        <button class="choice-btn" onclick="selectAiQ2(0)"><span class="choice-num">①</span><span>출처가 불명확한 사진이 첨부되어 있다</span></button>
-        <button class="choice-btn" onclick="selectAiQ2(1)"><span class="choice-num">②</span><span>🚨 같은 자극적인 이모지로 긴급한 느낌을 준다</span></button>
-        <button class="choice-btn" onclick="selectAiQ2(2)"><span class="choice-num">③</span><span>공식 기관에서 직접 확인된 내용이다</span></button>
-        <button class="choice-btn" onclick="selectAiQ2(3)"><span class="choice-num">④</span><span>인스타에서 봤다는 불확실한 경로로 퍼진 정보다</span></button>
+        <button class="choice-btn" onclick="selectAiQ2(0)"><span class="choice-num">①</span><span>'속보'라는 자극적인 표현으로 긴급한 느낌을 준다</span></button>
+        <button class="choice-btn" onclick="selectAiQ2(1)"><span class="choice-num">②</span><span>공식 기관에서 직접 확인된 내용이다</span></button>
+        <button class="choice-btn" onclick="selectAiQ2(2)"><span class="choice-num">③</span><span>누가 처음 만든 정보인지 출처가 불분명하다</span></button>
+        <button class="choice-btn" onclick="selectAiQ2(3)"><span class="choice-num">④</span><span>뉴스나 공식 발표 없이 갑자기 올라온 정보다</span></button>
       </div>
       <div id="ai-q2-feedback" style="display:none"></div>
     </div>
@@ -2507,6 +2524,8 @@
     ============================ */
     let newsReadBoth = false;
     let newsQ1Correct = false;
+    let newsQ2ACorrect = false;
+    let newsQ2BCorrect = false;
 
     function resetNewsScreen() {
       newsReadBoth = false;
@@ -2525,9 +2544,16 @@
       });
       document.getElementById('news-q1-feedback').style.display = 'none';
       document.getElementById('news-q1-feedback').textContent = '';
-      const q2 = document.getElementById('news-q2');
+      newsQ2ACorrect = false;
+      newsQ2BCorrect = false;
+      document.querySelectorAll('#news-q2a-choices .choice-btn, #news-q2b-choices .choice-btn').forEach(b => {
+        b.classList.remove('selected'); b.disabled = false;
+      });
+      const q2afb = document.getElementById('news-q2a-feedback');
+      if (q2afb) { q2afb.style.display = 'none'; q2afb.textContent = ''; }
+      const q2bfb = document.getElementById('news-q2b-feedback');
+      if (q2bfb) { q2bfb.style.display = 'none'; q2bfb.textContent = ''; }
       const q3 = document.getElementById('news-q3');
-      if (q2) q2.value = '';
       if (q3) q3.value = '';
       checkNewsBtn();
     }
@@ -2570,46 +2596,85 @@
       }
     }
 
-    function checkNewsBtn() {
-      const q2 = document.getElementById('news-q2');
-      const q3 = document.getElementById('news-q3');
-      const q2Len = q2 ? q2.value.length : 0;
-      const q3Len = q3 ? q3.value.length : 0;
-
-      if (q2) {
-        const c2 = document.getElementById('news-q2-counter');
-        if (c2) { c2.textContent = `${q2Len} / 15자 이상`; c2.className = 'char-counter' + (q2Len >= 15 ? ' ok' : ''); }
-        // Q2 15자 이상이면 Q3 표시
-        if (q2Len >= 15 && document.getElementById('news-q3-section').style.display === 'none' && newsQ1Correct) {
-          document.getElementById('news-q3-section').style.display = 'block';
-        }
+    function selectNewsQ2A(idx) {
+      const correctIdx = 2;
+      document.querySelectorAll('#news-q2a-choices .choice-btn').forEach((b, i) => {
+        b.classList.toggle('selected', i === idx);
+        b.disabled = true;
+      });
+      newsQ2ACorrect = (idx === correctIdx);
+      const fb = document.getElementById('news-q2a-feedback');
+      fb.style.display = 'block';
+      if (newsQ2ACorrect) {
+        fb.className = 'mc-feedback-correct';
+        fb.textContent = '✅ 맞아! "~이 되어야 한다"는 기자의 의견을 나타내는 표현이야!';
+      } else {
+        fb.className = 'mc-feedback-wrong';
+        fb.textContent = '❌ 다시 생각해봐! 사실을 전달하는 문장과 기자의 생각이 담긴 문장을 구별해봐.';
+        setTimeout(() => {
+          document.querySelectorAll('#news-q2a-choices .choice-btn').forEach(b => { b.disabled = false; });
+        }, 1000);
       }
+      checkNewsBtn();
+    }
+
+    function selectNewsQ2B(idx) {
+      const correctIdx = 2;
+      document.querySelectorAll('#news-q2b-choices .choice-btn').forEach((b, i) => {
+        b.classList.toggle('selected', i === idx);
+        b.disabled = true;
+      });
+      newsQ2BCorrect = (idx === correctIdx);
+      const fb = document.getElementById('news-q2b-feedback');
+      fb.style.display = 'block';
+      if (newsQ2BCorrect) {
+        fb.className = 'mc-feedback-correct';
+        fb.textContent = '✅ 맞아! "~우려된다"는 기자의 걱정과 의견이 담긴 표현이야!';
+        setTimeout(() => {
+          if (newsQ2ACorrect) {
+            document.getElementById('news-q3-section').style.display = 'block';
+            window.scrollTo(0, document.getElementById('news-q3-section').offsetTop - 20);
+          }
+        }, 300);
+      } else {
+        fb.className = 'mc-feedback-wrong';
+        fb.textContent = '❌ 다시 생각해봐! 기자의 감정이나 걱정이 담긴 문장을 찾아봐.';
+        setTimeout(() => {
+          document.querySelectorAll('#news-q2b-choices .choice-btn').forEach(b => { b.disabled = false; });
+        }, 1000);
+      }
+      checkNewsBtn();
+    }
+
+    function checkNewsBtn() {
+      const q3 = document.getElementById('news-q3');
+      const q3Len = q3 ? q3.value.length : 0;
       if (q3) {
         const c3 = document.getElementById('news-q3-counter');
         if (c3) { c3.textContent = `${q3Len} / 15자 이상`; c3.className = 'char-counter' + (q3Len >= 15 ? ' ok' : ''); }
       }
       const submitBtn = document.getElementById('news-submit-btn');
-      if (submitBtn) submitBtn.disabled = !(newsQ1Correct && q2Len >= 15 && q3Len >= 15);
+      if (submitBtn) submitBtn.disabled = !(newsQ1Correct && newsQ2ACorrect && newsQ2BCorrect && q3Len >= 15);
     }
 
     async function submitNews() {
-      const q2 = document.getElementById('news-q2').value;
       const q3 = document.getElementById('news-q3').value;
-      const mcScore = newsQ1Correct ? 20 : 0;
+      const mcScore  = newsQ1Correct ? 20 : 0;
+      const q2Score  = (newsQ2ACorrect ? 50 : 0) + (newsQ2BCorrect ? 50 : 0);
 
       setSubmitLoading('news-submit-btn', true);
       try {
-        const res = await callClaudeAPI('news', 'Q2(의견 찾기): ' + q2 + '\nQ3(편향성 이유): ' + q3);
+        const res = await callClaudeAPI('news', q3);
         if (res.unsafe) {
           showInlineMsg('news-submit-btn', '⚠️ 다시 써줘! 좋은 말로 써줘 😊', true);
           setSubmitLoading('news-submit-btn', false);
           checkNewsBtn();
           return;
         }
-        const essayScore = res.score || 0;
-        const finalScore = Math.round(mcScore + essayScore * 0.8);
+        const q3Score   = res.score || 0;
+        const finalScore = Math.round(mcScore + q2Score * 0.4 + q3Score * 0.4);
         const pass = finalScore >= 50;
-        const saved = { mcScore, essayScore, finalScore, pass, completed: true, feedback: res.feedback };
+        const saved = { mcScore, q2Score, q3Score, finalScore, pass, completed: true, feedback: res.feedback };
         localStorage.setItem(STORAGE_KEYS.ACTIVITY_NEWS, JSON.stringify(saved));
         goToResult('news');
       } catch (e) {
@@ -2754,7 +2819,7 @@
     let aiQ2Done = false;
 
     function selectAiQ1(idx) {
-      const correctIdx = 2;
+      const correctIdx = 0;
       document.querySelectorAll('#ai-q1-choices .choice-btn').forEach((b, i) => {
         b.classList.toggle('selected', i === idx);
         b.disabled = true;
@@ -2764,11 +2829,11 @@
       if (idx === correctIdx) {
         aiQ1Done = true;
         fbEl.className = 'mc-feedback-correct';
-        fbEl.textContent = '✅ 맞아! 출처 불명확한 이미지 + 자극적인 속보 표현이 의심스러워!';
+        fbEl.textContent = '✅ 맞아! 확인하지 않은 정보를 마치 사실인 것처럼 퍼뜨리면 안 돼!';
         setTimeout(() => { document.getElementById('ai-q2-section').style.display = 'block'; window.scrollTo(0, document.getElementById('ai-q2-section').offsetTop - 20); }, 300);
       } else {
         fbEl.className = 'mc-feedback-wrong';
-        fbEl.textContent = '❌ 다시 읽어봐! 출처가 불명확하고 자극적인 메시지를 찾아봐.';
+        fbEl.textContent = '❌ 다시 생각해봐! 지호가 한 행동에서 어떤 문제가 있는지 생각해봐.';
         setTimeout(() => {
           document.querySelectorAll('#ai-q1-choices .choice-btn').forEach(b => { b.disabled = false; });
         }, 1000);
@@ -2776,7 +2841,7 @@
     }
 
     function selectAiQ2(idx) {
-      const correctIdx = 2;
+      const correctIdx = 1;
       document.querySelectorAll('#ai-q2-choices .choice-btn').forEach((b, i) => {
         b.classList.toggle('selected', i === idx);
         b.disabled = true;
