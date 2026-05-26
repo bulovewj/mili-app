@@ -3144,14 +3144,7 @@
        앱 초기화
     ============================ */
     function init() {
-      const savedName = getName();
-
-      if (savedName) {
-        updateHomeScreen();
-        showScreen('screen-home');
-      } else {
-        showScreen('screen-start');
-      }
+      showScreen('screen-start');
 
       const offlineBanner = document.getElementById('offline-banner');
       window.addEventListener('offline', () => { offlineBanner.style.display = 'block'; });
