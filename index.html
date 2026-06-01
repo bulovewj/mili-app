@@ -1165,7 +1165,10 @@
       border-radius: 12px; padding: 10px 4px;
       display: flex; flex-direction: column; align-items: center; gap: 4px;
       cursor: pointer; transition: all 0.2s; font-size: 30px;
+      touch-action: manipulation; -webkit-tap-highlight-color: rgba(0,0,0,0.08);
+      user-select: none; outline: none; font-family: 'Noto Sans KR', sans-serif;
     }
+    .cn-img-option * { pointer-events: none; }
     .cn-img-option .img-label { font-size: 12px; font-weight: 700; color: var(--color-text-sub); }
     .cn-img-option.selected { border-color: var(--color-cardnews); background: #E9F9EE; }
     .cn-input {
@@ -1818,18 +1821,18 @@
         <!-- 2. 이미지 선택 -->
         <span class="cn-form-label" style="margin-top:16px;display:block;">2️⃣ 이미지 선택</span>
         <div class="cn-img-options">
-          <div class="cn-img-option" id="cn-img-bear" onclick="selectCnImg('bear')">
+          <button type="button" class="cn-img-option" id="cn-img-bear" onclick="selectCnImg('bear')">
             <img src="contents/cardnews1.png" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" alt="북극곰">
             <span class="img-label">북극곰</span>
-          </div>
-          <div class="cn-img-option" id="cn-img-ice"  onclick="selectCnImg('ice')">
+          </button>
+          <button type="button" class="cn-img-option" id="cn-img-ice" onclick="selectCnImg('ice')">
             <img src="contents/cardnews2.png" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" alt="북극 얼음">
             <span class="img-label">북극 얼음</span>
-          </div>
-          <div class="cn-img-option" id="cn-img-earth" onclick="selectCnImg('earth')">
+          </button>
+          <button type="button" class="cn-img-option" id="cn-img-earth" onclick="selectCnImg('earth')">
             <img src="contents/cardnews3.png" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" alt="지구/환경">
             <span class="img-label">지구/환경</span>
-          </div>
+          </button>
         </div>
 
         <!-- 3. 핵심 메시지 -->
