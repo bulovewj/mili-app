@@ -466,9 +466,10 @@
     }
 
     .act-card-emoji {
-      font-size: 30px;
+      width: 44px;
+      height: 44px;
       min-width: 44px;
-      text-align: center;
+      object-fit: contain;
     }
 
     .act-card-info {
@@ -1258,18 +1259,7 @@
   ============================ -->
   <div id="screen-start" class="screen">
     <div class="logo-wrap">
-      <!-- 돋보기 + 미디어 SVG 로고 -->
-      <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="48" fill="#FFE5E5"/>
-        <!-- 돋보기 테두리 -->
-        <circle cx="43" cy="43" r="22" fill="white" stroke="#FF6B6B" stroke-width="6"/>
-        <!-- 돋보기 손잡이 -->
-        <line x1="59" y1="61" x2="76" y2="78" stroke="#FF6B6B" stroke-width="7" stroke-linecap="round"/>
-        <!-- 화면 아이콘 (미디어) -->
-        <rect x="32" y="35" width="22" height="16" rx="3" fill="#FF6B6B" opacity="0.15"/>
-        <!-- 재생 삼각형 -->
-        <polygon points="38,38 38,50 52,44" fill="#FF6B6B"/>
-      </svg>
+      <img src="icons/ui/icon_logo.png" class="logo-svg" alt="미리 로고">
       <div>
         <div class="app-title">미리(MIRI)</div>
         <div class="app-subtitle">미디어를 똑똑하게 읽는 탐정 🔍</div>
@@ -1305,23 +1295,23 @@
 
     <div class="intro-activities">
       <div class="act-icon-item">
-        <div class="act-icon-circle" style="background:#FFE5E5">📺</div>
+        <div class="act-icon-circle" style="background:#FFE5E5"><img src="icons/activity/icon_youtube.png" style="width:32px;height:32px;object-fit:contain;" alt="유튜브탐정"></div>
         <div class="act-icon-label">유튜브<br>탐정</div>
       </div>
       <div class="act-icon-item">
-        <div class="act-icon-circle" style="background:#E5EEFF">📰</div>
+        <div class="act-icon-circle" style="background:#E5EEFF"><img src="icons/activity/icon_news.png" style="width:32px;height:32px;object-fit:contain;" alt="뉴스비교"></div>
         <div class="act-icon-label">뉴스<br>비교</div>
       </div>
       <div class="act-icon-item">
-        <div class="act-icon-circle" style="background:#FFF6E0">🔍</div>
+        <div class="act-icon-circle" style="background:#FFF6E0"><img src="icons/activity/icon_ad.png" style="width:32px;height:32px;object-fit:contain;" alt="광고탐정"></div>
         <div class="act-icon-label">광고<br>탐정</div>
       </div>
       <div class="act-icon-item">
-        <div class="act-icon-circle" style="background:#F5E8FF">🤖</div>
+        <div class="act-icon-circle" style="background:#F5E8FF"><img src="icons/activity/icon_ai.png" style="width:32px;height:32px;object-fit:contain;" alt="AI탐정"></div>
         <div class="act-icon-label">AI<br>탐정</div>
       </div>
       <div class="act-icon-item">
-        <div class="act-icon-circle" style="background:#E5FFE8">✏️</div>
+        <div class="act-icon-circle" style="background:#E5FFE8"><img src="icons/activity/icon_cardnews.png" style="width:32px;height:32px;object-fit:contain;" alt="카드뉴스"></div>
         <div class="act-icon-label">카드<br>뉴스</div>
       </div>
     </div>
@@ -1370,7 +1360,7 @@
     </div>
 
     <div id="act-card-youtube" class="activity-card" style="border-left-color:var(--color-youtube)">
-      <div class="act-card-emoji">📺</div>
+      <img src="icons/activity/icon_youtube.png" class="act-card-emoji" alt="유튜브탐정">
       <div class="act-card-info">
         <div class="act-card-title">유튜브 탐정</div>
         <div class="act-card-desc" id="desc-youtube">클릭베이트를 찾아라!</div>
@@ -1379,7 +1369,7 @@
     </div>
 
     <div id="act-card-news" class="activity-card" style="border-left-color:var(--color-news)">
-      <div class="act-card-emoji">📰</div>
+      <img src="icons/activity/icon_news.png" class="act-card-emoji" alt="뉴스비교">
       <div class="act-card-info">
         <div class="act-card-title">뉴스 비교</div>
         <div class="act-card-desc" id="desc-news">편향성을 발견하라!</div>
@@ -1388,7 +1378,7 @@
     </div>
 
     <div id="act-card-ad" class="activity-card" style="border-left-color:var(--color-ad)">
-      <div class="act-card-emoji">🔍</div>
+      <img src="icons/activity/icon_ad.png" class="act-card-emoji" alt="광고탐정">
       <div class="act-card-info">
         <div class="act-card-title">광고 탐정</div>
         <div class="act-card-desc" id="desc-ad">숨은 광고를 잡아라!</div>
@@ -1397,7 +1387,7 @@
     </div>
 
     <div id="act-card-ai" class="activity-card" style="border-left-color:var(--color-ai)">
-      <div class="act-card-emoji">🤖</div>
+      <img src="icons/activity/icon_ai.png" class="act-card-emoji" alt="AI탐정">
       <div class="act-card-info">
         <div class="act-card-title">AI 탐정</div>
         <div class="act-card-desc" id="desc-ai">가짜 정보를 탐지하라!</div>
@@ -1406,7 +1396,7 @@
     </div>
 
     <div id="act-card-cardnews" class="activity-card" style="border-left-color:var(--color-cardnews)">
-      <div class="act-card-emoji">✏️</div>
+      <img src="icons/activity/icon_cardnews.png" class="act-card-emoji" alt="카드뉴스">
       <div class="act-card-info">
         <div class="act-card-title">카드뉴스 만들기</div>
         <div class="act-card-desc" id="desc-cardnews">진짜 뉴스를 만들어라!</div>
@@ -1414,14 +1404,14 @@
       <button class="act-card-btn" style="background:var(--color-cardnews)" onclick="goToActivity('screen-cardnews')">도전!</button>
     </div>
 
-    <button id="radar-btn" class="btn-radar" disabled onclick="showRadar()">🗺️ 역량 지형도 보기</button>
+    <button id="radar-btn" class="btn-radar" disabled onclick="showRadar()"><img src="icons/ui/icon_radar.png" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;margin-right:6px;" alt=""> 역량 지형도 보기</button>
   </div>
 
   <!-- ============================
        SCREEN 6 — 유튜브 탐정
   ============================ -->
   <div id="screen-youtube" class="screen">
-    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+    <button class="back-btn" onclick="showScreen('screen-home')"><img src="icons/ui/icon_back.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 홈으로</button>
 
     <div class="mission-banner" style="background:var(--color-youtube)">
       <div class="mission-banner-title">📺 유튜브 탐정</div>
@@ -1439,7 +1429,7 @@
           <div class="yt-logo-icon"></div>
           YouTube
         </div>
-        <div class="yt-actions">🔍 🔔</div>
+        <div class="yt-actions">🔍 <img src="icons/ui/icon_bell.png" style="width:22px;height:22px;object-fit:contain;vertical-align:middle;" alt="알림"></div>
       </div>
       <div class="yt-feed" id="yt-feed">
         <!-- JS로 동적 렌더링 -->
@@ -1466,7 +1456,7 @@
        SCREEN 7 — 뉴스 비교
   ============================ -->
   <div id="screen-news" class="screen">
-    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+    <button class="back-btn" onclick="showScreen('screen-home')"><img src="icons/ui/icon_back.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 홈으로</button>
 
     <!-- 미션 배너 -->
     <div class="mission-banner" style="background: var(--color-news)">
@@ -1560,7 +1550,7 @@
        SCREEN 8 — 광고 탐정
   ============================ -->
   <div id="screen-ad" class="screen">
-    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+    <button class="back-btn" onclick="showScreen('screen-home')"><img src="icons/ui/icon_back.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 홈으로</button>
 
     <!-- 미션 배너 -->
     <div class="mission-banner" style="background: var(--color-ad); color: #2D2D2D">
@@ -1665,7 +1655,7 @@
        SCREEN 9 — AI 탐정
   ============================ -->
   <div id="screen-ai" class="screen">
-    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+    <button class="back-btn" onclick="showScreen('screen-home')"><img src="icons/ui/icon_back.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 홈으로</button>
 
     <!-- 미션 배너 -->
     <div class="mission-banner" style="background: var(--color-ai)">
@@ -1776,7 +1766,7 @@
        SCREEN 10 — 카드뉴스 만들기
   ============================ -->
   <div id="screen-cardnews" class="screen">
-    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+    <button class="back-btn" onclick="showScreen('screen-home')"><img src="icons/ui/icon_back.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 홈으로</button>
 
     <!-- 미션 배너 -->
     <div class="mission-banner" style="background: var(--color-cardnews)">
@@ -1856,7 +1846,7 @@
   <div id="screen-result" class="screen">
     <div class="result-activity-title" id="result-act-title"></div>
     <div class="result-pf-wrap">
-      <div class="result-pf-badge" id="result-pf-badge">✅ PASS</div>
+      <div class="result-pf-badge" id="result-pf-badge"></div>
       <div class="result-pf-score" id="result-pf-score">85점</div>
     </div>
     <div class="result-feedback-card">
@@ -1864,7 +1854,7 @@
       <div class="result-feedback-text" id="result-act-feedback"></div>
     </div>
     <div id="result-fail-section" style="display:none">
-      <button class="btn-secondary" onclick="retryCurrentActivity()">다시 도전하기 🔄</button>
+      <button class="btn-secondary" onclick="retryCurrentActivity()"><img src="icons/ui/icon_retry.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 다시 도전하기</button>
     </div>
     <button class="btn-primary" onclick="goHomeFromResult()">홈으로 돌아가기 🏠</button>
   </div>
@@ -1876,7 +1866,7 @@
        SCREEN 12 — 역량 지형도
   ============================ -->
   <div id="screen-radar" class="screen">
-    <button class="back-btn" onclick="showScreen('screen-home')">← 홈으로</button>
+    <button class="back-btn" onclick="showScreen('screen-home')"><img src="icons/ui/icon_back.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 홈으로</button>
 
     <div class="radar-title" id="radar-title">○○의 미디어 탐정</div>
     <div class="radar-subtitle">역량 지도! 🗺️</div>
@@ -1890,23 +1880,23 @@
     <div class="radar-result-list">
       <div class="radar-result-item">
         <span class="radar-result-name">📺 유튜브 탐정</span>
-        <span class="radar-result-grade" id="radar-grade-youtube">⬜ 미완료</span>
+        <span class="radar-result-grade" id="radar-grade-youtube"><img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 미완료</span>
       </div>
       <div class="radar-result-item">
         <span class="radar-result-name">📰 뉴스 비교</span>
-        <span class="radar-result-grade" id="radar-grade-news">⬜ 미완료</span>
+        <span class="radar-result-grade" id="radar-grade-news"><img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 미완료</span>
       </div>
       <div class="radar-result-item">
         <span class="radar-result-name">🔍 광고 탐정</span>
-        <span class="radar-result-grade" id="radar-grade-ad">⬜ 미완료</span>
+        <span class="radar-result-grade" id="radar-grade-ad"><img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 미완료</span>
       </div>
       <div class="radar-result-item">
         <span class="radar-result-name">🤖 AI 탐정</span>
-        <span class="radar-result-grade" id="radar-grade-ai">⬜ 미완료</span>
+        <span class="radar-result-grade" id="radar-grade-ai"><img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 미완료</span>
       </div>
       <div class="radar-result-item">
         <span class="radar-result-name">✏️ 카드뉴스</span>
-        <span class="radar-result-grade" id="radar-grade-cardnews">⬜ 미완료</span>
+        <span class="radar-result-grade" id="radar-grade-cardnews"><img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 미완료</span>
       </div>
     </div>
 
@@ -1997,17 +1987,17 @@
 
     const GRADE_INFO = {
       '상': {
-        emoji: '🏆',
+        imgSrc: 'icons/rank/icon_rank_gold.png',
         name: '수석 탐정',
         msg: '미디어를 꿰뚫어 보는 눈이 있구나! 5가지 미션으로 실력을 증명해봐! 💪'
       },
       '중': {
-        emoji: '🕵️',
+        imgSrc: 'icons/rank/icon_rank_silver.png',
         name: '탐정',
         msg: '미디어 정보를 꽤 잘 읽는구나! 5가지 미션으로 실력을 더 키워보자! 🌟'
       },
       '하': {
-        emoji: '🔰',
+        imgSrc: 'icons/rank/icon_rank_bronze.png',
         name: '탐정 견습생',
         msg: '걱정 마! 미리와 함께라면 미디어 탐정이 될 수 있어! 함께 시작해보자! 🚀'
       }
@@ -2191,7 +2181,7 @@
       const info = GRADE_INFO[grade];
 
       document.getElementById('result-name-title').textContent = `${name}의 미디어 탐정 레벨`;
-      document.getElementById('result-grade-emoji').textContent = info.emoji;
+      document.getElementById('result-grade-emoji').innerHTML = `<img src="${info.imgSrc}" style="width:88px;height:88px;object-fit:contain;" alt="${info.name}">`;
       document.getElementById('result-grade-name').textContent  = info.name;
       document.getElementById('result-score-chip').textContent  = `${score} / 4 정답`;
       document.getElementById('result-message').textContent     = info.msg;
@@ -2399,7 +2389,9 @@
       document.getElementById('result-act-title').textContent = meta.title;
 
       const badge = document.getElementById('result-pf-badge');
-      badge.textContent = pass ? '✅ PASS' : '❌ FAIL';
+      const pfIconSrc = pass ? 'icons/ui/icon_pass.png' : 'icons/ui/icon_fail.png';
+      const pfText = pass ? 'PASS' : 'FAIL';
+      badge.innerHTML = `<img src="${pfIconSrc}" style="width:52px;height:52px;object-fit:contain;display:block;margin:0 auto 4px;" alt="${pfText}">${pfText}`;
       badge.className = 'result-pf-badge ' + (pass ? 'pass' : 'fail');
 
       document.getElementById('result-pf-score').textContent = score + '점';
@@ -3088,11 +3080,12 @@
         activityResults[item.key] = data;
         const el = document.getElementById(item.elemId);
         if (data && data.completed) {
-          const display = data.pass ? '✅ PASS' : '❌ FAIL';
-          el.textContent = display;
+          const iconSrc = data.pass ? 'icons/ui/icon_pass.png' : 'icons/ui/icon_fail.png';
+          const pfText = data.pass ? 'PASS' : 'FAIL';
+          el.innerHTML = `<img src="${iconSrc}" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt="${pfText}"> ${pfText}`;
           el.classList.add('done');
         } else {
-          el.textContent = '⬜ 미완료';
+          el.innerHTML = '<img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt="미완료"> 미완료';
           el.classList.remove('done');
         }
       });
