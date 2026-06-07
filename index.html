@@ -1246,6 +1246,19 @@
       border-radius:10px; padding:10px 14px; margin-top:8px;
       font-size:14px; font-weight:700;
     }
+    /* 결과 화면 — 객관식 정답 확인 */
+    .result-mc-section {
+      background:white; border-radius:20px; padding:20px;
+      box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:0; margin-bottom:8px;
+    }
+    .result-mc-label { font-size:15px; font-weight:800; margin-bottom:12px; }
+    .result-mc-item { padding:10px 0; border-bottom:1px solid var(--color-border); }
+    .result-mc-item:last-child { border-bottom:none; }
+    .result-mc-q { font-size:13px; font-weight:700; color:var(--color-text); margin-bottom:4px; }
+    .result-mc-verdict { font-size:13px; font-weight:800; margin-bottom:2px; }
+    .result-mc-verdict.ok { color:#1A7A3C; }
+    .result-mc-verdict.no { color:#C0392B; }
+    .result-mc-hint { font-size:12px; color:var(--color-text-sub); line-height:1.6; }
   </style>
 </head>
 <body>
@@ -1494,13 +1507,8 @@
       <div class="news-byline">2025.05.12 &nbsp;|&nbsp; 사회팀 기자</div>
     </div>
 
-    <!-- 두 기사 모두 읽기 안내 -->
-    <div id="news-read-hint" class="news-read-hint">
-      💡 두 기사를 모두 읽은 후에<br>질문이 나타나요! 기사 B 탭도 눌러봐! 👆
-    </div>
-
-    <!-- Q1 객관식 (탭 B 클릭 후 표시) -->
-    <div id="news-q1-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
+    <!-- Q1 객관식 -->
+    <div id="news-q1-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
       <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q1. 기사에 나와 있는 내용은 모두 사실일까?</div>
       <div id="news-q1-choices" class="choices-list">
         <button class="choice-btn" onclick="selectNewsQ1(0)"><span class="choice-num">①</span><span>그렇다. 기사에 나온 내용은 모두 확인된 사실이다</span></button>
@@ -1511,8 +1519,8 @@
       <div id="news-q1-feedback" style="display:none"></div>
     </div>
 
-    <!-- Q2 선택형 (Q1 정답 후 표시) -->
-    <div id="news-q2-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
+    <!-- Q2 선택형 -->
+    <div id="news-q2-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
       <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:12px;">Q2. 두 기사에서 의견이 드러난 문장을 각각 골라봐!</div>
 
       <!-- 기사 A -->
@@ -1536,8 +1544,8 @@
       </div>
     </div>
 
-    <!-- Q3 서술형 (Q2 입력 중 표시) -->
-    <div id="news-q3-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
+    <!-- Q3 서술형 -->
+    <div id="news-q3-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
       <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 같은 '기사'라는 매체인데 왜 두 기사의 관점이 서로 다를까?</div>
       <div style="font-size:14px;color:var(--color-text-sub);margin-bottom:12px;">💡 기사를 쓴 사람은 모두 같은 생각을 가지고 있을까요?</div>
       <textarea id="news-q3" class="answer-textarea" placeholder="(최소 15자 이상 입력)" oninput="checkNewsBtn()"></textarea>
@@ -1626,12 +1634,10 @@
         </div>
       </div>
 
-      <div id="ad-q1-feedback" style="display:none;margin-top:8px;"></div>
-      <button id="ad-q1-btn" class="btn-submit" style="margin-top:12px" disabled onclick="checkAdQ1()">선택 확인하기 ✓</button>
     </div>
 
-    <!-- Q2 객관식 (Q1 정답 후 표시) -->
-    <div id="ad-q2-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
+    <!-- Q2 객관식 -->
+    <div id="ad-q2-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
       <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q2. 게시물 C는 맨 앞에 (광고)라고 적혀있는데도 광고처럼 잘 안 느껴져. 왜 그럴까?</div>
       <div id="ad-q2-choices" class="choices-list">
         <button class="choice-btn" onclick="selectAdQ2(0)"><span class="choice-num">①</span><span>실제로 광고가 아니기 때문이다</span></button>
@@ -1642,8 +1648,8 @@
       <div id="ad-q2-feedback" style="display:none"></div>
     </div>
 
-    <!-- Q3 서술형 (Q2 정답 후 표시) -->
-    <div id="ad-q3-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
+    <!-- Q3 서술형 -->
+    <div id="ad-q3-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
       <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 광고인지 드러내지 않았지만 사실 제품을 광고하는 것을 '뒷광고'라고 해. 이런 뒷광고에는 어떤 문제가 생길 수 있을까?</div>
       <textarea id="ad-q3" class="answer-textarea" placeholder="(최소 10자 이상 입력)" oninput="checkAdBtn()"></textarea>
       <div id="ad-q3-counter" class="char-counter">0 / 10자 이상</div>
@@ -1741,8 +1747,8 @@
       <div id="ai-q1-feedback" style="display:none"></div>
     </div>
 
-    <!-- Q2 객관식 (Q1 정답 후 표시) -->
-    <div id="ai-q2-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
+    <!-- Q2 객관식 -->
+    <div id="ai-q2-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
       <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q2. 지호의 '속보' 메시지를 의심해야 하는 이유로 옳지 않은 것은?</div>
       <div id="ai-q2-choices" class="choices-list">
         <button class="choice-btn" onclick="selectAiQ2(0)"><span class="choice-num">①</span><span>'속보'라는 자극적인 표현으로 긴급한 느낌을 준다</span></button>
@@ -1753,8 +1759,8 @@
       <div id="ai-q2-feedback" style="display:none"></div>
     </div>
 
-    <!-- Q3 서술형 (Q2 정답 후 표시) -->
-    <div id="ai-q3-section" style="display:none;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
+    <!-- Q3 서술형 -->
+    <div id="ai-q3-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
       <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 단톡방에서 이런 메시지를 받으면 어떻게 해야 할까?<br>내가 할 행동을 써봐!</div>
       <textarea id="ai-answer" class="answer-textarea" placeholder="(최소 10자 이상 입력)" oninput="checkAiBtn()"></textarea>
       <div id="ai-char-counter" class="char-counter">0 / 10자 이상</div>
@@ -1806,8 +1812,8 @@
       </div>
       <div id="cn-title-feedback" style="display:none;margin-bottom:12px;"></div>
 
-      <!-- 이미지 선택 (올바른 제목 선택 후 표시) -->
-      <div id="cn-rest-form" style="display:none;">
+      <!-- 이미지 선택 -->
+      <div id="cn-rest-form">
         <!-- 2. 이미지 선택 -->
         <span class="cn-form-label" style="margin-top:16px;display:block;">2️⃣ 이미지 선택</span>
         <div class="cn-img-options">
@@ -1848,6 +1854,10 @@
     <div class="result-pf-wrap">
       <div class="result-pf-badge" id="result-pf-badge"></div>
       <div class="result-pf-score" id="result-pf-score">85점</div>
+    </div>
+    <div id="result-mc-section" class="result-mc-section" style="display:none">
+      <div class="result-mc-label">📝 객관식 정답 확인</div>
+      <div id="result-mc-content"></div>
     </div>
     <div class="result-feedback-card">
       <div class="result-feedback-label">💬 AI 선생님 피드백</div>
@@ -2205,6 +2215,40 @@
       'screen-cardnews':'cardnews',
     };
 
+    const ACTIVITY_INTRO = {
+      youtube: { color:'var(--color-youtube)', icon:'📺', title:'유튜브 탐정 미션!',
+        lines:['유튜브 영상 썸네일이 3개 있어!','그 중에서 <b>클릭베이트(과장·낚시 제목)</b> 영상을 찾아봐!','','✅ 할 일:','1️⃣ 썸네일 중 1개를 선택해줘','2️⃣ 왜 클릭베이트라고 생각했는지 이유도 써줘!'] },
+      news:    { color:'var(--color-news)',    icon:'📰', title:'뉴스 비교 미션!',
+        lines:['같은 주제를 다룬 두 기사를 비교해봐!','','✅ 할 일:','1️⃣ <b>기사 A 탭, 기사 B 탭</b>을 모두 눌러 읽어봐','2️⃣ 아래 질문들에 차례로 모두 답해줘!'] },
+      ad:      { color:'var(--color-ad)', textColor:'#2D2D2D', icon:'🔍', title:'광고 탐정 미션!',
+        lines:['아래 3개 게시물 중 광고가 숨어있어!','⚠️ <b>복수 선택 가능</b> — 광고 게시물이 2개야!','','✅ 할 일:','1️⃣ 광고 게시물을 <b>모두</b> 선택해줘 (2개!)','2️⃣ 아래 질문들에도 모두 답해줘!'] },
+      ai:      { color:'var(--color-ai)',      icon:'🤖', title:'AI 탐정 미션!',
+        lines:['단톡방에 <b>의심스러운 메시지</b>가 올라왔어!','','✅ 할 일:','1️⃣ 대화 내용을 읽어봐','2️⃣ 객관식 질문 2개에 답해줘','3️⃣ 내가 직접 어떻게 할지도 써줘!'] },
+      cardnews:{ color:'var(--color-cardnews)',icon:'✏️', title:'카드뉴스 만들기 미션!',
+        lines:['자료를 읽고 카드뉴스를 직접 만들어봐!','','✅ 할 일:','1️⃣ 클릭베이트 없는 <b>제목</b>을 선택해줘','2️⃣ 이미지를 고르고 이유를 써줘','3️⃣ 핵심 메시지도 작성해줘!'] },
+    };
+
+    function showActivityIntroModal(actId) {
+      const intro = ACTIVITY_INTRO[actId];
+      if (!intro) return;
+      const existing = document.getElementById('activity-intro-modal');
+      if (existing) existing.remove();
+      const modal = document.createElement('div');
+      modal.id = 'activity-intro-modal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:flex-end;justify-content:center;z-index:1000;';
+      const bodyHtml = intro.lines.map(l => l ? `<div>${l}</div>` : '<div style="height:6px;"></div>').join('');
+      const tc = intro.textColor || 'white';
+      modal.innerHTML = `
+        <div style="background:white;border-radius:24px 24px 0 0;padding:28px 24px 44px;max-width:480px;width:100%;">
+          <div style="font-size:36px;text-align:center;margin-bottom:8px;">${intro.icon}</div>
+          <div style="font-size:19px;font-weight:900;text-align:center;margin-bottom:14px;color:var(--color-text);">${intro.title}</div>
+          <div style="background:#FFF9F0;border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.9;color:var(--color-text);margin-bottom:20px;">${bodyHtml}</div>
+          <button id="intro-confirm-btn" style="width:100%;height:56px;border-radius:16px;border:none;background:${intro.color};color:${tc};font-size:17px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">확인했어요! ✅</button>
+        </div>`;
+      document.body.appendChild(modal);
+      document.getElementById('intro-confirm-btn').addEventListener('click', function() { modal.remove(); });
+    }
+
     function goToActivity(screenId) {
       const actId = SCREEN_TO_ACTIVITY[screenId];
       if (actId) {
@@ -2220,6 +2264,7 @@
       if (screenId === 'screen-ai')       resetAiScreen();
       if (screenId === 'screen-cardnews') resetCardnewsScreen();
       showScreen(screenId);
+      if (actId) showActivityIntroModal(actId);
     }
 
     function showActivityChoiceModal(actId, screenId) {
@@ -2380,23 +2425,38 @@
 
     function goToResult(activityId) {
       currentActivity = activityId;
-      const meta = ACTIVITY_META[activityId];
-      const data = getActivity(ACTIVITY_STORAGE_MAP[activityId]);
-      const pass = data && data.pass;
-      const score = (data && data.finalScore) ? data.finalScore : 0;
-      const feedback = (data && data.feedback) ? data.feedback : 'AI 선생님 피드백을 불러오고 있어요...';
+      const meta     = ACTIVITY_META[activityId];
+      const data     = getActivity(ACTIVITY_STORAGE_MAP[activityId]);
+      const pass     = data && data.pass;
+      const score    = (data && data.finalScore) ? data.finalScore : 0;
+      const feedback = (data && data.feedback)   ? data.feedback   : 'AI 선생님 피드백을 불러오고 있어요...';
 
       document.getElementById('result-act-title').textContent = meta.title;
 
-      const badge = document.getElementById('result-pf-badge');
+      const badge     = document.getElementById('result-pf-badge');
       const pfIconSrc = pass ? 'icons/ui/icon_pass.png' : 'icons/ui/icon_fail.png';
-      const pfText = pass ? 'PASS' : 'FAIL';
+      const pfText    = pass ? 'PASS' : 'FAIL';
       badge.innerHTML = `<img src="${pfIconSrc}" style="width:52px;height:52px;object-fit:contain;display:block;margin:0 auto 4px;" alt="${pfText}">${pfText}`;
       badge.className = 'result-pf-badge ' + (pass ? 'pass' : 'fail');
 
       document.getElementById('result-pf-score').textContent = score + '점';
       document.getElementById('result-act-feedback').textContent = feedback;
       document.getElementById('result-fail-section').style.display = pass ? 'none' : 'block';
+
+      // 객관식 정답 확인 섹션
+      const mcSection = document.getElementById('result-mc-section');
+      const mcContent = document.getElementById('result-mc-content');
+      if (data && data.mcDetails && data.mcDetails.length > 0) {
+        mcContent.innerHTML = data.mcDetails.map(item => `
+          <div class="result-mc-item">
+            <div class="result-mc-q">${item.q}</div>
+            <div class="result-mc-verdict ${item.correct ? 'ok' : 'no'}">${item.correct ? '✅ 정답!' : '❌ 틀렸어!'}</div>
+            <div class="result-mc-hint">${item.why}</div>
+          </div>`).join('');
+        mcSection.style.display = 'block';
+      } else {
+        mcSection.style.display = 'none';
+      }
 
       showScreen('screen-result');
     }
@@ -2487,10 +2547,15 @@
     }
 
     async function submitYoutube() {
-      const answer = document.getElementById('yt-answer').value;
+      const answer    = document.getElementById('yt-answer').value;
       const thumbData = ytShuffled.find(t => t.id === ytSelectedThumb);
       const isCorrect = thumbData ? thumbData.isClickbait : false;
-      const mcScore = isCorrect ? 30 : 0;
+      const mcScore   = isCorrect ? 30 : 0;
+      const mcDetails = [
+        { q: '클릭베이트 썸네일 선택', correct: isCorrect,
+          why: isCorrect ? '정확해! C번 영상이 클릭베이트야. "무조건 시청!!", "충격 실화" 같은 과장된 표현을 잘 찾았어!'
+                         : '아직이야. 정답은 C번 "⚡무조건 시청!! 교실 스마트폰 전면 허용?! 안보면 손해!! 🔥 (충격 실화)"야. 이런 과장된 표현이 클릭베이트야.' },
+      ];
 
       setSubmitLoading('yt-submit-btn', true);
       try {
@@ -2503,9 +2568,8 @@
         }
         const essayScore = res.score || 0;
         const finalScore = Math.round(mcScore + essayScore * 0.7);
-        const pass = finalScore >= 50;
-        const saved = { mcScore, essayScore, finalScore, pass, completed: true, feedback: res.feedback };
-        localStorage.setItem(STORAGE_KEYS.ACTIVITY_YOUTUBE, JSON.stringify(saved));
+        const pass       = finalScore >= 50;
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_YOUTUBE, JSON.stringify({ mcScore, essayScore, finalScore, pass, completed: true, feedback: res.feedback, mcDetails }));
         goToResult('youtube');
       } catch (e) {
         showInlineMsg('yt-submit-btn', getSubmitErrorMsg(e), true);
@@ -2517,33 +2581,23 @@
     /* ============================
        SCREEN 7 — 뉴스 비교
     ============================ */
-    let newsReadBoth = false;
-    let newsQ1Correct = false;
-    let newsQ2ACorrect = false;
-    let newsQ2BCorrect = false;
+    let newsQ1Selected = null;
+    let newsQ2ASelected = null;
+    let newsQ2BSelected = null;
 
     function resetNewsScreen() {
-      newsReadBoth = false;
-      newsQ1Correct = false;
+      newsQ1Selected = null;
+      newsQ2ASelected = null;
+      newsQ2BSelected = null;
       document.getElementById('news-tab-a').classList.add('active');
       document.getElementById('news-tab-b').classList.remove('active');
       document.getElementById('news-article-a').style.display = 'block';
       document.getElementById('news-article-b').style.display = 'none';
-      document.getElementById('news-read-hint').style.display = 'block';
-      document.getElementById('news-q1-section').style.display = 'none';
-      document.getElementById('news-q2-section').style.display = 'none';
-      document.getElementById('news-q3-section').style.display = 'none';
-      // Q1 선택지 초기화
-      document.querySelectorAll('#news-q1-choices .choice-btn').forEach(b => {
-        b.classList.remove('selected'); b.disabled = false;
-      });
-      document.getElementById('news-q1-feedback').style.display = 'none';
-      document.getElementById('news-q1-feedback').textContent = '';
-      newsQ2ACorrect = false;
-      newsQ2BCorrect = false;
-      document.querySelectorAll('#news-q2a-choices .choice-btn, #news-q2b-choices .choice-btn').forEach(b => {
-        b.classList.remove('selected'); b.disabled = false;
-      });
+      document.querySelectorAll('#news-q1-choices .choice-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
+      document.querySelectorAll('#news-q2a-choices .choice-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
+      document.querySelectorAll('#news-q2b-choices .choice-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
+      const q1fb = document.getElementById('news-q1-feedback');
+      if (q1fb) { q1fb.style.display = 'none'; q1fb.textContent = ''; }
       const q2afb = document.getElementById('news-q2a-feedback');
       if (q2afb) { q2afb.style.display = 'none'; q2afb.textContent = ''; }
       const q2bfb = document.getElementById('news-q2b-feedback');
@@ -2558,86 +2612,29 @@
       document.getElementById('news-tab-b').classList.toggle('active', tab === 'B');
       document.getElementById('news-article-a').style.display = tab === 'A' ? 'block' : 'none';
       document.getElementById('news-article-b').style.display = tab === 'B' ? 'block' : 'none';
-
-      if (tab === 'B' && !newsReadBoth) {
-        newsReadBoth = true;
-        document.getElementById('news-read-hint').style.display = 'none';
-        document.getElementById('news-q1-section').style.display = 'block';
-      }
     }
 
     function selectNewsQ1(idx) {
-      const correctIdx = 1; // index 1이 정답
+      newsQ1Selected = idx;
       document.querySelectorAll('#news-q1-choices .choice-btn').forEach((b, i) => {
         b.classList.toggle('selected', i === idx);
-        b.disabled = true;
       });
-      const fbEl = document.getElementById('news-q1-feedback');
-      fbEl.style.display = 'block';
-      if (idx === correctIdx) {
-        newsQ1Correct = true;
-        fbEl.className = 'mc-feedback-correct';
-        fbEl.textContent = '✅ 맞아! 기사에는 사실과 기자의 의견이 함께 담겨 있어. ~해야 한다, ~우려된다 같은 표현이 의견이야!';
-        // Q2 표시
-        setTimeout(() => { document.getElementById('news-q2-section').style.display = 'block'; window.scrollTo(0, document.getElementById('news-q2-section').offsetTop - 20); }, 300);
-      } else {
-        newsQ1Correct = false;
-        fbEl.className = 'mc-feedback-wrong';
-        fbEl.textContent = '❌ 다시 읽어봐! 기사 안에서 기자의 생각이 드러난 문장을 찾아봐.';
-        // 다시 선택 허용
-        setTimeout(() => {
-          document.querySelectorAll('#news-q1-choices .choice-btn').forEach(b => { b.disabled = false; });
-        }, 1000);
-      }
+      checkNewsBtn();
     }
 
     function selectNewsQ2A(idx) {
-      const correctIdx = 2;
+      newsQ2ASelected = idx;
       document.querySelectorAll('#news-q2a-choices .choice-btn').forEach((b, i) => {
         b.classList.toggle('selected', i === idx);
-        b.disabled = true;
       });
-      newsQ2ACorrect = (idx === correctIdx);
-      const fb = document.getElementById('news-q2a-feedback');
-      fb.style.display = 'block';
-      if (newsQ2ACorrect) {
-        fb.className = 'mc-feedback-correct';
-        fb.textContent = '✅ 맞아! "~이 되어야 한다"는 기자의 의견을 나타내는 표현이야!';
-      } else {
-        fb.className = 'mc-feedback-wrong';
-        fb.textContent = '❌ 다시 생각해봐! 사실을 전달하는 문장과 기자의 생각이 담긴 문장을 구별해봐.';
-        setTimeout(() => {
-          document.querySelectorAll('#news-q2a-choices .choice-btn').forEach(b => { b.disabled = false; });
-        }, 1000);
-      }
       checkNewsBtn();
     }
 
     function selectNewsQ2B(idx) {
-      const correctIdx = 2;
+      newsQ2BSelected = idx;
       document.querySelectorAll('#news-q2b-choices .choice-btn').forEach((b, i) => {
         b.classList.toggle('selected', i === idx);
-        b.disabled = true;
       });
-      newsQ2BCorrect = (idx === correctIdx);
-      const fb = document.getElementById('news-q2b-feedback');
-      fb.style.display = 'block';
-      if (newsQ2BCorrect) {
-        fb.className = 'mc-feedback-correct';
-        fb.textContent = '✅ 맞아! "~우려된다"는 기자의 걱정과 의견이 담긴 표현이야!';
-        setTimeout(() => {
-          if (newsQ2ACorrect) {
-            document.getElementById('news-q3-section').style.display = 'block';
-            window.scrollTo(0, document.getElementById('news-q3-section').offsetTop - 20);
-          }
-        }, 300);
-      } else {
-        fb.className = 'mc-feedback-wrong';
-        fb.textContent = '❌ 다시 생각해봐! 기자의 감정이나 걱정이 담긴 문장을 찾아봐.';
-        setTimeout(() => {
-          document.querySelectorAll('#news-q2b-choices .choice-btn').forEach(b => { b.disabled = false; });
-        }, 1000);
-      }
       checkNewsBtn();
     }
 
@@ -2649,13 +2646,27 @@
         if (c3) { c3.textContent = `${q3Len} / 15자 이상`; c3.className = 'char-counter' + (q3Len >= 15 ? ' ok' : ''); }
       }
       const submitBtn = document.getElementById('news-submit-btn');
-      if (submitBtn) submitBtn.disabled = !(newsQ1Correct && newsQ2ACorrect && newsQ2BCorrect && q3Len >= 15);
+      if (submitBtn) submitBtn.disabled = !(newsQ1Selected !== null && newsQ2ASelected !== null && newsQ2BSelected !== null && q3Len >= 15);
     }
 
     async function submitNews() {
       const q3 = document.getElementById('news-q3').value;
-      const mcScore  = newsQ1Correct ? 20 : 0;
-      const q2Score  = (newsQ2ACorrect ? 50 : 0) + (newsQ2BCorrect ? 50 : 0);
+      const q1Correct  = newsQ1Selected === 1;
+      const q2aCorrect = newsQ2ASelected === 2;
+      const q2bCorrect = newsQ2BSelected === 2;
+      const mcScore    = (q1Correct ? 20 : 0);
+      const q2Score    = (q2aCorrect ? 50 : 0) + (q2bCorrect ? 50 : 0);
+      const mcDetails  = [
+        { q: 'Q1. 기사 내용은 모두 사실일까?', correct: q1Correct,
+          why: q1Correct ? '맞아! 기사에는 사실과 기자의 의견이 함께 있어. "~이 되어야 한다", "~우려된다" 같은 표현이 의견이야!'
+                         : '정답은 ②번이야. 기사에는 사실과 기자의 의견이 함께 담겨 있어.' },
+        { q: 'Q2A. 기사 A에서 의견이 드러난 문장은?', correct: q2aCorrect,
+          why: q2aCorrect ? '맞아! "~이 되어야 한다"는 기자의 의견을 나타내는 표현이야!'
+                          : '정답은 ③번이야. "이를 적극 활용하도록 돕는 것이 교육의 방향이 되어야 한다"가 기자의 의견이야.' },
+        { q: 'Q2B. 기사 B에서 의견이 드러난 문장은?', correct: q2bCorrect,
+          why: q2bCorrect ? '맞아! "~우려된다"는 기자의 걱정과 의견이 담긴 표현이야!'
+                          : '정답은 ③번이야. "잃어가고 있는 것은 아닌지 깊이 우려된다"가 기자의 의견이야.' },
+      ];
 
       setSubmitLoading('news-submit-btn', true);
       try {
@@ -2666,11 +2677,10 @@
           checkNewsBtn();
           return;
         }
-        const q3Score   = res.score || 0;
+        const q3Score    = res.score || 0;
         const finalScore = Math.round(mcScore + q2Score * 0.4 + q3Score * 0.4);
-        const pass = finalScore >= 50;
-        const saved = { mcScore, q2Score, q3Score, finalScore, pass, completed: true, feedback: res.feedback };
-        localStorage.setItem(STORAGE_KEYS.ACTIVITY_NEWS, JSON.stringify(saved));
+        const pass       = finalScore >= 50;
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_NEWS, JSON.stringify({ mcScore, q2Score, q3Score, finalScore, pass, completed: true, feedback: res.feedback, mcDetails }));
         goToResult('news');
       } catch (e) {
         showInlineMsg('news-submit-btn', getSubmitErrorMsg(e), true);
@@ -2683,11 +2693,9 @@
        SCREEN 8 — 광고 탐정
     ============================ */
     let adSelectedPosts = new Set();
-    let adQ1Done = false;
-    let adQ2Done = false;
+    let adQ2Selected = null;
 
     function toggleAdPost(id) {
-      if (adQ1Done) return; // Q1 완료 후 변경 불가
       if (adSelectedPosts.has(id)) {
         adSelectedPosts.delete(id);
         document.getElementById(`ad-post-${id}`).classList.remove('selected');
@@ -2695,60 +2703,15 @@
         adSelectedPosts.add(id);
         document.getElementById(`ad-post-${id}`).classList.add('selected');
       }
-      document.getElementById('ad-q1-btn').disabled = adSelectedPosts.size === 0;
-    }
-
-    function checkAdQ1() {
-      const hasB = adSelectedPosts.has('B');
-      const hasC = adSelectedPosts.has('C');
-      const hasA = adSelectedPosts.has('A');
-      const fbEl = document.getElementById('ad-q1-feedback');
-      fbEl.style.display = 'block';
-
-      if (hasA) {
-        // A를 포함하면 오답
-        fbEl.className = 'mc-feedback-wrong';
-        fbEl.textContent = '❌ A는 일반 게시물이야. 광고 표시를 잘 찾아봐.';
-        return;
-      }
-      if (hasB && hasC && !hasA) {
-        // 정답: B와 C 모두, A 없음
-        adQ1Done = true;
-        fbEl.className = 'mc-feedback-correct';
-        fbEl.textContent = '✅ 맞아! B는 [협찬] 표시가 있고, C는 (광고) 표시가 있어. 둘 다 광고야!';
-        document.getElementById('ad-q1-btn').disabled = true;
-        ['A', 'B', 'C'].forEach(id => {
-          const el = document.getElementById(`ad-post-${id}`);
-          if (el) el.style.pointerEvents = 'none';
-        });
-        setTimeout(() => { document.getElementById('ad-q2-section').style.display = 'block'; window.scrollTo(0, document.getElementById('ad-q2-section').offsetTop - 20); }, 300);
-      } else {
-        // 하나만 선택하거나 C 없이 B만 선택
-        fbEl.className = 'mc-feedback-wrong';
-        fbEl.textContent = '❌ 하나 더 있어! 다시 찾아봐.';
-      }
+      checkAdBtn();
     }
 
     function selectAdQ2(idx) {
-      const correctIdx = 1;
+      adQ2Selected = idx;
       document.querySelectorAll('#ad-q2-choices .choice-btn').forEach((b, i) => {
         b.classList.toggle('selected', i === idx);
-        b.disabled = true;
       });
-      const fbEl = document.getElementById('ad-q2-feedback');
-      fbEl.style.display = 'block';
-      if (idx === correctIdx) {
-        adQ2Done = true;
-        fbEl.className = 'mc-feedback-correct';
-        fbEl.textContent = '✅ 정답! 광고라도 자연스러운 말투면 광고인지 모르기 쉬워. 항상 (광고), [협찬] 표시를 확인하는 습관을 갖자!';
-        setTimeout(() => { document.getElementById('ad-q3-section').style.display = 'block'; window.scrollTo(0, document.getElementById('ad-q3-section').offsetTop - 20); }, 300);
-      } else {
-        fbEl.className = 'mc-feedback-wrong';
-        fbEl.textContent = '❌ 다시 생각해봐! C의 글 말투를 잘 살펴봐.';
-        setTimeout(() => {
-          document.querySelectorAll('#ad-q2-choices .choice-btn').forEach(b => { b.disabled = false; });
-        }, 1000);
-      }
+      checkAdBtn();
     }
 
     function checkAdBtn() {
@@ -2758,26 +2721,19 @@
       const counter = document.getElementById('ad-q3-counter');
       if (counter) { counter.textContent = `${len} / 10자 이상`; counter.className = 'char-counter' + (len >= 10 ? ' ok' : ''); }
       const submitBtn = document.getElementById('ad-submit-btn');
-      if (submitBtn) submitBtn.disabled = !(adQ1Done && adQ2Done && len >= 10);
+      if (submitBtn) submitBtn.disabled = !(adSelectedPosts.size > 0 && adQ2Selected !== null && len >= 10);
     }
 
     function resetAdScreen() {
       adSelectedPosts = new Set();
-      adQ1Done = false;
-      adQ2Done = false;
+      adQ2Selected = null;
       ['A', 'B', 'C'].forEach(id => {
         const el = document.getElementById(`ad-post-${id}`);
         if (el) { el.classList.remove('selected'); el.style.pointerEvents = ''; }
       });
-      const q1Btn = document.getElementById('ad-q1-btn');
-      if (q1Btn) q1Btn.disabled = true;
-      const q1fb = document.getElementById('ad-q1-feedback');
-      if (q1fb) { q1fb.style.display = 'none'; q1fb.textContent = ''; }
-      document.getElementById('ad-q2-section').style.display = 'none';
       document.querySelectorAll('#ad-q2-choices .choice-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
       const q2fb = document.getElementById('ad-q2-feedback');
       if (q2fb) { q2fb.style.display = 'none'; q2fb.textContent = ''; }
-      document.getElementById('ad-q3-section').style.display = 'none';
       const q3 = document.getElementById('ad-q3');
       if (q3) q3.value = '';
       checkAdBtn();
@@ -2785,6 +2741,22 @@
 
     async function submitAd() {
       const q3 = document.getElementById('ad-q3').value;
+      const hasB = adSelectedPosts.has('B');
+      const hasC = adSelectedPosts.has('C');
+      const hasA = adSelectedPosts.has('A');
+      const q1Correct  = hasB && hasC && !hasA;
+      const q2Correct  = adQ2Selected === 1;
+      const postLabels = [...adSelectedPosts].sort().join(', ');
+      const mcDetails  = [
+        { q: 'Q1. 광고/협찬이 포함된 게시물을 모두 골라봐!', correct: q1Correct,
+          why: q1Correct ? '맞아! B는 [협찬] 표시, C는 (광고) 표시가 있어. 둘 다 광고야!'
+                         : `선택한 게시물: ${postLabels}번. 정답은 B, C야. B는 [협찬], C는 (광고) 표시가 있어.` },
+        { q: 'Q2. 게시물 C가 광고처럼 안 느껴지는 이유는?', correct: q2Correct,
+          why: q2Correct ? '정답! 자연스러운 일상 말투로 써서 광고인지 모르기 쉬워. 항상 (광고), [협찬] 표시를 확인하자!'
+                         : '정답은 ②번이야. 자연스러운 일상 말투로 써서 광고인지 알아채기 어려운 거야.' },
+      ];
+      const mcScore   = (q1Correct ? 30 : 0) + (q2Correct ? 20 : 0);
+
       setSubmitLoading('ad-submit-btn', true);
       try {
         const res = await callClaudeAPI('ad', q3);
@@ -2795,10 +2767,9 @@
           return;
         }
         const essayScore = res.score || 0;
-        const finalScore = Math.round(essayScore);
-        const pass = finalScore >= 50;
-        const saved = { essayScore, finalScore, pass, completed: true, feedback: res.feedback };
-        localStorage.setItem(STORAGE_KEYS.ACTIVITY_AD, JSON.stringify(saved));
+        const finalScore = Math.round(mcScore + essayScore * 0.5);
+        const pass       = finalScore >= 50;
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_AD, JSON.stringify({ mcScore, essayScore, finalScore, pass, completed: true, feedback: res.feedback, mcDetails }));
         goToResult('ad');
       } catch (e) {
         showInlineMsg('ad-submit-btn', getSubmitErrorMsg(e), true);
@@ -2810,51 +2781,23 @@
     /* ============================
        SCREEN 9 — AI 탐정
     ============================ */
-    let aiQ1Done = false;
-    let aiQ2Done = false;
+    let aiQ1Selected = null;
+    let aiQ2Selected = null;
 
     function selectAiQ1(idx) {
-      const correctIdx = 0;
+      aiQ1Selected = idx;
       document.querySelectorAll('#ai-q1-choices .choice-btn').forEach((b, i) => {
         b.classList.toggle('selected', i === idx);
-        b.disabled = true;
       });
-      const fbEl = document.getElementById('ai-q1-feedback');
-      fbEl.style.display = 'block';
-      if (idx === correctIdx) {
-        aiQ1Done = true;
-        fbEl.className = 'mc-feedback-correct';
-        fbEl.textContent = '✅ 맞아! 확인하지 않은 정보를 마치 사실인 것처럼 퍼뜨리면 안 돼!';
-        setTimeout(() => { document.getElementById('ai-q2-section').style.display = 'block'; window.scrollTo(0, document.getElementById('ai-q2-section').offsetTop - 20); }, 300);
-      } else {
-        fbEl.className = 'mc-feedback-wrong';
-        fbEl.textContent = '❌ 다시 생각해봐! 지호가 한 행동에서 어떤 문제가 있는지 생각해봐.';
-        setTimeout(() => {
-          document.querySelectorAll('#ai-q1-choices .choice-btn').forEach(b => { b.disabled = false; });
-        }, 1000);
-      }
+      checkAiBtn();
     }
 
     function selectAiQ2(idx) {
-      const correctIdx = 1;
+      aiQ2Selected = idx;
       document.querySelectorAll('#ai-q2-choices .choice-btn').forEach((b, i) => {
         b.classList.toggle('selected', i === idx);
-        b.disabled = true;
       });
-      const fbEl = document.getElementById('ai-q2-feedback');
-      fbEl.style.display = 'block';
-      if (idx === correctIdx) {
-        aiQ2Done = true;
-        fbEl.className = 'mc-feedback-correct';
-        fbEl.textContent = '✅ 정답! 공식 기관에서 확인된 내용이 아니야. 항상 공식 출처를 확인하는 습관을 갖자!';
-        setTimeout(() => { document.getElementById('ai-q3-section').style.display = 'block'; window.scrollTo(0, document.getElementById('ai-q3-section').offsetTop - 20); }, 300);
-      } else {
-        fbEl.className = 'mc-feedback-wrong';
-        fbEl.textContent = '❌ 다시 생각해봐! 공식 기관에서 확인된 내용인지 생각해봐.';
-        setTimeout(() => {
-          document.querySelectorAll('#ai-q2-choices .choice-btn').forEach(b => { b.disabled = false; });
-        }, 1000);
-      }
+      checkAiBtn();
     }
 
     function checkAiBtn() {
@@ -2863,26 +2806,36 @@
       const counter = document.getElementById('ai-char-counter');
       counter.textContent = `${len} / 10자 이상`;
       counter.className = 'char-counter' + (len >= 10 ? ' ok' : '');
-      document.getElementById('ai-submit-btn').disabled = !(aiQ1Done && aiQ2Done && len >= 10);
+      document.getElementById('ai-submit-btn').disabled = !(aiQ1Selected !== null && aiQ2Selected !== null && len >= 10);
     }
 
     function resetAiScreen() {
-      aiQ1Done = false;
-      aiQ2Done = false;
+      aiQ1Selected = null;
+      aiQ2Selected = null;
       document.querySelectorAll('#ai-q1-choices .choice-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
       const q1fb = document.getElementById('ai-q1-feedback');
       if (q1fb) { q1fb.style.display = 'none'; q1fb.textContent = ''; }
-      document.getElementById('ai-q2-section').style.display = 'none';
       document.querySelectorAll('#ai-q2-choices .choice-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
       const q2fb = document.getElementById('ai-q2-feedback');
       if (q2fb) { q2fb.style.display = 'none'; q2fb.textContent = ''; }
-      document.getElementById('ai-q3-section').style.display = 'none';
       document.getElementById('ai-answer').value = '';
       checkAiBtn();
     }
 
     async function submitAi() {
-      const answer = document.getElementById('ai-answer').value;
+      const answer    = document.getElementById('ai-answer').value;
+      const q1Correct = aiQ1Selected === 0;
+      const q2Correct = aiQ2Selected === 1;
+      const mcDetails = [
+        { q: 'Q1. 지호가 잘못한 점은?', correct: q1Correct,
+          why: q1Correct ? '맞아! 확인되지 않은 정보를 사실처럼 퍼뜨리면 안 돼!'
+                         : '정답은 ①번이야. 출처 없는 정보를 "속보"라며 사실처럼 퍼뜨린 게 문제야.' },
+        { q: 'Q2. 의심해야 하는 이유로 옳지 않은 것은?', correct: q2Correct,
+          why: q2Correct ? '정답! "공식 기관에서 직접 확인된 내용이다"는 사실이 아니야. 출처를 항상 확인하자!'
+                         : '정답은 ②번이야. 지호의 정보는 공식 기관에서 확인된 내용이 아니었어.' },
+      ];
+      const mcScore   = (q1Correct ? 20 : 0) + (q2Correct ? 20 : 0);
+
       setSubmitLoading('ai-submit-btn', true);
       try {
         const res = await callClaudeAPI('ai', answer);
@@ -2893,10 +2846,9 @@
           return;
         }
         const essayScore = res.score || 0;
-        const finalScore = Math.round(essayScore);
-        const pass = finalScore >= 50;
-        const saved = { essayScore, finalScore, pass, completed: true, feedback: res.feedback };
-        localStorage.setItem(STORAGE_KEYS.ACTIVITY_AI, JSON.stringify(saved));
+        const finalScore = Math.round(mcScore + essayScore * 0.6);
+        const pass       = finalScore >= 50;
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_AI, JSON.stringify({ mcScore, essayScore, finalScore, pass, completed: true, feedback: res.feedback, mcDetails }));
         goToResult('ai');
       } catch (e) {
         showInlineMsg('ai-submit-btn', getSubmitErrorMsg(e), true);
@@ -2919,36 +2871,16 @@
       { id: 'earth', img: 'contents/cardnews3.png', label: '지구/환경' },
     ];
     let cnSelectedTitleId = null;
-    let cnTitleCorrect = false;
     let cnSelectedImg = null;
 
     function selectCnTitle(id) {
-      const titleData = CN_TITLES.find(t => t.id === id);
-      // 모든 버튼 시각 초기화
+      cnSelectedTitleId = id;
       CN_TITLES.forEach(t => {
         const btn = document.getElementById(`cn-title-${t.id}`);
-        if (btn) btn.classList.remove('selected');
+        if (btn) btn.classList.toggle('selected', t.id === id);
       });
-      const btn = document.getElementById(`cn-title-${id}`);
-      if (btn) btn.classList.add('selected');
-
-      cnSelectedTitleId = id;
-      const fbEl = document.getElementById('cn-title-feedback');
-      fbEl.style.display = 'block';
-
-      if (titleData.isClickbait) {
-        cnTitleCorrect = false;
-        fbEl.className = 'mc-feedback-wrong';
-        fbEl.textContent = titleData.feedback;
-        document.getElementById('cn-rest-form').style.display = 'none';
-        document.getElementById('cn-prev-title').textContent = titleData.text;
-      } else {
-        cnTitleCorrect = true;
-        fbEl.className = 'mc-feedback-correct';
-        fbEl.textContent = titleData.feedback;
-        document.getElementById('cn-rest-form').style.display = 'block';
-        document.getElementById('cn-prev-title').textContent = titleData.text;
-      }
+      const titleData = CN_TITLES.find(t => t.id === id);
+      if (titleData) document.getElementById('cn-prev-title').textContent = titleData.text;
       checkCnBtn();
     }
 
@@ -2989,12 +2921,11 @@
       const msgLen  = message ? message.value.length : 0;
       const reasonLen = reason ? reason.value.length : 0;
       const submitBtn = document.getElementById('cn-submit-btn');
-      if (submitBtn) submitBtn.disabled = !(cnTitleCorrect && cnSelectedImg !== null && msgLen >= 10 && reasonLen >= 10);
+      if (submitBtn) submitBtn.disabled = !(cnSelectedTitleId !== null && cnSelectedImg !== null && msgLen >= 10 && reasonLen >= 10);
     }
 
     function resetCardnewsScreen() {
       cnSelectedTitleId = null;
-      cnTitleCorrect = false;
       cnSelectedImg = null;
       CN_TITLES.forEach(t => {
         const btn = document.getElementById(`cn-title-${t.id}`);
@@ -3002,7 +2933,6 @@
       });
       const fbEl = document.getElementById('cn-title-feedback');
       if (fbEl) { fbEl.style.display = 'none'; fbEl.textContent = ''; }
-      document.getElementById('cn-rest-form').style.display = 'none';
       CN_IMAGES.forEach(img => {
         const el = document.getElementById(`cn-img-${img.id}`);
         if (el) el.classList.remove('selected');
@@ -3020,12 +2950,18 @@
     }
 
     async function submitCardnews() {
-      const message = document.getElementById('cn-message').value;
-      const reason  = document.getElementById('cn-reason').value;
+      const message   = document.getElementById('cn-message').value;
+      const reason    = document.getElementById('cn-reason').value;
       const titleData = CN_TITLES.find(t => t.id === cnSelectedTitleId);
-      const selectedTitle = titleData ? titleData.text : '';
-      const imgData = CN_IMAGES.find(i => i.id === cnSelectedImg);
-      const selectedImgLabel = imgData ? imgData.label : '';
+      const selectedTitle     = titleData ? titleData.text : '';
+      const titleIsClickbait  = titleData ? titleData.isClickbait : true;
+      const imgData           = CN_IMAGES.find(i => i.id === cnSelectedImg);
+      const selectedImgLabel  = imgData ? imgData.label : '';
+      const mcDetails = [
+        { q: '1️⃣ 카드뉴스 제목 선택', correct: !titleIsClickbait,
+          why: !titleIsClickbait ? '잘 선택했어! 자료에 있는 사실을 정확하게 담은 제목이야!'
+                                 : '클릭베이트 제목을 선택했어. 자료에 없는 내용을 과장하는 제목은 피해야 해. 정답은 C번 — "북극 해빙 면적, 40년 만에 절반으로 줄었어요"야.' },
+      ];
 
       setSubmitLoading('cn-submit-btn', true);
       const userMsg = selectedTitle + '\n핵심메시지: ' + message + '\n이미지선택이유: ' + reason + '\n선택이미지: ' + selectedImgLabel;
@@ -3042,7 +2978,7 @@
         const pass = finalScore >= 50;
         localStorage.setItem(STORAGE_KEYS.ACTIVITY_CARDNEWS, JSON.stringify({
           selectedTitle, selectedImage: cnSelectedImg, message, imageReason: reason,
-          essayScore, finalScore, pass, completed: true, feedback: res.feedback,
+          essayScore, finalScore, pass, completed: true, feedback: res.feedback, mcDetails,
         }));
         goToResult('cardnews');
       } catch (e) {
