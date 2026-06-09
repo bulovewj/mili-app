@@ -57,10 +57,10 @@
     ============================ */
     .screen {
       display: none;
-      max-width: 480px;
+      max-width: 640px;
       margin: 0 auto;
-      padding: 32px 20px 48px;
-      min-height: 100vh;
+      padding: 14px 20px 32px;
+      min-height: 100dvh;
       background: var(--color-bg);
     }
 
@@ -919,9 +919,9 @@
     }
 
     /* ============================
-       태블릿 대응 (768px+)
+       태블릿 대응 (768px+ 세로 모드)
     ============================ */
-    @media (min-width: 768px) {
+    @media (min-width: 768px) and (orientation: portrait) {
       body { background: #EDE8DF; }
       .screen {
         max-width: 560px;
@@ -930,6 +930,9 @@
         border-radius: 28px;
         box-shadow: 0 8px 48px rgba(0,0,0,0.12);
       }
+      #screen-story, #screen-home {
+        max-width: 100%; margin: 0; border-radius: 0; box-shadow: none; padding: 0;
+      }
       .app-title { font-size: 44px; }
       .act-icon-circle { width: 60px; height: 60px; font-size: 28px; }
       .act-icon-label { font-size: 12px; }
@@ -937,6 +940,11 @@
       .btn-primary, .btn-submit, .btn-secondary, .btn-reset, .btn-radar { font-size: 17px; }
       .mission-banner-title { font-size: 22px; }
       .answer-textarea { font-size: 17px; }
+    }
+    /* 가로 모드 태블릿/데스크톱 */
+    @media (min-width: 768px) and (orientation: landscape) {
+      #screen-story, #screen-home { max-width: 100%; margin: 0; padding: 0; }
+      .screen { max-width: 700px; }
     }
 
     /* ============================
@@ -1263,7 +1271,7 @@
     /* ==============================
        STORY ENGINE
     ============================== */
-    #screen-story { padding:0; overflow:hidden; position:relative; min-height:100dvh; background:#1a1209; }
+    #screen-story { padding:0; overflow:hidden; position:relative; min-height:100dvh; background:#1a1209; max-width:100%; margin:0; }
     #screen-story.active { display:flex; flex-direction:column; }
     .story-bg { position:absolute; inset:0; background-size:cover; background-position:center top; background-repeat:no-repeat; }
     .story-bg-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.65) 100%); }
@@ -1344,7 +1352,7 @@
     /* ==============================
        ROOM HOME SCREEN
     ============================== */
-    #screen-home { padding:0; overflow:hidden; }
+    #screen-home { padding:0; overflow:hidden; max-width:100%; margin:0; }
     #screen-home.active { display:block; }
     .room-wrap { position:relative; width:100%; min-height:100dvh; background:#2a1f0e; background-image:url('icons/bg_room.png'); background-size:cover; background-position:center; }
     .room-top-bar { position:absolute; top:0; left:0; right:0; padding:14px 16px; display:flex; justify-content:flex-end; z-index:10; }
@@ -1373,9 +1381,171 @@
       box-shadow:0 4px 16px rgba(155,89,182,0.45); transition:opacity 0.2s;
     }
     .room-radar-cta:disabled { opacity:0.38; cursor:not-allowed; box-shadow:none; }
+
+    /* ==============================
+       세로 모드 회전 안내
+    ============================== */
+    #portrait-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #1a1209;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      text-align: center;
+      padding: 24px;
+    }
+    .portrait-phone-icon {
+      font-size: 72px;
+      animation: phoneRotate 2.4s ease-in-out infinite;
+    }
+    @keyframes phoneRotate {
+      0%   { transform: rotate(0deg);   opacity: 1; }
+      30%  { transform: rotate(0deg);   opacity: 1; }
+      55%  { transform: rotate(-90deg); opacity: 1; }
+      80%  { transform: rotate(-90deg); opacity: 1; }
+      100% { transform: rotate(0deg);   opacity: 1; }
+    }
+    .portrait-msg {
+      font-size: 20px;
+      font-weight: 900;
+      color: #FFE66D;
+      line-height: 1.6;
+    }
+    .portrait-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.55);
+    }
+    @media (orientation: portrait) {
+      #portrait-overlay { display: flex; }
+    }
+
+    /* ==============================
+       가로 모드 전용 스타일
+    ============================== */
+    @media (orientation: landscape) {
+      /* 기본 화면 패딩 축소 */
+      .screen { padding: 8px 20px 18px; }
+
+      /* ── 시작 화면: 2열 레이아웃 ── */
+      #screen-start {
+        gap: 20px;
+        max-width: 700px;
+      }
+      #screen-start.active {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 48px;
+        padding: 16px 48px;
+      }
+      .logo-wrap {
+        flex-shrink: 0;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .logo-svg { width: 72px; height: 72px; }
+      .app-title { font-size: 28px; }
+      .app-subtitle { font-size: 13px; }
+      .start-input-area { max-width: 300px; }
+
+      /* ── 앱 소개 화면 ── */
+      .intro-greeting { font-size: 20px; margin-bottom: 10px; }
+      .intro-desc { font-size: 14px; margin-bottom: 16px; }
+      .intro-activities { padding: 14px 8px; margin-bottom: 16px; }
+      .act-icon-circle { width: 44px; height: 44px; }
+      .act-icon-label { font-size: 10px; }
+
+      /* ── 진단 퀴즈 ── */
+      .quiz-header { font-size: 15px; margin-bottom: 10px; }
+      .quiz-progress-row { margin-bottom: 14px; }
+      .question-text { font-size: 16px; margin-bottom: 14px; }
+      .choices-list { gap: 7px; margin-bottom: 16px; }
+      .choice-btn { min-height: 48px; padding: 11px 16px; font-size: 14px; }
+
+      /* ── 진단 결과 화면 ── */
+      #screen-diagnosis-result { padding-top: 12px; padding-bottom: 12px; gap: 0; }
+      .result-name-title { font-size: 16px; margin-bottom: 14px; }
+      .result-grade-emoji { font-size: 60px; }
+      .result-grade-name { font-size: 20px; }
+      .result-grade-wrap { gap: 6px; margin-bottom: 14px; }
+      .result-message { font-size: 13px; line-height: 1.6; margin-bottom: 14px; padding: 14px 16px; }
+
+      /* ── 미션 배너 ── */
+      .mission-banner { padding: 10px 16px; margin-bottom: 12px; }
+      .mission-banner-title { font-size: 16px; margin-bottom: 3px; }
+      .mission-banner-desc { font-size: 12px; line-height: 1.45; }
+
+      /* ── 공통 버튼 ── */
+      .btn-primary, .btn-secondary, .btn-submit, .btn-radar { min-height: 48px; font-size: 15px; padding: 12px 24px; }
+      .back-btn { padding: 2px 0 10px; font-size: 13px; }
+
+      /* ── 서술형 입력 ── */
+      .answer-section { padding: 14px 16px; margin-top: 10px; }
+      .answer-label { font-size: 14px; margin-bottom: 8px; }
+      .answer-textarea { min-height: 80px; font-size: 14px; }
+
+      /* ── 유튜브 탐정 ── */
+      .yt-video-title { font-size: 13px; }
+
+      /* ── AI 채점 결과 화면 ── */
+      .result-activity-title { font-size: 16px; margin-bottom: 16px; }
+      .result-grade-big-emoji { font-size: 54px; }
+      .result-grade-big-label { font-size: 20px; }
+      .result-grade-big { gap: 6px; margin-bottom: 16px; }
+      .result-feedback-card { padding: 14px 16px; margin-bottom: 8px; }
+      .result-feedback-text { font-size: 13px; }
+      .result-question-card { padding: 12px 16px; margin-bottom: 16px; }
+
+      /* ── 역량 지형도 ── */
+      .radar-title { font-size: 18px; margin-bottom: 2px; }
+      .radar-subtitle { font-size: 13px; margin-bottom: 8px; }
+      .radar-canvas-wrap { padding: 8px; margin-bottom: 8px; }
+      .radar-result-item { padding: 8px 0; font-size: 13px; }
+      .radar-summary-card { padding: 12px 14px; margin-bottom: 10px; }
+      .radar-summary-text { font-size: 13px; }
+
+      /* ── 스토리 엔진 (높이 축소 대응) ── */
+      .story-char-area { bottom: 108px; }
+      .story-char-slot { min-height: 100px; }
+      .story-char-slot img { width: 105px; height: 138px; }
+      .story-char-emoji { font-size: 58px; }
+      .story-char-big { bottom: 110px; }
+      .story-char-big img { width: 130px; height: 165px; }
+      .story-special-area { bottom: 114px; max-width: 280px; }
+      .story-dialogue-box { min-height: 100px; padding: 8px 18px 16px; }
+      .story-speaker-name { margin-bottom: 6px; font-size: 12px; }
+      .story-dialogue-text { font-size: 14px; min-height: 34px; line-height: 1.6; }
+      .story-tap-arrow { bottom: 10px; }
+      .story-action-layer { bottom: 106px; padding: 0 16px; }
+      .story-action-btn { height: 50px; font-size: 15px; }
+      .story-choice-sheet { padding: 12px 16px 24px; }
+      .story-choice-title { font-size: 13px; margin-bottom: 10px; }
+      .story-choice-opt { padding: 11px 14px; margin-bottom: 7px; font-size: 13px; }
+
+      /* ── 방 화면 하단 패널 ── */
+      .room-bottom { padding: 6px 14px 10px; gap: 6px; }
+      .room-miri-hint { padding: 7px 12px; }
+      .room-miri-msg { font-size: 11px; line-height: 1.4; }
+      .room-radar-cta { height: 40px; font-size: 13px; }
+
+      /* ── 카드 공통 ── */
+      .card { padding: 14px 16px; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- 세로 모드 회전 안내 -->
+  <div id="portrait-overlay">
+    <div class="portrait-phone-icon">📱</div>
+    <div class="portrait-msg">화면을 가로로 돌려줘! 📐</div>
+    <div class="portrait-sub">이 앱은 가로 모드에서 사용해야 해!</div>
+  </div>
 
   <div id="offline-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#FF6B6B;color:white;text-align:center;padding:12px 16px;font-size:14px;font-weight:800;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
     📶 인터넷 연결이 없어! 와이파이나 데이터를 켜봐
