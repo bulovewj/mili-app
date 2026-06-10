@@ -15,6 +15,13 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
+    @font-face {
+      font-family: 'NeoDunggeunmo';
+      src: url('fonts/neodgm.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
     /* ============================
        CSS 변수 (CLAUDE.md 기준)
     ============================ */
@@ -46,7 +53,7 @@
     }
 
     body {
-      font-family: 'Noto Sans KR', sans-serif;
+      font-family: 'NeoDunggeunmo', 'Noto Sans KR', sans-serif;
       background: var(--color-bg);
       color: var(--color-text);
       min-height: 100vh;
@@ -69,7 +76,12 @@
       animation: fadeIn 0.3s ease;
     }
 
-    #screen-start.active,
+    #screen-start.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     #screen-diagnosis-result.active {
       display: flex;
       flex-direction: column;
@@ -150,64 +162,40 @@
        SCREEN 1 — 시작 화면
     ============================ */
     #screen-start {
-      gap: 36px;
-    }
-
-    .logo-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .logo-svg {
-      width: 96px;
-      height: 96px;
-      filter: drop-shadow(0 6px 16px rgba(255,107,107,0.25));
-    }
-
-    .app-title {
-      font-size: 38px;
-      font-weight: 900;
-      color: var(--color-primary);
-      letter-spacing: -1px;
-    }
-
-    .app-subtitle {
-      font-size: 16px;
-      color: var(--color-text-sub);
-      margin-top: 2px;
-    }
-
-    .start-input-area {
+      padding: 0;
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      max-width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      position: relative;
+      background: #0a1628;
     }
 
-    .input-label {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--color-text);
-      text-align: left;
+    .start-image-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 100vw;
+      max-height: 100dvh;
+      line-height: 0;
     }
 
-    .text-input {
-      width: 100%;
-      padding: 16px 18px;
-      font-size: 18px;
-      font-family: 'Noto Sans KR', sans-serif;
-      border: 2px solid var(--color-border);
-      border-radius: 16px;
-      background: white;
-      color: var(--color-text);
-      outline: none;
-      transition: border-color 0.2s;
+    .start-bg-img {
+      display: block;
+      max-width: 100vw;
+      max-height: 100dvh;
+      width: auto;
+      height: auto;
     }
 
-    .text-input:focus {
-      border-color: var(--color-primary);
+    .start-tap-btn {
+      position: absolute;
+      top: 33%;
+      left: 24%;
+      width: 52%;
+      height: 14%;
+      background: transparent;
+      border: none;
+      cursor: pointer;
     }
 
     /* ============================
@@ -1281,21 +1269,65 @@
       padding:6px 18px; border-radius:20px; z-index:10; white-space:nowrap;
       border:1px solid rgba(255,230,109,0.35);
     }
-    .story-char-area {
-      position:absolute; bottom:150px; left:0; right:0;
-      display:flex; justify-content:space-between; align-items:flex-end;
-      padding:0 2px; z-index:5; pointer-events:none;
-    }
-    .story-char-slot { width:140px; min-height:160px; display:flex; align-items:flex-end; justify-content:center; transition:filter 0.3s; }
-    .story-char-slot img { width:140px; height:190px; object-fit:contain; object-position:bottom; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.55)); }
-    .story-char-slot.dim img { filter:brightness(0.45) saturate(0.2); }
+    /* 레이어: 배경(1) → 일반 캐릭터(10) → 자막창(20) → 미리(30) */
+    .story-char-area { position:absolute; inset:0; z-index:10; pointer-events:none; }
+    .story-char-slot { position:absolute; bottom:0; transition:filter 0.3s; }
+    #story-char-left  { left:4%; }
+    #story-char-right { right:4%; }
+    .story-char-slot img { height:70vh; width:auto; max-width:46vw; display:none; filter:drop-shadow(0 4px 16px rgba(0,0,0,0.6)); }
+    #story-char-right img { transform: scaleX(-1); }
+    .story-char-slot.dim img { filter:brightness(0.45) saturate(0.2) drop-shadow(0 4px 12px rgba(0,0,0,0.3)); }
     .story-char-emoji { font-size:86px; line-height:1; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.55)); }
     .story-char-slot.dim .story-char-emoji { filter:brightness(0.4) saturate(0.2); }
-    .story-char-big { position:absolute; bottom:150px; left:50%; transform:translateX(-50%); z-index:6; pointer-events:none; }
-    .story-char-big img { width:190px; height:230px; object-fit:contain; object-position:bottom; filter:drop-shadow(0 6px 24px rgba(155,89,182,0.65)); }
+    /* 미리 전용: z-index:30으로 자막창 위에 전신 표시 */
+    #story-char-miri {
+      position:absolute; bottom:calc(33vh + 16px); right:4%;
+      z-index:30; pointer-events:none; transition:filter 0.3s;
+    }
+    #story-char-miri img {
+      height:47vh; width:auto; max-width:46vw; display:none;
+      transform:scaleX(1);
+      filter:drop-shadow(0 4px 16px rgba(0,0,0,0.6));
+    }
+    #story-char-miri.dim img { filter:brightness(0.45) saturate(0.2) drop-shadow(0 4px 12px rgba(0,0,0,0.3)); }
+    #story-char-miri.miri-center { right:auto; left:50%; transform:translateX(-50%); }
+    .story-char-big { position:absolute; bottom:0; left:50%; transform:translateX(-50%); z-index:10; pointer-events:none; }
+    .story-char-big img { height:58vh; width:auto; max-width:65vw; display:none; filter:drop-shadow(0 6px 28px rgba(155,89,182,0.7)); }
     .story-special-area {
-      position:absolute; bottom:156px; left:50%; transform:translateX(-50%);
+      position:absolute; bottom:30vh; left:50%; transform:translateX(-50%);
       z-index:8; width:88%; max-width:300px;
+    }
+    /* 폰 화면 오버레이 (유튜브/카카오톡) */
+    .story-phone-overlay {
+      position:absolute; inset:0; z-index:30;
+      background:rgba(0,0,0,0.78); display:flex;
+      flex-direction:column; align-items:center; justify-content:center;
+      gap:18px; cursor:pointer;
+    }
+    .story-phone-wrap { display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .story-phone-overlay .story-yt-card,
+    .story-phone-overlay .story-kakao-card { width:min(540px,90vw); }
+    .story-phone-overlay .story-yt-bar { font-size:14px; padding:8px 14px; }
+    .story-phone-overlay .story-yt-body { padding:22px 18px; min-height:90px; }
+    .story-phone-overlay .story-yt-title { font-size:16px; }
+    .story-phone-overlay .story-yt-title strong { font-size:20px; }
+    .story-phone-overlay .story-kakao-bar { font-size:20px; padding:14px 20px; }
+    .story-phone-overlay .story-kakao-body { padding:20px; }
+    .story-phone-overlay .story-kakao-bubble { padding:16px 20px; }
+    .story-phone-overlay .story-kakao-badge { font-size:14px; }
+    .story-phone-overlay .story-kakao-msg { font-size:24px; }
+    .story-phone-overlay .story-kakao-time { font-size:13px; }
+    .story-phone-hint { color:#FFE66D; font-size:18px; font-weight:800; animation:tapArrowBlink 1.2s ease-in-out infinite; }
+    /* 씬 전환 자막 */
+    .story-transition {
+      position:absolute; inset:0; z-index:40;
+      background:#000; display:flex;
+      align-items:center; justify-content:center;
+    }
+    .story-transition-text {
+      color:#FFE66D; font-size:22px; font-weight:900;
+      text-align:center; letter-spacing:0.04em; line-height:1.7;
+      padding:0 28px;
     }
     .story-yt-card { background:#0f0f0f; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.7); }
     .story-yt-bar { background:#FF0000; padding:5px 10px; font-size:12px; font-weight:800; color:white; display:flex; align-items:center; gap:5px; }
@@ -1310,37 +1342,50 @@
     .story-kakao-badge { display:block; background:#FF4444; color:white; font-size:11px; font-weight:800; padding:2px 8px; border-radius:5px; margin-bottom:6px; width:fit-content; }
     .story-kakao-msg { font-size:16px; font-weight:700; color:#333; line-height:1.5; }
     .story-kakao-time { font-size:11px; color:#888; margin-top:6px; }
+    .story-back-btn {
+      position:absolute; top:14px; left:14px; z-index:50;
+      background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.18);
+      color:rgba(255,255,255,0.85); font-size:12px; font-weight:700;
+      padding:7px 14px; border-radius:20px; cursor:pointer;
+      font-family:'NeoDunggeunmo','Noto Sans KR',sans-serif;
+      transition:background 0.15s;
+    }
+    .story-back-btn:active { background:rgba(0,0,0,0.7); }
     .story-room-items { display:flex; gap:5px; justify-content:center; flex-wrap:wrap; }
     .story-room-item { background:rgba(255,255,255,0.1); border:1.5px solid rgba(255,255,255,0.2); border-radius:10px; padding:7px 6px; text-align:center; font-size:10px; color:rgba(255,255,255,0.7); font-weight:700; min-width:50px; transition:all 0.2s; }
     .story-room-item.hl { background:rgba(255,230,109,0.22); border-color:#FFE66D; color:#FFE66D; transform:scale(1.12); }
     .story-dialogue-box {
       position:absolute; bottom:0; left:0; right:0;
       background:rgba(10,6,2,0.94); border-top:1.5px solid rgba(255,200,100,0.18);
-      padding:12px 18px 32px; min-height:144px; z-index:10; cursor:pointer; user-select:none;
+      padding:18px 28px 44px; min-height:33vh; z-index:20; cursor:pointer; user-select:none;
     }
-    .story-speaker-name { display:inline-block; padding:4px 14px; border-radius:8px; font-size:13px; font-weight:900; color:white; margin-bottom:10px; }
-    .story-dialogue-text { font-size:15px; color:#f0e4cc; line-height:1.8; min-height:52px; }
+    .story-speaker-name { display:inline-block; padding:5px 16px; border-radius:8px; font-size:16px; font-weight:900; color:white; margin-bottom:14px; }
+    .story-dialogue-text { font-size:22px; color:#f0e4cc; line-height:1.85; min-height:60px; }
     .story-tap-arrow { position:absolute; bottom:14px; right:18px; color:#FFE66D; font-size:16px; animation:tapArrowBlink 1.2s ease-in-out infinite; }
     @keyframes tapArrowBlink { 0%,100%{opacity:1} 50%{opacity:0.25} }
     .story-choice-layer {
-      position:absolute; inset:0; background:rgba(0,0,0,0.55);
-      display:flex; align-items:flex-end; justify-content:center; z-index:25;
+      position:absolute; inset:0; background:rgba(0,0,0,0.5);
+      display:flex; align-items:center; justify-content:center; z-index:25;
     }
     .story-choice-sheet {
-      background:rgba(8,5,2,0.97); border-radius:22px 22px 0 0;
-      padding:20px 18px 44px; width:100%; max-width:480px;
-      border-top:1.5px solid rgba(255,200,100,0.18);
+      background:rgba(8,5,2,0.97); border-radius:22px;
+      padding:28px 28px 36px; width:min(600px,90vw);
+      border:1.5px solid rgba(255,200,100,0.18);
     }
-    .story-choice-title { font-size:14px; font-weight:800; color:#FFE66D; margin-bottom:14px; }
+    .story-choice-title { font-size:22px; font-weight:900; color:#FFE66D; margin-bottom:18px; }
+    #story-choice-opts { display:flex; flex-direction:column; gap:12px; }
     .story-choice-opt {
-      width:100%; padding:15px 18px; border-radius:14px; border:none;
-      font-size:14px; font-weight:800; cursor:pointer; font-family:'Noto Sans KR',sans-serif;
-      text-align:left; margin-bottom:10px; transition:transform 0.1s; display:block;
+      width:100%; height:60px; padding:0 22px; border-radius:12px; border:none;
+      font-size:20px; font-weight:800; cursor:pointer;
+      font-family:'NeoDunggeunmo','Noto Sans KR',sans-serif;
+      text-align:left; transition:transform 0.1s; display:flex; align-items:center;
     }
-    .story-choice-opt:nth-child(2) { background:#1B2A3B; color:#A8D5FF; }
-    .story-choice-opt:nth-child(3) { background:#1B3020; color:#A8F0C0; }
+    .story-choice-opt:nth-child(1) { background:#1B2A3B; color:#A8D5FF; }
+    .story-choice-opt:nth-child(2) { background:#1B3020; color:#A8F0C0; }
+    .story-choice-opt:nth-child(3) { background:#2B1A2E; color:#D8A8F0; }
+    .story-choice-opt:nth-child(4) { background:#2B1E10; color:#F0D0A8; }
     .story-choice-opt:active { transform:scale(0.97); }
-    .story-action-layer { position:absolute; bottom:150px; left:0; right:0; padding:0 20px; z-index:15; }
+    .story-action-layer { position:absolute; bottom:30vh; left:0; right:0; padding:0 20px; z-index:25; }
     .story-action-btn {
       width:100%; height:60px; border-radius:18px; border:none;
       font-size:17px; font-weight:900; cursor:pointer; font-family:'Noto Sans KR',sans-serif;
@@ -1430,28 +1475,8 @@
       /* 기본 화면 패딩 축소 */
       .screen { padding: 8px 20px 18px; }
 
-      /* ── 시작 화면: 2열 레이아웃 ── */
-      #screen-start {
-        gap: 20px;
-        max-width: 700px;
-      }
-      #screen-start.active {
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 48px;
-        padding: 16px 48px;
-      }
-      .logo-wrap {
-        flex-shrink: 0;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-      }
-      .logo-svg { width: 72px; height: 72px; }
-      .app-title { font-size: 28px; }
-      .app-subtitle { font-size: 13px; }
-      .start-input-area { max-width: 300px; }
+      /* ── 시작 화면: 가로 모드 ── */
+      #screen-start { max-width: 100vw; height: 100vh; height: 100dvh; }
 
       /* ── 앱 소개 화면 ── */
       .intro-greeting { font-size: 20px; margin-bottom: 10px; }
@@ -1509,23 +1534,23 @@
       .radar-summary-card { padding: 12px 14px; margin-bottom: 10px; }
       .radar-summary-text { font-size: 13px; }
 
-      /* ── 스토리 엔진 (높이 축소 대응) ── */
-      .story-char-area { bottom: 108px; }
-      .story-char-slot { min-height: 100px; }
-      .story-char-slot img { width: 105px; height: 138px; }
+      /* ── 스토리 엔진 (가로 모드 높이 축소 대응) ── */
+      .story-char-slot img { height: 58vh; max-width: 38vw; }
       .story-char-emoji { font-size: 58px; }
-      .story-char-big { bottom: 110px; }
-      .story-char-big img { width: 130px; height: 165px; }
-      .story-special-area { bottom: 114px; max-width: 280px; }
-      .story-dialogue-box { min-height: 100px; padding: 8px 18px 16px; }
-      .story-speaker-name { margin-bottom: 6px; font-size: 12px; }
-      .story-dialogue-text { font-size: 14px; min-height: 34px; line-height: 1.6; }
-      .story-tap-arrow { bottom: 10px; }
-      .story-action-layer { bottom: 106px; padding: 0 16px; }
+      .story-char-big img { height: 55vh; max-width: 55vw; }
+      #story-char-miri img { height: 40vh; max-width: 38vw; }
+      #story-char-miri { bottom: calc(28vh + 12px); }
+      .story-special-area { bottom: 28vh; max-width: 280px; }
+      .story-dialogue-box { min-height: 28vh; padding: 10px 18px 20px; }
+      .story-speaker-name { margin-bottom: 5px; font-size: 14px; }
+      .story-dialogue-text { font-size: 17px; min-height: 30px; line-height: 1.55; }
+      .story-tap-arrow { bottom: 8px; }
+      .story-action-layer { bottom: 28vh; padding: 0 16px; }
       .story-action-btn { height: 50px; font-size: 15px; }
-      .story-choice-sheet { padding: 12px 16px 24px; }
-      .story-choice-title { font-size: 13px; margin-bottom: 10px; }
-      .story-choice-opt { padding: 11px 14px; margin-bottom: 7px; font-size: 13px; }
+      .story-choice-sheet { padding: 18px 20px 24px; width: min(500px, 88vw); }
+      .story-choice-title { font-size: 17px; margin-bottom: 12px; }
+      #story-choice-opts { gap: 8px; }
+      .story-choice-opt { height: 50px; font-size: 16px; }
 
       /* ── 방 화면 하단 패널 ── */
       .room-bottom { padding: 6px 14px 10px; gap: 6px; }
@@ -1555,26 +1580,9 @@
        SCREEN 1 — 시작 화면
   ============================ -->
   <div id="screen-start" class="screen">
-    <div class="logo-wrap">
-      <img src="icons/main.png" class="logo-svg" alt="미리 로고">
-      <div>
-        <div class="app-title">미리(MIRI)</div>
-        <div class="app-subtitle">미디어를 똑똑하게 읽는 탐정 🔍</div>
-      </div>
-    </div>
-
-    <div class="start-input-area">
-      <label class="input-label" for="name-input">이름을 알려줘! (닉네임도 OK 👍)</label>
-      <input
-        type="text"
-        id="name-input"
-        class="text-input"
-        placeholder="예) 민준, 수아탐정, 미디어왕"
-        maxlength="10"
-        autocomplete="off"
-        inputmode="text"
-      />
-      <button id="start-btn" class="btn-primary" disabled>시작하기 🚀</button>
+    <div class="start-image-wrapper">
+      <img src="icons/bg_start.png" class="start-bg-img" alt="미디어 리터러시 탐험 시작">
+      <button class="start-tap-btn" onclick="onStartClick()"></button>
     </div>
   </div>
 
@@ -1584,6 +1592,7 @@
   <div id="screen-story" class="screen">
     <div id="story-bg" class="story-bg"></div>
     <div class="story-bg-overlay"></div>
+    <button class="story-back-btn" onclick="storyBack()">◀ 나가기</button>
     <div id="story-scene-label" class="story-scene-label" style="display:none"></div>
 
     <!-- 특수 콘텐츠 (유튜브 썸네일, 카카오톡 등) -->
@@ -1592,10 +1601,11 @@
     <!-- 캐릭터 영역 -->
     <div class="story-char-area">
       <div id="story-char-left" class="story-char-slot" style="display:none"></div>
-      <div style="flex:1"></div>
       <div id="story-char-right" class="story-char-slot" style="display:none"></div>
     </div>
     <div id="story-char-big" class="story-char-big" style="display:none"></div>
+    <!-- 미리 전용 슬롯: 자막창 위에 전신 표시 -->
+    <div id="story-char-miri" style="display:none"></div>
 
     <!-- 대화 박스 -->
     <div id="story-dialogue-box" class="story-dialogue-box" onclick="storyAdvance()">
@@ -1615,6 +1625,19 @@
     <!-- 액션 버튼 레이어 -->
     <div id="story-action-layer" class="story-action-layer" style="display:none">
       <button id="story-action-btn" class="story-action-btn" onclick="triggerStoryAction()"></button>
+    </div>
+
+    <!-- 폰 화면 오버레이 (유튜브/카카오톡 크게 보기) -->
+    <div id="story-phone-overlay" class="story-phone-overlay" style="display:none" onclick="storyPhoneClose()">
+      <div class="story-phone-wrap">
+        <div id="story-phone-content"></div>
+        <div class="story-phone-hint">탭해서 계속하기 ▼</div>
+      </div>
+    </div>
+
+    <!-- 씬 전환 자막 (검은 화면) -->
+    <div id="story-transition" class="story-transition" style="display:none">
+      <div id="story-transition-text" class="story-transition-text"></div>
     </div>
   </div>
 
@@ -1706,41 +1729,46 @@
 
       <!-- 5개 활동 핫스팟 (방 배경 위 배치) -->
       <!-- 위치는 배경 이미지에 맞게 조정 필요 -->
-      <div class="room-hotspot" id="hs-youtube" style="top:22%;left:6%" onclick="goToActivity('screen-youtube')">
+      <!-- 유튜브: 컴퓨터 모니터 (중앙 오른쪽 책상) -->
+      <div class="room-hotspot" id="hs-youtube" style="top:18%;left:54%" onclick="goToActivity('screen-youtube')">
         <div class="room-hs-inner">
-          <img src="icons/activity/icon_youtube.png" class="room-hs-icon" alt="유튜브">
+          <img src="icons/cursor.png" class="room-hs-icon" alt="유튜브">
           <div class="room-hs-done" id="hsdone-youtube" style="display:none">✓</div>
         </div>
         <div class="room-hs-label">📺 유튜브 탐정</div>
       </div>
 
-      <div class="room-hotspot" id="hs-news" style="top:22%;left:50%;transform:translateX(-50%)" onclick="goToActivity('screen-news')">
+      <!-- 뉴스: TV (왼쪽 벽면) -->
+      <div class="room-hotspot" id="hs-news" style="top:28%;left:5%" onclick="goToActivity('screen-news')">
         <div class="room-hs-inner">
-          <img src="icons/activity/icon_news.png" class="room-hs-icon" alt="뉴스">
+          <img src="icons/cursor.png" class="room-hs-icon" alt="뉴스">
           <div class="room-hs-done" id="hsdone-news" style="display:none">✓</div>
         </div>
         <div class="room-hs-label">📰 뉴스 탐정</div>
       </div>
 
-      <div class="room-hotspot" id="hs-ad" style="top:22%;right:6%" onclick="goToActivity('screen-ad')">
+      <!-- 광고: 스마트폰 (소파 오른쪽 끝) -->
+      <div class="room-hotspot" id="hs-ad" style="top:52%;right:3%" onclick="goToActivity('screen-ad')">
         <div class="room-hs-inner">
-          <img src="icons/activity/icon_ad.png" class="room-hs-icon" alt="광고">
+          <img src="icons/cursor.png" class="room-hs-icon" alt="광고">
           <div class="room-hs-done" id="hsdone-ad" style="display:none">✓</div>
         </div>
         <div class="room-hs-label">🔍 광고 탐정</div>
       </div>
 
-      <div class="room-hotspot" id="hs-ai" style="top:50%;left:18%" onclick="goToActivity('screen-ai')">
+      <!-- AI 탐정: 카카오톡 말풍선 (소파 위) -->
+      <div class="room-hotspot" id="hs-ai" style="top:38%;right:20%" onclick="goToActivity('screen-ai')">
         <div class="room-hs-inner">
-          <img src="icons/activity/icon_ai.png" class="room-hs-icon" alt="AI탐정">
+          <img src="icons/cursor.png" class="room-hs-icon" alt="AI탐정">
           <div class="room-hs-done" id="hsdone-ai" style="display:none">✓</div>
         </div>
         <div class="room-hs-label">🤖 AI 탐정</div>
       </div>
 
-      <div class="room-hotspot" id="hs-cardnews" style="top:50%;right:18%" onclick="goToActivity('screen-cardnews')">
+      <!-- 카드뉴스: 노트북 (앞쪽 테이블 중앙) -->
+      <div class="room-hotspot" id="hs-cardnews" style="top:58%;left:36%" onclick="goToActivity('screen-cardnews')">
         <div class="room-hs-inner">
-          <img src="icons/activity/icon_cardnews.png" class="room-hs-icon" alt="카드뉴스">
+          <img src="icons/cursor.png" class="room-hs-icon" alt="카드뉴스">
           <div class="room-hs-done" id="hsdone-cardnews" style="display:none">✓</div>
         </div>
         <div class="room-hs-label">✏️ 카드뉴스</div>
@@ -2268,7 +2296,7 @@
     ============================ */
     const CHAR_COLORS = { wonill:'#27AE60', miri:'#8E44AD', friend1:'#E67E22', friend2:'#7D3C98', friend3:'#CB4335' };
     const CHAR_EMOJIS = { wonill:'🧒', miri:'🔮', friend1:'👧', friend2:'👓', friend3:'👦' };
-    const CHAR_NAMES  = { wonill:'원일', miri:'미리', friend1:'친구 1', friend2:'친구 2', friend3:'친구 3' };
+    const CHAR_NAMES  = { wonill:'원일', miri:'미리', friend1:'수아', friend2:'지원', friend3:'태현' };
     const BG_CSS = {
       classroom: "url('icons/bg_classroom.png') center/cover no-repeat, linear-gradient(160deg,#2a3a2a,#1e2e1e)",
       evening:   "url('icons/bg_evening.png') center/cover no-repeat, linear-gradient(160deg,#12092a,#1a1230)",
@@ -2277,102 +2305,105 @@
 
     const MAIN_STORY = [
       // Act 1 — 교실
-      { bg:'classroom', left:'wonill', speaker:'wonill', text:'애들아!\n내가 어제 엄청난 걸 봤어!' },
-      { bg:'classroom', right:'friend1', speaker:'friend1', text:'또 뭐 봤는데?' },
-      { bg:'classroom', left:'wonill', speaker:'wonill', text:'유튜브에서 봤는데\n이제 교실에서 스마트폰을\n마음대로 써도 된대!', special:'yt' },
-      { bg:'classroom', right:'friend2', speaker:'friend2', text:'진짜?' },
-      { bg:'classroom', left:'wonill', speaker:'wonill', text:'응!\n제목에 그렇게 적혀 있었어!' },
-      { bg:'classroom', right:'friend3', speaker:'friend3', text:'그거 진짜 뉴스 맞아?' },
-      { type:'choice', bg:'classroom', question:'💭 어떻게 생각할까?',
-        options:['① 조회수가 많으면 믿을 수 있다', '② 조회수가 많아도 확인해야 한다'],
+      { bg:'classroom', left:'wonill', speaker:'wonill', text:'애들아, 안녕!\n내가 어제 유튜브에서 엄청난 걸 봤는데, 들어볼래?' },
+      { bg:'classroom', right:'friend1', speaker:'friend1', text:'안녕, 원일아!\n어떤 걸 봤어? 궁금하다!' },
+      { bg:'classroom', left:'wonill', speaker:'wonill', text:'내가 좋아하는 유튜브 채널에서 봤는데,\n이제 학생들이 교실에서 스마트폰을\n마음대로 써도 된대!', special:'yt' },
+      { bg:'classroom', right:'friend2', speaker:'friend2', text:'어? 선생님께서는 안된다고 하셨는데.\n그 소식 진짜야?' },
+      { bg:'classroom', left:'wonill', speaker:'wonill', text:'응!\n제목에 그렇게 적혀 있는 걸 똑똑히 봤어!\n조회수도 98만이나 되는걸!' },
+      { bg:'classroom', right:'friend3', speaker:'friend3', text:'그래? 그 소식 진짜 믿어도 되는 걸까?' },
+      { type:'choice', bg:'classroom', question:'💭 어떻게 생각하나요?',
+        options:['① 조회수가 많으면 믿을 수 있다', '② 정확한 소식인지 확인해보아야 한다'],
         responses:[
-          { bg:'classroom', left:'wonill', speaker:'wonill', text:'맞아, 조회수가 98만이나 되는걸!\n그 정도면 당연히 사실이지!' },
-          { bg:'classroom', left:'wonill', speaker:'wonill', text:'흠... 확인도 해봐야 하나?\n그래도 제목이 그랬는데...' }
+          { bg:'classroom', left:'wonill', speaker:'wonill', text:'그럼, 조회수가 98만이나 되는걸!\n그 정도면 당연히 사실이겠지!' },
+          { bg:'classroom', left:'wonill', speaker:'wonill', text:'흠... 확인도 해봐야 하나?\n그래도 조회수가 높았는데...' }
         ]
       },
-      { bg:'classroom', label:'📅 며칠 후 — 교실', left:'wonill', speaker:'wonill', text:'애들아!!\n이번엔 진짜 속보야!' },
-      { bg:'classroom', left:'wonill', speaker:'wonill', text:'단톡방에서 봤는데\n내일 학교 안 나온대!', special:'kakao' },
-      { bg:'classroom', right:'friend1', speaker:'friend1', text:'선생님이 말씀하셨어?' },
-      { bg:'classroom', left:'wonill', speaker:'wonill', text:'아니...\n속보라고 적혀 있어.' },
-      { bg:'classroom', right:'friend2', speaker:'friend2', text:'누가 만든 건데?' },
-      { bg:'classroom', left:'wonill', speaker:'wonill', text:'그건 모르겠는데...' },
-      { bg:'classroom', right:'friend3', speaker:'friend3', text:'원일아...\n넌 확인 안 된 이야기를\n자주 하는 것 같아.' },
+      { bg:'classroom', label:'📅 며칠 후 — 교실', left:'wonill', speaker:'wonill', text:'애들아!!!\n이번엔 진짜 속보야!!' },
+      { bg:'classroom', left:'wonill', speaker:'wonill', text:'내가 단톡방에서 봤는데\n우리 내일 학교 안 나온대!', special:'kakao' },
+      { bg:'classroom', right:'friend1', speaker:'friend1', text:'갑자기 학교를 안나온다고?\n선생님께서 말씀하셨어?' },
+      { bg:'classroom', left:'wonill', speaker:'wonill', text:'아니...\n단톡방에 속보라고 적혀 있었어.' },
+      { bg:'classroom', right:'friend2', speaker:'friend2', text:'그 단톡방은 누가 만든 건데?\n그리고 그 소식은 누가 올린 거야?' },
+      { bg:'classroom', left:'wonill', speaker:'wonill', text:'그건 잘 모르겠는데...\n기쁜 소식인데, 그냥 믿으면 안 돼?' },
+      { bg:'classroom', right:'friend3', speaker:'friend3', text:'원일아...\n넌 확인이 안 된 이야기를\n자주 하는 것 같아.' },
       { bg:'classroom', right:'friend1', speaker:'friend1', text:'그래서\n네 말을 믿기 어려워.' },
       { bg:'evening', label:'🌆 하교길 — 혼자', left:'wonill', speaker:'wonill', text:'난 그냥 본 걸 말한 건데...\n왜 아무도 안 믿지?' },
       // Act 2 — 미리 등장
-      { bg:'classroom', left:'miri', right:'wonill', speaker:'miri', text:'안녕, 원일!\n나는 미디어 탐정 \'미리\'야!' },
-      { bg:'classroom', left:'miri', right:'wonill', speaker:'wonill', text:'누… 누구야?!' },
-      { bg:'classroom', left:'miri', big:true, speaker:'miri', text:'나는 미디어 탐정 \'미리\'야!\n혹시 인터넷에서 본 내용을\n바로 믿고 있지는 않았니?' },
-      { type:'choice', bg:'classroom', question:'💭 어떻게 생각할까?',
-        options:['① 인터넷에 있으면 믿을 수 있어!', '② 한 번 더 확인해야 해!'],
+      { bg:'evening', left:'wonill', right:'miri', speaker:'miri', text:'안녕, 원일!' },
+      { bg:'evening', left:'wonill', right:'miri', speaker:'wonill', text:'누… 누구야?!' },
+      { bg:'evening', right:'miri', big:true, speaker:'miri', text:'나는 미디어 탐정 \'미리\'야!\n원일이가 미디어를 사용하는 데 문제를 겪고 있는 것 같아.' },
+      { bg:'evening', right:'miri', big:true, speaker:'miri', text:'혹시 원일이는 미디어가 무엇인지 알고 있어?' },
+      { bg:'evening', left:'wonill', right:'miri', speaker:'wonill', text:'미디어..?\n학교에서 배운 적이 있어.\nTV, 유튜브, SNS 등 정보를 전달해주는 수단 아니야?' },
+      { bg:'evening', right:'miri', big:true, speaker:'miri', text:'맞아! 잘 알고 있네!\n그럼, 미디어에서 제공하는 정보는 모두 사실이라고 생각해?' },
+      { type:'choice', bg:'evening', question:'💭 어떻게 생각하나요?',
+        options:['① 미디어는 믿을 만한 정보를 제공하는 곳이야!', '② 미디어에에 있는 정보가 사실이 아닐 수 있어!'],
         responses:[
-          { bg:'classroom', left:'miri', right:'wonill', speaker:'wonill', text:'나도 그렇게 생각했어...\n인터넷에 있으면 다 사실 아닌가?' },
-          { bg:'classroom', left:'miri', right:'wonill', speaker:'wonill', text:'그렇구나...\n확인해야 했던 건가? 몰랐어...' }
+          { bg:'evening', left:'wonill', right:'miri', speaker:'wonill', text:'나도 그렇게 생각했어...\n미디어는 믿을 만한 정보를 제공하는 거 아닌가?' },
+          { bg:'evening', left:'wonill', right:'miri', speaker:'wonill', text:'그렇구나...\n확인해야 했던 건가? 몰랐어...' }
         ]
       },
-      { bg:'classroom', left:'miri', right:'wonill', speaker:'miri', text:'좋은 정보도 있지만,\n사실이 아닌 정보도 있어.' },
-      { bg:'classroom', left:'miri', right:'wonill', speaker:'miri', text:'그래서 미디어를\n똑똑하게 읽는 방법을 배워야 해!' },
-      { bg:'classroom', left:'miri', right:'wonill', speaker:'wonill', text:'그럼 어떻게 해야 하지?' },
-      { bg:'classroom', left:'miri', right:'wonill', speaker:'miri', text:'그 비법을 알려줄\n5개의 탐정 미션이 있어!' },
+      { bg:'evening', left:'wonill', right:'miri', speaker:'miri', text:'좋은 정보도 있지만,\n사실이 아닌 정보도 있어.' },
+      { bg:'evening', left:'wonill', right:'miri', speaker:'miri', text:'그래서 미디어를\n똑똑하게 읽는 방법을 찾아야 해!' },
+      { bg:'evening', left:'wonill', right:'miri', speaker:'wonill', text:'그럼 어떻게 해야 하지?' },
+      { bg:'evening', left:'wonill', right:'miri', speaker:'miri', text:'미디어를 똑똑하게 읽는 방법을 알려줄\n5개의 탐정 미션이 있어!' },
       // Act 3 — 원일의 방
-      { bg:'room', left:'miri', right:'wonill', speaker:'wonill', text:'여긴… 내 집이잖아?' },
-      { bg:'room', left:'miri', right:'wonill', speaker:'miri', text:'맞아! 바로 여기가 원일이의 집이야!\n여기에 미디어 탐정이 되기 위한\n방법이 숨어 있어!' },
-      { bg:'room', left:'miri', speaker:'miri', text:'어디부터 시작해 볼까?\n원하는 곳을 눌러봐!', special:'room-items' },
-      { bg:'room', left:'miri', speaker:'miri', text:'컴퓨터 속 유튜브 영상에는\n클릭을 유도하는 함정이 숨어 있어! 🖥️', special:'room-items', highlight:'youtube' },
-      { bg:'room', left:'miri', speaker:'miri', text:'TV 속 뉴스는 같은 사실도\n다르게 말할 수 있어! 📺', special:'room-items', highlight:'news' },
-      { bg:'room', left:'miri', speaker:'miri', text:'SNS 게시물에는\n광고가 숨어 있을지 몰라! 📱', special:'room-items', highlight:'ad' },
-      { bg:'room', left:'miri', speaker:'miri', text:'단톡방 메시지에도\n가짜 정보가 있을 수 있어! 💬', special:'room-items', highlight:'ai' },
-      { bg:'room', left:'miri', speaker:'miri', text:'노트북으로 나만의 카드뉴스를 만들어\n비판적으로 표현해 보자! 💻', special:'room-items', highlight:'cardnews' },
-      { bg:'room', right:'wonill', speaker:'wonill', text:'다 재미있어 보여!\n어디부터 할까…?' },
-      { bg:'room', left:'miri', right:'wonill', speaker:'miri', text:'어떤 미션을 먼저 해도 좋아!\n5개를 모두 완료하면\n진짜 탐정이 될 수 있어!' },
-      { bg:'room', left:'miri', right:'wonill', speaker:'wonill', text:'좋아! 그럼 첫 번째 미션부터\n시작해 보자!',
+      { bg:'room', label:'🏠 원일의 방', left:'wonill', right:'miri', speaker:'wonill', text:'여긴… 내 집이잖아?' },
+      { bg:'room', left:'wonill', right:'miri', speaker:'miri', text:'맞아! 원일이의 집이야!\n여기에 미디어 탐정이 되기 위한\n방법이 숨어 있어!' },
+      { bg:'room', right:'miri', speaker:'miri', text:'어디부터 시작해 볼까?\n원하는 곳을 눌러봐!', special:'room-items' },
+      { bg:'room', right:'miri', speaker:'miri', text:'컴퓨터 속 유튜브 영상에는\n클릭을 유도하는 함정이 숨어 있어! 🖥️', special:'room-items', highlight:'youtube' },
+      { bg:'room', right:'miri', speaker:'miri', text:'TV 속 뉴스는 같은 사실도\n다르게 말할 수 있어! 📺', special:'room-items', highlight:'news' },
+      { bg:'room', right:'miri', speaker:'miri', text:'SNS 게시물에는\n광고가 숨어 있을지 몰라! 📱', special:'room-items', highlight:'ad' },
+      { bg:'room', right:'miri', speaker:'miri', text:'단톡방 메시지에도\n가짜 정보가 있을 수 있어! 💬', special:'room-items', highlight:'ai' },
+      { bg:'room', right:'miri', speaker:'miri', text:'노트북으로 나만의 카드뉴스를 만들어\n비판적으로 표현해 보자! 💻', special:'room-items', highlight:'cardnews' },
+      { bg:'room', left:'wonill', speaker:'wonill', text:'다 재미있어 보여!\n어떤 것부터 할까…?' },
+      { bg:'room', left:'wonill', right:'miri', speaker:'miri', text:'어떤 미션을 먼저 해도 좋아!\n5개를 모두 완료하면\n진짜 탐정이 될 수 있어!' },
+      { bg:'room', left:'wonill', right:'miri', speaker:'wonill', text:'좋아! 그럼 첫 번째 미션부터\n시작해 보자!',
         actionBtn:{ text:'첫 번째 미션 시작하기! ▶', fn:'startMissions' } },
     ];
 
     const DIAGNOSIS_BRIDGE_STORY = [
-      { bg:'room', left:'miri', speaker:'miri', text:'잠깐! 미션을 시작하기 전에,' },
-      { bg:'room', left:'miri', speaker:'miri', text:'너의 실력을 한번 확인해볼까? 🔍' },
-      { bg:'room', left:'miri', speaker:'miri', text:'아주 간단한 진단 평가야!\n부담 갖지 말고 도전해 봐! 😊',
+      { bg:'room', right:'miri', speaker:'miri', text:'잠깐! 미션을 시작하기 전에,' },
+      { bg:'room', right:'miri', speaker:'miri', text:'너의 실력을 한번 확인해볼까? 🔍' },
+      { bg:'room', right:'miri', speaker:'miri', text:'아주 간단한 진단 평가야!\n부담 갖지 말고 도전해 봐! 😊',
         actionBtn:{ text:'진단 평가 시작하기! 📋', fn:'goToDiagnosis' } },
     ];
 
     const AFTER_DIAGNOSIS_STORY = [
-      { bg:'room', left:'miri', speaker:'miri', text:'진단 끝났어! 👏\n실력을 잘 확인해봤지?' },
-      { bg:'room', left:'miri', speaker:'miri', text:'이제 본격적으로\n탐정 활동을 시작해보자!',
+      { bg:'room', right:'miri', speaker:'miri', text:'진단 끝났어! 👏\n실력을 잘 확인해봤지?' },
+      { bg:'room', right:'miri', speaker:'miri', text:'이제 본격적으로\n탐정 활동을 시작해보자!',
         actionBtn:{ text:'탐정 본부로 출발! 🚀', fn:'goToHome' } },
     ];
 
     const AFTER_ACTIVITY_STORY = {
       youtube: [
-        { bg:'room', left:'miri', speaker:'miri', text:'클릭베이트 함정을 찾아냈어! 🎉\n유튜브 탐정 등록 완료!' },
-        { bg:'room', left:'miri', speaker:'miri', text:'나머지 미션도 함께 해결해보자!',
+        { bg:'room', right:'miri', speaker:'miri', text:'클릭베이트 함정을 찾아냈어! 🎉\n유튜브 탐정 등록 완료!' },
+        { bg:'room', right:'miri', speaker:'miri', text:'나머지 미션도 함께 해결해보자!',
           actionBtn:{ text:'탐정 본부로 돌아가기 🏠', fn:'goToHome' } },
       ],
       news: [
-        { bg:'room', left:'miri', speaker:'miri', text:'두 기사를 꼼꼼히 비교했어! 👀\n뉴스 읽는 법이 달라졌을 거야!' },
-        { bg:'room', left:'miri', speaker:'miri', text:'다음 미션도 도전해보자!',
+        { bg:'room', right:'miri', speaker:'miri', text:'두 기사를 꼼꼼히 비교했어! 👀\n뉴스 읽는 법이 달라졌을 거야!' },
+        { bg:'room', right:'miri', speaker:'miri', text:'다음 미션도 도전해보자!',
           actionBtn:{ text:'탐정 본부로 돌아가기 🏠', fn:'goToHome' } },
       ],
       ad: [
-        { bg:'room', left:'miri', speaker:'miri', text:'광고를 귀신같이 찾아냈어! 🕵️\n이제 어떤 광고도 못 속여!' },
-        { bg:'room', left:'miri', speaker:'miri', text:'다음 미션도 도전해보자!',
+        { bg:'room', right:'miri', speaker:'miri', text:'광고를 귀신같이 찾아냈어! 🕵️\n이제 어떤 광고도 못 속여!' },
+        { bg:'room', right:'miri', speaker:'miri', text:'다음 미션도 도전해보자!',
           actionBtn:{ text:'탐정 본부로 돌아가기 🏠', fn:'goToHome' } },
       ],
       ai: [
-        { bg:'room', left:'miri', speaker:'miri', text:'AI가 만든 가짜 정보를\n꿰뚫어봤어! 🤖 대단한 탐정이야!' },
-        { bg:'room', left:'miri', speaker:'miri', text:'마지막 미션도 화이팅!',
+        { bg:'room', right:'miri', speaker:'miri', text:'AI가 만든 가짜 정보를\n꿰뚫어봤어! 🤖 대단한 탐정이야!' },
+        { bg:'room', right:'miri', speaker:'miri', text:'마지막 미션도 화이팅!',
           actionBtn:{ text:'탐정 본부로 돌아가기 🏠', fn:'goToHome' } },
       ],
       cardnews: [
-        { bg:'room', left:'miri', speaker:'miri', text:'나만의 카드뉴스 완성! ✏️\n비판적으로 표현하는 법까지 배웠어!' },
-        { bg:'room', left:'miri', speaker:'miri', text:'이제 모든 미션을 완료했어! 🌟',
+        { bg:'room', right:'miri', speaker:'miri', text:'나만의 카드뉴스 완성! ✏️\n비판적으로 표현하는 법까지 배웠어!' },
+        { bg:'room', right:'miri', speaker:'miri', text:'이제 모든 미션을 완료했어! 🌟',
           actionBtn:{ text:'탐정 본부로 돌아가기 🏠', fn:'goToHome' } },
       ],
     };
 
     const FINAL_STORY = [
-      { bg:'room', left:'miri', speaker:'miri', text:'고생했어! 🌟\n5개 미션을 모두 완료했어!' },
-      { bg:'room', left:'miri', speaker:'miri', text:'너의 미디어 리터러시 역량을\n확인해볼까?',
+      { bg:'room', right:'miri', speaker:'miri', text:'고생했어! 🌟\n5개 미션을 모두 완료했어!' },
+      { bg:'room', right:'miri', speaker:'miri', text:'너의 미디어 리터러시 역량을\n확인해볼까?',
         actionBtn:{ text:'역량 지형도 보기 🗺️', fn:'showRadar' } },
     ];
 
@@ -2380,8 +2411,11 @@
        스토리 엔진
     ============================ */
     let _scenes = [], _sceneIdx = 0, _storyOnDone = null, _currentActionFn = null;
+    let _storyBackScreen = 'screen-start';
 
     function playStory(scenes, onDone) {
+      const active = document.querySelector('.screen.active');
+      _storyBackScreen = active ? active.id : 'screen-start';
       _scenes = scenes;
       _sceneIdx = 0;
       _storyOnDone = onDone || null;
@@ -2389,25 +2423,37 @@
       _renderScene(0);
     }
 
-    function _charHtml(charId, w, h) {
+    function storyBack() {
+      if (!confirm('스토리에서 나가시겠어요?\n진행 상황이 저장되지 않을 수 있어요.')) return;
+      document.getElementById('story-phone-overlay').style.display = 'none';
+      document.getElementById('story-transition').style.display = 'none';
+      document.getElementById('story-choice-layer').style.display = 'none';
+      document.getElementById('story-char-miri').style.display = 'none';
+      showScreen(_storyBackScreen);
+    }
+
+    function _charHtml(charId, heightCss) {
       const emoji = CHAR_EMOJIS[charId] || '👤';
-      const sz = Math.round(h * 0.58);
       return `<img src="icons/char_${charId}.png"
-        style="width:${w}px;height:${h}px;object-fit:contain;object-position:bottom;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.55));display:none"
+        style="height:${heightCss};width:auto;display:none"
         onload="this.style.display='block';this.nextElementSibling.style.display='none'" alt="${charId}">
-        <div class="story-char-emoji" style="font-size:${sz}px">${emoji}</div>`;
+        <div class="story-char-emoji" style="font-size:80px">${emoji}</div>`;
+    }
+
+    function storyPhoneClose() {
+      document.getElementById('story-phone-overlay').style.display = 'none';
     }
 
     function _specialHtml(type, highlight) {
       if (type === 'yt') return `<div class="story-yt-card">
         <div class="story-yt-bar">🔴 YouTube · 조회수 98만회</div>
-        <div class="story-yt-body"><div class="story-yt-title">교실 스마트폰<br><strong>천만 허용?!</strong><br>안 보면 순해!!</div></div>
+        <div class="story-yt-body"><div class="story-yt-title">교실 스마트폰<br><strong>완전 허용?!</strong><br>무조건 확인!!</div></div>
         <div class="story-yt-foot">클릭베이트 유튜버 · 조회수 989,432</div></div>`;
       if (type === 'kakao') return `<div class="story-kakao-card">
         <div class="story-kakao-bar">💬 6학년 1반 단톡방</div>
         <div class="story-kakao-body"><div class="story-kakao-bubble">
           <span class="story-kakao-badge">🚨 속보</span>
-          <div class="story-kakao-msg">내일 학교<br>안 나온대!</div>
+          <div class="story-kakao-msg">내일 학교<br>안 가도 됨!</div>
           <div class="story-kakao-time">오후 9:15</div>
         </div></div></div>`;
       if (type === 'room-items') {
@@ -2433,11 +2479,19 @@
       const s = _scenes[idx];
       _sceneIdx = idx;
 
-      document.getElementById('story-bg').style.background = BG_CSS[s.bg] || BG_CSS.classroom;
+      if (s.label) {
+        const transEl = document.getElementById('story-transition');
+        document.getElementById('story-transition-text').innerHTML = s.label.replace(/\n/g, '<br>');
+        transEl.style.display = 'flex';
+        setTimeout(() => { transEl.style.display = 'none'; _renderSceneBody(s); }, 2000);
+        return;
+      }
+      _renderSceneBody(s);
+    }
 
-      const labelEl = document.getElementById('story-scene-label');
-      labelEl.style.display = s.label ? 'block' : 'none';
-      if (s.label) labelEl.textContent = s.label;
+    function _renderSceneBody(s) {
+      document.getElementById('story-bg').style.background = BG_CSS[s.bg] || BG_CSS.classroom;
+      document.getElementById('story-scene-label').style.display = 'none';
 
       if (s.type === 'choice') { _renderChoice(s); return; }
 
@@ -2447,28 +2501,61 @@
       const leftEl  = document.getElementById('story-char-left');
       const rightEl = document.getElementById('story-char-right');
       const bigEl   = document.getElementById('story-char-big');
+      const miriEl  = document.getElementById('story-char-miri');
 
-      if (s.big && s.left) {
+      if (s.big) {
+        const charId = s.left || s.right;
         leftEl.style.display = 'none'; rightEl.style.display = 'none';
-        bigEl.style.display = 'block';
-        bigEl.innerHTML = _charHtml(s.left, 190, 230);
+        if (charId === 'miri') {
+          bigEl.style.display = 'none';
+          miriEl.style.display = 'block';
+          miriEl.innerHTML = _charHtml('miri', '47vh');
+          miriEl.className = 'miri-center' + (s.speaker !== 'miri' ? ' dim' : '');
+        } else {
+          miriEl.style.display = 'none';
+          bigEl.style.display = 'block';
+          bigEl.innerHTML = _charHtml(charId, '62vh');
+        }
       } else {
         bigEl.style.display = 'none';
         if (s.left) {
-          leftEl.style.display = 'flex';
-          leftEl.innerHTML = _charHtml(s.left, 130, 180);
+          leftEl.style.display = 'block';
+          leftEl.innerHTML = _charHtml(s.left, '70vh');
           leftEl.className = 'story-char-slot' + (s.speaker !== s.left ? ' dim' : '');
         } else { leftEl.style.display = 'none'; }
         if (s.right) {
-          rightEl.style.display = 'flex';
-          rightEl.innerHTML = _charHtml(s.right, 130, 180);
-          rightEl.className = 'story-char-slot' + (s.speaker !== s.right ? ' dim' : '');
-        } else { rightEl.style.display = 'none'; }
+          if (s.right === 'miri') {
+            rightEl.style.display = 'none';
+            miriEl.style.display = 'block';
+            miriEl.innerHTML = _charHtml('miri', '47vh');
+            miriEl.className = (s.speaker !== 'miri' ? 'dim' : '');
+          } else {
+            miriEl.style.display = 'none';
+            rightEl.style.display = 'block';
+            rightEl.innerHTML = _charHtml(s.right, '70vh');
+            rightEl.className = 'story-char-slot' + (s.speaker !== s.right ? ' dim' : '');
+          }
+        } else {
+          rightEl.style.display = 'none';
+          miriEl.style.display = 'none';
+        }
       }
 
-      const specEl = document.getElementById('story-special-area');
-      if (s.special) { specEl.style.display = 'block'; specEl.innerHTML = _specialHtml(s.special, s.highlight); }
-      else { specEl.style.display = 'none'; }
+      const specEl    = document.getElementById('story-special-area');
+      const phoneEl   = document.getElementById('story-phone-overlay');
+      const phoneContent = document.getElementById('story-phone-content');
+      if (s.special === 'yt' || s.special === 'kakao') {
+        phoneContent.innerHTML = _specialHtml(s.special, s.highlight);
+        phoneEl.style.display = 'flex';
+        specEl.style.display = 'none';
+      } else if (s.special) {
+        phoneEl.style.display = 'none';
+        specEl.style.display = 'block';
+        specEl.innerHTML = _specialHtml(s.special, s.highlight);
+      } else {
+        phoneEl.style.display = 'none';
+        specEl.style.display = 'none';
+      }
 
       const nameEl = document.getElementById('story-speaker-name');
       nameEl.textContent = CHAR_NAMES[s.speaker] || s.speaker;
@@ -2496,7 +2583,9 @@
       document.getElementById('story-char-left').style.display  = 'none';
       document.getElementById('story-char-right').style.display = 'none';
       document.getElementById('story-char-big').style.display   = 'none';
+      document.getElementById('story-char-miri').style.display  = 'none';
       document.getElementById('story-special-area').style.display = 'none';
+      document.getElementById('story-phone-overlay').style.display = 'none';
       document.getElementById('story-action-layer').style.display = 'none';
       document.getElementById('story-dialogue-box').style.display = 'none';
       document.getElementById('story-choice-title').textContent = s.question;
@@ -2539,7 +2628,6 @@
        localStorage 키
     ============================ */
     const STORAGE_KEYS = {
-      NAME:              'miri_student_name',
       DIAGNOSIS_SCORE:   'miri_diagnosis_score',
       DIAGNOSIS_GRADE:   'miri_diagnosis_grade',
       ACTIVITY_YOUTUBE:  'miri_activity_youtube',
@@ -2635,16 +2723,6 @@
     /* ============================
        유틸리티
     ============================ */
-    function addPostposition(name) {
-      const code = name.charCodeAt(name.length - 1);
-      const hasBatchim = (code - 0xAC00) % 28 !== 0;
-      return name + (hasBatchim ? '아' : '야');
-    }
-
-    function getName() {
-      return localStorage.getItem(STORAGE_KEYS.NAME) || '';
-    }
-
     function getActivity(key) {
       try {
         const d = localStorage.getItem(key);
@@ -2675,23 +2753,7 @@
     /* ============================
        SCREEN 1 — 시작 화면 로직
     ============================ */
-    const nameInput = document.getElementById('name-input');
-    const startBtn  = document.getElementById('start-btn');
-
-    nameInput.addEventListener('input', () => {
-      startBtn.disabled = nameInput.value.trim().length === 0;
-    });
-
-    nameInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && nameInput.value.trim()) onStartClick();
-    });
-
-    startBtn.addEventListener('click', onStartClick);
-
     function onStartClick() {
-      const name = nameInput.value.trim();
-      if (!name) return;
-      localStorage.setItem(STORAGE_KEYS.NAME, name);
       playStory(MAIN_STORY, null);
     }
 
@@ -2798,10 +2860,9 @@
        SCREEN 4 — 진단 결과 로직
     ============================ */
     function showDiagnosisResult(score, grade) {
-      const name = getName();
       const info = GRADE_INFO[grade];
 
-      document.getElementById('result-name-title').textContent = `${name}의 미디어 탐정 레벨`;
+      document.getElementById('result-name-title').textContent = '나의 미디어 탐정 레벨';
       document.getElementById('result-grade-emoji').innerHTML = `<img src="${info.imgSrc}" style="width:88px;height:88px;object-fit:contain;" alt="${info.name}">`;
       document.getElementById('result-grade-name').textContent  = info.name;
       document.getElementById('result-score-chip').textContent  = `${score} / 4 정답`;
@@ -3614,8 +3675,7 @@
        SCREEN 12 — 역량 지형도
     ============================ */
     function showRadar() {
-      const name = getName();
-      document.getElementById('radar-title').textContent = name + '의 미디어 탐정';
+      document.getElementById('radar-title').textContent = '나의 미디어 탐정';
 
       const activityMap = [
         { key: 'youtube',  storageKey: STORAGE_KEYS.ACTIVITY_YOUTUBE,  elemId: 'radar-grade-youtube' },
@@ -3757,8 +3817,6 @@
     function resetApp() {
       Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
       _scenes = []; _sceneIdx = 0; _storyOnDone = null; _currentActionFn = null;
-      document.getElementById('name-input').value = '';
-      document.getElementById('start-btn').disabled = true;
       showScreen('screen-start');
     }
 
@@ -3766,6 +3824,7 @@
        앱 초기화
     ============================ */
     function init() {
+      localStorage.removeItem('miri_student_name');
       showScreen('screen-start');
 
       const offlineBanner = document.getElementById('offline-banner');
