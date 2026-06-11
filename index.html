@@ -54,9 +54,47 @@
 
     body {
       font-family: 'NeoDunggeunmo', 'Noto Sans KR', sans-serif;
-      background: var(--color-bg);
+      background: #000;
       color: var(--color-text);
-      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ============================
+       16:9 게임 컨테이너
+    ============================ */
+    .game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      overflow: hidden;
+    }
+
+    .game-canvas {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      height: 100%;
+      max-height: 100vh;
+      max-width: 100vw;
+      overflow: hidden;
+      background: var(--color-bg);
+    }
+
+    @media (max-aspect-ratio: 16/9) {
+      .game-canvas {
+        width: 100%;
+        height: auto;
+      }
     }
 
     /* ============================
@@ -64,11 +102,12 @@
     ============================ */
     .screen {
       display: none;
-      max-width: 640px;
-      margin: 0 auto;
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
       padding: 14px 20px 32px;
-      min-height: 100dvh;
       background: var(--color-bg);
+      box-sizing: border-box;
     }
 
     .screen.active {
@@ -163,28 +202,22 @@
     ============================ */
     #screen-start {
       padding: 0;
-      width: 100%;
-      max-width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      position: relative;
       background: #0a1628;
     }
 
     .start-image-wrapper {
       position: relative;
       display: inline-block;
-      max-width: 100vw;
-      max-height: 100dvh;
+      width: 100%;
+      height: 100%;
       line-height: 0;
     }
 
     .start-bg-img {
       display: block;
-      max-width: 100vw;
-      max-height: 100dvh;
-      width: auto;
-      height: auto;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .start-tap-btn {
@@ -910,16 +943,9 @@
        태블릿 대응 (768px+ 세로 모드)
     ============================ */
     @media (min-width: 768px) and (orientation: portrait) {
-      body { background: #EDE8DF; }
-      .screen {
-        max-width: 560px;
-        padding: 48px 40px 64px;
-        margin: 40px auto;
-        border-radius: 28px;
-        box-shadow: 0 8px 48px rgba(0,0,0,0.12);
-      }
+      body { background: #000; }
       #screen-story, #screen-home {
-        max-width: 100%; margin: 0; border-radius: 0; box-shadow: none; padding: 0;
+        padding: 0;
       }
       .app-title { font-size: 44px; }
       .act-icon-circle { width: 60px; height: 60px; font-size: 28px; }
@@ -931,8 +957,7 @@
     }
     /* 가로 모드 태블릿/데스크톱 */
     @media (min-width: 768px) and (orientation: landscape) {
-      #screen-story, #screen-home { max-width: 100%; margin: 0; padding: 0; }
-      .screen { max-width: 700px; }
+      #screen-story, #screen-home { padding: 0; }
     }
 
     /* ============================
@@ -1096,9 +1121,15 @@
     .sns-post.selected .sns-checkbox { background: var(--color-ad); border-color: var(--color-ad); color: white; }
     .sns-check-label { font-size: 14px; color: var(--color-text-sub); font-weight: 700; }
     .sns-post.selected .sns-check-label { color: #B8860B; }
+    .ad-classify-btns { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--color-border); flex-wrap: wrap; }
+    .ad-cls-btn { flex: 1; min-width: 80px; padding: 8px 4px; border-radius: 10px; border: 2px solid var(--color-border); background: white; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; color: var(--color-text); }
+    .ad-cls-btn:hover { border-color: var(--color-ad); }
+    .ad-cls-btn.selected-명확 { background: #FF6B6B; border-color: #FF6B6B; color: white; }
+    .ad-cls-btn.selected-의심 { background: #FFB800; border-color: #FFB800; color: #2D2D2D; }
+    .ad-cls-btn.selected-아님 { background: #4ECDC4; border-color: #4ECDC4; color: white; }
 
     /* ============================
-       SCREEN 9 — AI 탐정 (카카오톡)
+       SCREEN 9 — 허위정보 탐정 (카카오톡)
     ============================ */
     .kakao-wrap {
       border-radius: 12px; overflow: hidden; margin: 12px 0;
@@ -1259,7 +1290,7 @@
     /* ==============================
        STORY ENGINE
     ============================== */
-    #screen-story { padding:0; overflow:hidden; position:relative; min-height:100dvh; background:#1a1209; max-width:100%; margin:0; }
+    #screen-story { padding:0; overflow:hidden; background:#1a1209; }
     #screen-story.active { display:flex; flex-direction:column; }
     .story-bg { position:absolute; inset:0; background-size:cover; background-position:center top; background-repeat:no-repeat; }
     .story-bg-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.65) 100%); }
@@ -1397,9 +1428,9 @@
     /* ==============================
        ROOM HOME SCREEN
     ============================== */
-    #screen-home { padding:0; overflow:hidden; max-width:100%; margin:0; }
+    #screen-home { padding:0; overflow:hidden; }
     #screen-home.active { display:block; }
-    .room-wrap { position:relative; width:100%; min-height:100dvh; background:#2a1f0e; background-image:url('icons/bg_room.png'); background-size:cover; background-position:center; }
+    .room-wrap { position:relative; width:100%; height:100%; background:#2a1f0e; background-image:url('icons/bg_room.png'); background-size:cover; background-position:center; }
     .room-top-bar { position:absolute; top:0; left:0; right:0; padding:14px 16px; display:flex; justify-content:flex-end; z-index:10; }
     .room-progress-badge { background:rgba(0,0,0,0.75); border:1.5px solid rgba(255,230,109,0.35); border-radius:20px; padding:5px 14px; display:flex; align-items:center; gap:8px; }
     .room-progress-dots { display:flex; gap:5px; }
@@ -1476,7 +1507,6 @@
       .screen { padding: 8px 20px 18px; }
 
       /* ── 시작 화면: 가로 모드 ── */
-      #screen-start { max-width: 100vw; height: 100vh; height: 100dvh; }
 
       /* ── 앱 소개 화면 ── */
       .intro-greeting { font-size: 20px; margin-bottom: 10px; }
@@ -1575,6 +1605,12 @@
   <div id="offline-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#FF6B6B;color:white;text-align:center;padding:12px 16px;font-size:14px;font-weight:800;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
     📶 인터넷 연결이 없어! 와이파이나 데이터를 켜봐
   </div>
+
+  <!-- ============================
+       16:9 게임 캔버스 시작
+  ============================ -->
+  <div class="game-container">
+  <div class="game-canvas">
 
   <!-- ============================
        SCREEN 1 — 시작 화면
@@ -1730,7 +1766,8 @@
       <!-- 5개 활동 핫스팟 (방 배경 위 배치) -->
       <!-- 위치는 배경 이미지에 맞게 조정 필요 -->
       <!-- 유튜브: 컴퓨터 모니터 (중앙 오른쪽 책상) -->
-      <div class="room-hotspot" id="hs-youtube" style="top:18%;left:54%" onclick="goToActivity('screen-youtube')">
+      <!-- 유튜브: 축구 포스터 아래 -->
+      <div class="room-hotspot" id="hs-youtube" style="top:30%;left:62%;border:2px solid red;" onclick="goToActivity('screen-youtube')">
         <div class="room-hs-inner">
           <img src="icons/cursor.png" class="room-hs-icon" alt="유튜브">
           <div class="room-hs-done" id="hsdone-youtube" style="display:none">✓</div>
@@ -1738,8 +1775,8 @@
         <div class="room-hs-label">📺 유튜브 탐정</div>
       </div>
 
-      <!-- 뉴스: TV (왼쪽 벽면) -->
-      <div class="room-hotspot" id="hs-news" style="top:28%;left:5%" onclick="goToActivity('screen-news')">
+      <!-- 뉴스: TV 화면 중앙 -->
+      <div class="room-hotspot" id="hs-news" style="top:47%;left:17%;border:2px solid red;" onclick="goToActivity('screen-news')">
         <div class="room-hs-inner">
           <img src="icons/cursor.png" class="room-hs-icon" alt="뉴스">
           <div class="room-hs-done" id="hsdone-news" style="display:none">✓</div>
@@ -1747,8 +1784,8 @@
         <div class="room-hs-label">📰 뉴스 탐정</div>
       </div>
 
-      <!-- 광고: 스마트폰 (소파 오른쪽 끝) -->
-      <div class="room-hotspot" id="hs-ad" style="top:52%;right:3%" onclick="goToActivity('screen-ad')">
+      <!-- 광고: 소파 오른쪽 태블릿 -->
+      <div class="room-hotspot" id="hs-ad" style="top:75%;left:90%;border:2px solid red;" onclick="goToActivity('screen-ad')">
         <div class="room-hs-inner">
           <img src="icons/cursor.png" class="room-hs-icon" alt="광고">
           <div class="room-hs-done" id="hsdone-ad" style="display:none">✓</div>
@@ -1756,17 +1793,17 @@
         <div class="room-hs-label">🔍 광고 탐정</div>
       </div>
 
-      <!-- AI 탐정: 카카오톡 말풍선 (소파 위) -->
-      <div class="room-hotspot" id="hs-ai" style="top:38%;right:20%" onclick="goToActivity('screen-ai')">
+      <!-- 허위정보 탐정: 현재 위치 유지 -->
+      <div class="room-hotspot" id="hs-ai" style="top:38%;right:20%;border:2px solid red;" onclick="goToActivity('screen-ai')">
         <div class="room-hs-inner">
-          <img src="icons/cursor.png" class="room-hs-icon" alt="AI탐정">
+          <img src="icons/cursor.png" class="room-hs-icon" alt="허위정보탐정">
           <div class="room-hs-done" id="hsdone-ai" style="display:none">✓</div>
         </div>
-        <div class="room-hs-label">🤖 AI 탐정</div>
+        <div class="room-hs-label">🕵️ 허위정보 탐정</div>
       </div>
 
-      <!-- 카드뉴스: 노트북 (앞쪽 테이블 중앙) -->
-      <div class="room-hotspot" id="hs-cardnews" style="top:58%;left:36%" onclick="goToActivity('screen-cardnews')">
+      <!-- 카드뉴스: 노트북 화면 중앙 -->
+      <div class="room-hotspot" id="hs-cardnews" style="top:72%;left:38%;border:2px solid red;" onclick="goToActivity('screen-cardnews')">
         <div class="room-hs-inner">
           <img src="icons/cursor.png" class="room-hs-icon" alt="카드뉴스">
           <div class="room-hs-done" id="hsdone-cardnews" style="display:none">✓</div>
@@ -1841,7 +1878,7 @@
 
     <!-- 미션 배너 -->
     <div class="mission-banner" style="background: var(--color-news)">
-      <div class="mission-banner-title">📰 뉴스 비교</div>
+      <div class="mission-banner-title">📰 뉴스 탐정</div>
       <div class="mission-banner-desc">같은 주제, 다른 시각!<br>두 기사를 읽고 차이점을 찾아봐! 🧐</div>
     </div>
 
@@ -1881,8 +1918,8 @@
       <div id="news-q1-choices" class="choices-list">
         <button class="choice-btn" onclick="selectNewsQ1(0)"><span class="choice-num">①</span><span>그렇다. 기사에 나온 내용은 모두 확인된 사실이다</span></button>
         <button class="choice-btn" onclick="selectNewsQ1(1)"><span class="choice-num">②</span><span>아니다. 기사에는 사실뿐만 아니라 기자의 의견도 포함되어 있다</span></button>
-        <button class="choice-btn" onclick="selectNewsQ1(2)"><span class="choice-num">③</span><span>기사 A는 사실이고 기사 B는 거짓이다</span></button>
-        <button class="choice-btn" onclick="selectNewsQ1(3)"><span class="choice-num">④</span><span>기사는 기자의 의견만 담은 글이다</span></button>
+        <button class="choice-btn" onclick="selectNewsQ1(2)"><span class="choice-num">③</span><span>기사 A와 기사 B 중 한 곳만 의견이 포함되어 있다</span></button>
+        <button class="choice-btn" onclick="selectNewsQ1(3)"><span class="choice-num">④</span><span>수치나 통계가 있는 문장은 모두 기자의 의견이다</span></button>
       </div>
       <div id="news-q1-feedback" style="display:none"></div>
     </div>
@@ -1895,8 +1932,8 @@
       <div style="font-size:14px;font-weight:700;color:#4488FF;margin-bottom:8px;">🔵 기사 A — 디지털교육신문</div>
       <div id="news-q2a-choices" class="choices-list">
         <button class="choice-btn" onclick="selectNewsQ2A(0)"><span class="choice-num">①</span><span>초등학생의 74%가 AI 검색 덕분에 공부할 때 막히는 부분을 빠르게 해결할 수 있다고 응답했다.</span></button>
-        <button class="choice-btn" onclick="selectNewsQ2A(1)"><span class="choice-num">②</span><span>교사들도 학생들이 스스로 궁금증을 해결하려는 시도가 늘었다고 밝혔다.</span></button>
-        <button class="choice-btn" onclick="selectNewsQ2A(2)"><span class="choice-num">③</span><span>이를 적극 활용하도록 돕는 것이 교육의 방향이 되어야 한다.</span></button>
+        <button class="choice-btn" onclick="selectNewsQ2A(1)"><span class="choice-num">②</span><span>AI 검색 도입 이후 학생들의 자기주도학습 시간이 평균 18% 증가한 것으로 나타났다</span></button>
+        <button class="choice-btn" onclick="selectNewsQ2A(2)"><span class="choice-num">③</span><span>이를 적극 활용하도록 돕는 것이 앞으로 교육이 나아가야 할 방향이다</span></button>
       </div>
       <div id="news-q2a-feedback" style="display:none;margin-bottom:4px;"></div>
 
@@ -1905,8 +1942,8 @@
         <div style="font-size:14px;font-weight:700;color:#FF4444;margin-bottom:8px;">🔴 기사 B — 책사랑뉴스</div>
         <div id="news-q2b-choices" class="choices-list">
           <button class="choice-btn" onclick="selectNewsQ2B(0)"><span class="choice-num">①</span><span>전국 초등학교 도서관 이용률이 3년 새 41% 감소한 것으로 나타났다.</span></button>
-          <button class="choice-btn" onclick="selectNewsQ2B(1)"><span class="choice-num">②</span><span>예전엔 쉬는 시간마다 아이들로 북적였는데 요즘은 하루 종일 손님이 없는 날도 있다.</span></button>
-          <button class="choice-btn" onclick="selectNewsQ2B(2)"><span class="choice-num">③</span><span>책을 통해 스스로 생각하는 힘을 잃어가고 있는 것은 아닌지 깊이 우려된다.</span></button>
+          <button class="choice-btn" onclick="selectNewsQ2B(1)"><span class="choice-num">②</span><span>같은 기간 초등학생의 하루 평균 독서 시간은 23분에서 11분으로 절반 이하로 줄었다</span></button>
+          <button class="choice-btn" onclick="selectNewsQ2B(2)"><span class="choice-num">③</span><span>학생들이 책을 통해 스스로 생각하는 훈련 기회를 잃고 있는 것은 아닌지 살펴볼 필요가 있다</span></button>
         </div>
         <div id="news-q2b-feedback" style="display:none;"></div>
       </div>
@@ -1914,8 +1951,13 @@
 
     <!-- Q3 서술형 -->
     <div id="news-q3-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 같은 '기사'라는 매체인데 왜 두 기사의 관점이 서로 다를까?</div>
-      <div style="font-size:14px;color:var(--color-text-sub);margin-bottom:12px;">💡 기사를 쓴 사람은 모두 같은 생각을 가지고 있을까요?</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 두 기사는 같은 날 같은 주제를 다뤘는데 왜 이렇게 관점이 다를까?</div>
+      <div style="background:#F0F9FF;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.7;color:var(--color-text-sub);">
+        💡 힌트:<br>
+        📰 <b>매체 관점</b> — 두 기사를 쓴 곳은 어떤 신문사일까? 신문사마다 관심사가 다를 수 있어.<br>
+        ✍️ <b>기자 관점</b> — 같은 사실을 보고도 어떤 부분을 강조하느냐는 기자마다 달라.<br>
+        🔍 <b>자료 선택 관점</b> — 두 기사가 사용한 통계와 사례가 서로 달라. 왜 다른 자료를 골랐을까?
+      </div>
       <textarea id="news-q3" class="answer-textarea" placeholder="(최소 15자 이상 입력)" oninput="checkNewsBtn()"></textarea>
       <div id="news-q3-counter" class="char-counter">0 / 15자 이상</div>
       <button id="news-submit-btn" class="btn-submit" style="margin-top:16px" disabled onclick="submitNews()">탐정 보고서 제출하기! 🕵️</button>
@@ -1934,91 +1976,128 @@
       <div class="mission-banner-desc" style="color:#4A3800">숨은 광고를 잡아라!<br>아래 게시물 중 광고나 협찬이 숨어있어. 찾아봐! 💰</div>
     </div>
 
-    <!-- Q1: 복수선택 게시물 -->
+    <!-- Q1: 분류형 게시물별 3버튼 선택 -->
     <div id="ad-q1-section">
-      <div style="font-size:15px;font-weight:700;color:var(--color-text);margin-bottom:12px;">Q1. 광고나 협찬이 포함된 게시물을 모두 골라봐!</div>
+      <div style="font-size:15px;font-weight:700;color:var(--color-text);margin-bottom:4px;">Q1. 각 게시물을 보고 어떤 게시물인지 골라봐!</div>
+      <div style="font-size:13px;color:var(--color-text-sub);margin-bottom:12px;">각 게시물 아래 버튼 중 하나를 선택해줘</div>
 
       <!-- 게시물 A: 일반 게시물 -->
-      <div class="sns-post" id="ad-post-A" onclick="toggleAdPost('A')">
+      <div class="sns-post" id="ad-post-A">
         <div class="sns-profile">
           <div class="sns-profile-left">
             <div class="sns-avatar" style="background:#27AE60">도</div>
-            <span class="sns-username">초6_김도윤</span>
+            <div>
+              <span class="sns-username">초6_김도윤</span>
+              <div style="font-size:11px;color:var(--color-text-sub);">2시간 전</div>
+            </div>
           </div>
           <span class="sns-more">···</span>
         </div>
         <div class="sns-img" style="background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)">🏃</div>
         <div class="sns-body">오늘 체육 시간에 피구 하다가 손가락 삐끗했는데 그래도 이겼다ㅋㅋ 우리 반 짱 💪</div>
-        <div class="sns-actions">
-          <span>♡ 47</span>
-          <span>💬 8</span>
+        <div class="sns-actions"><span>♡ 47</span><span>💬 8</span></div>
+        <div class="ad-classify-btns" id="ad-classify-A">
+          <button class="ad-cls-btn" onclick="classifyPost('A','명확')">광고 명확</button>
+          <button class="ad-cls-btn" onclick="classifyPost('A','의심')">의심해야 할 것</button>
+          <button class="ad-cls-btn" onclick="classifyPost('A','아님')">광고 아님</button>
         </div>
-        <div class="sns-check-row">
-          <span class="sns-check-label">선택</span>
-          <div class="sns-checkbox">✓</div>
-        </div>
+        <div id="ad-cls-feedback-A" style="display:none;font-size:13px;padding:8px 0;"></div>
       </div>
 
       <!-- 게시물 B: [협찬] 표시 광고 -->
-      <div class="sns-post" id="ad-post-B" onclick="toggleAdPost('B')">
+      <div class="sns-post" id="ad-post-B">
         <div class="sns-profile">
           <div class="sns-profile-left">
             <div class="sns-avatar" style="background:#E6B800">나</div>
-            <span class="sns-username">키즈유튜버_나연</span>
+            <div>
+              <span class="sns-username">키즈유튜버_나연</span>
+              <div style="font-size:11px;color:var(--color-text-sub);">1일 전</div>
+            </div>
           </div>
           <span class="sns-more">···</span>
         </div>
         <span class="sns-ad-badge">🏷️ [협찬]</span>
         <div class="sns-img" style="background: linear-gradient(135deg, #FFED4D 0%, #FFB700 100%)">🎨</div>
-        <div class="sns-body">여러분 이 색연필 진짜 대박이에요!! 색이 너무 예쁘고 발색도 미쳤어요🎨 저 이거 쓰고 그림 실력 두 배 늘었잖아요?? 이거 안 사면 진짜 손해!! 지금 당장 사세요!! 링크 프로필에 있어요👆</div>
-        <div class="sns-actions">
-          <span>♡ 3,204</span>
-          <span>💬 241</span>
+        <div class="sns-body">여러분 이 색연필 진짜 대박이에요!! 색이 너무 예쁘고 발색도 미쳤어요🎨 이거 안 사면 진짜 손해!! 링크 프로필에 있어요👆</div>
+        <div class="sns-actions"><span>♡ 3,204</span><span>💬 241</span></div>
+        <div class="ad-classify-btns" id="ad-classify-B">
+          <button class="ad-cls-btn" onclick="classifyPost('B','명확')">광고 명확</button>
+          <button class="ad-cls-btn" onclick="classifyPost('B','의심')">의심해야 할 것</button>
+          <button class="ad-cls-btn" onclick="classifyPost('B','아님')">광고 아님</button>
         </div>
-        <div class="sns-check-row">
-          <span class="sns-check-label">선택</span>
-          <div class="sns-checkbox">✓</div>
-        </div>
+        <div id="ad-cls-feedback-B" style="display:none;font-size:13px;padding:8px 0;"></div>
       </div>
 
-      <!-- 게시물 C: (광고) 표시 있지만 자연스러운 말투 -->
-      <div class="sns-post" id="ad-post-C" onclick="toggleAdPost('C')">
+      <!-- 게시물 C: (광고) 표시 있는 광고 -->
+      <div class="sns-post" id="ad-post-C">
         <div class="sns-profile">
           <div class="sns-profile-left">
             <div class="sns-avatar" style="background:#4488FF">민</div>
-            <span class="sns-username">테크리뷰_민서</span>
+            <div>
+              <span class="sns-username">테크리뷰_민서</span>
+              <div style="font-size:11px;color:var(--color-text-sub);">3일 전</div>
+            </div>
           </div>
           <span class="sns-more">···</span>
         </div>
         <div class="sns-img" style="background: linear-gradient(135deg, #89CFF0 0%, #4488FF 100%)">💻</div>
-        <div class="sns-body">(광고) 요즘 새로 쓰기 시작한 갤럭시 탭인데... 솔직히 말하면 화면이 너무 선명하고 필기감이 진짜 좋아서 수업 시간에 필기할 때 완전 편해졌어요. 억지로 쓰는 게 아니라 진짜 좋아서 추천하는 거예요 😊</div>
-        <div class="sns-actions">
-          <span>♡ 892</span>
-          <span>💬 63</span>
+        <div class="sns-body">(광고) 요즘 새로 쓰기 시작한 갤럭시 탭인데... 솔직히 말하면 화면이 너무 선명하고 필기감이 진짜 좋아서 수업 시간에 필기할 때 완전 편해졌어요 😊</div>
+        <div class="sns-actions"><span>♡ 892</span><span>💬 63</span></div>
+        <div class="ad-classify-btns" id="ad-classify-C">
+          <button class="ad-cls-btn" onclick="classifyPost('C','명확')">광고 명확</button>
+          <button class="ad-cls-btn" onclick="classifyPost('C','의심')">의심해야 할 것</button>
+          <button class="ad-cls-btn" onclick="classifyPost('C','아님')">광고 아님</button>
         </div>
-        <div class="sns-check-row">
-          <span class="sns-check-label">선택</span>
-          <div class="sns-checkbox">✓</div>
-        </div>
+        <div id="ad-cls-feedback-C" style="display:none;font-size:13px;padding:8px 0;"></div>
       </div>
 
+      <!-- 게시물 D: 뒷광고 (표시 없음) -->
+      <div class="sns-post" id="ad-post-D">
+        <div class="sns-profile">
+          <div class="sns-profile-left">
+            <div class="sns-avatar" style="background:#9B59B6">준</div>
+            <div>
+              <span class="sns-username">먹방유튜버_준혁</span>
+              <div style="font-size:11px;color:var(--color-text-sub);">5시간 전</div>
+            </div>
+          </div>
+          <span class="sns-more">···</span>
+        </div>
+        <div class="sns-img" style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)">🍔</div>
+        <div class="sns-body">오늘 학교 끝나고 친구들이랑 이 햄버거 먹었는데 진짜 미쳤다😭 요즘 여기 자꾸 생각나서 벌써 세 번째 방문ㅋㅋ 여러분도 꼭 가보세요 강추!!</div>
+        <div class="sns-actions"><span>♡ 5,841</span><span>💬 387</span></div>
+        <div class="ad-classify-btns" id="ad-classify-D">
+          <button class="ad-cls-btn" onclick="classifyPost('D','명확')">광고 명확</button>
+          <button class="ad-cls-btn" onclick="classifyPost('D','의심')">의심해야 할 것</button>
+          <button class="ad-cls-btn" onclick="classifyPost('D','아님')">광고 아님</button>
+        </div>
+        <div id="ad-cls-feedback-D" style="display:none;font-size:13px;padding:8px 0;"></div>
+      </div>
+
+      <div id="ad-q1-common-feedback" style="display:none;background:#FFF3E0;border-radius:12px;padding:12px;margin-top:8px;font-size:13px;line-height:1.6;"></div>
     </div>
 
     <!-- Q2 객관식 -->
     <div id="ad-q2-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q2. 게시물 C는 맨 앞에 (광고)라고 적혀있는데도 광고처럼 잘 안 느껴져. 왜 그럴까?</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q2. 게시물 D처럼 광고 표시가 없는 게시물을 왜 의심해봐야 할까?</div>
       <div id="ad-q2-choices" class="choices-list">
-        <button class="choice-btn" onclick="selectAdQ2(0)"><span class="choice-num">①</span><span>실제로 광고가 아니기 때문이다</span></button>
-        <button class="choice-btn" onclick="selectAdQ2(1)"><span class="choice-num">②</span><span>자연스러운 일상 말투로 써서 광고 느낌이 안 들기 때문이다</span></button>
-        <button class="choice-btn" onclick="selectAdQ2(2)"><span class="choice-num">③</span><span>좋아요 수가 적어서 믿음이 가기 때문이다</span></button>
-        <button class="choice-btn" onclick="selectAdQ2(3)"><span class="choice-num">④</span><span>유명한 채널이라 신뢰할 수 있기 때문이다</span></button>
+        <button class="choice-btn" onclick="selectAdQ2(0)"><span class="choice-num">①</span><span>좋아요 수가 많으면 믿을 수 있는 정보이기 때문이다</span></button>
+        <button class="choice-btn" onclick="selectAdQ2(1)"><span class="choice-num">②</span><span>광고라는 것을 숨기고 사람들에게 제품을 홍보할 수 있기 때문이다</span></button>
+        <button class="choice-btn" onclick="selectAdQ2(2)"><span class="choice-num">③</span><span>유명한 사람이 올린 게시물은 항상 협찬을 받은 것이기 때문이다</span></button>
+        <button class="choice-btn" onclick="selectAdQ2(3)"><span class="choice-num">④</span><span>음식이나 제품이 나오는 게시물은 무조건 광고이기 때문이다</span></button>
       </div>
       <div id="ad-q2-feedback" style="display:none"></div>
     </div>
 
     <!-- Q3 서술형 -->
     <div id="ad-q3-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 광고인지 드러내지 않았지만 사실 제품을 광고하는 것을 '뒷광고'라고 해. 이런 뒷광고에는 어떤 문제가 생길 수 있을까?</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 지수는 좋아하는 유튜버가 강력 추천한 영양제를 엄마한테 졸라서 비싼 돈을 주고 샀어. 근데 나중에 알고 보니 그 유튜버는 그 회사에서 돈을 받고 올린 <b>뒷광고</b>였고, 영양제는 별로 효과가 없었어. 이러한 뒷광고가 만들어진다면, 우리는 어떤 문제를 겪을 수 있을까?</div>
+      <div style="background:#FFF3E0;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.7;color:var(--color-text-sub);">
+        💡 힌트:<br>
+        🛒 <b>소비자 입장</b> — 광고인지 모르고 봤을 때 어떤 피해가 생길까?<br>
+        🤝 <b>신뢰 관점</b> — 나중에 뒷광고인 걸 알게 되면 어떤 감정이 들까?<br>
+        📋 <b>공정성 관점</b> — 표시를 안 하는 게 왜 불공평한 걸까?
+      </div>
       <textarea id="ad-q3" class="answer-textarea" placeholder="(최소 10자 이상 입력)" oninput="checkAdBtn()"></textarea>
       <div id="ad-q3-counter" class="char-counter">0 / 10자 이상</div>
       <button id="ad-submit-btn" class="btn-submit" style="margin-top:16px" disabled onclick="submitAd()">탐정 보고서 제출하기! 🕵️</button>
@@ -2026,14 +2105,14 @@
   </div>
 
   <!-- ============================
-       SCREEN 9 — AI 탐정
+       SCREEN 9 — 허위정보 탐정
   ============================ -->
   <div id="screen-ai" class="screen">
     <button class="back-btn" onclick="showScreen('screen-home')"><img src="icons/ui/icon_back.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 홈으로</button>
 
     <!-- 미션 배너 -->
     <div class="mission-banner" style="background: var(--color-ai)">
-      <div class="mission-banner-title">🤖 AI 탐정</div>
+      <div class="mission-banner-title">🕵️ 허위정보 탐정</div>
       <div class="mission-banner-desc">가짜 정보를 탐지하라!<br>단톡방에 이상한 정보가 있어. 의심스러운 걸 찾아봐! 🚨</div>
     </div>
 
@@ -2081,11 +2160,10 @@
             <div class="chat-name-time">지호 &nbsp;오후 2:15</div>
             <div class="chat-bubble suspicious">
               🚨속보🚨<br>
-              여기서 학교 안간대! 내일 논다!!
-              <div class="fake-news-card">
-                📰 &nbsp;<strong>긴급 공지</strong><br>
-                <span style="color:#999">출처: 알 수 없음...</span><br>
-                <span style="font-size:11px;color:#aaa">※ 공식 기관 미확인</span>
+              내일 태풍으로 전국 초등학교 휴교 결정!! 엄마가 보내준 거 ㄹㅇ임
+              <div class="fake-news-card" style="margin-top:8px;background:#fff;border-radius:8px;padding:8px;border:1px solid #ddd;">
+                <div style="font-size:11px;font-weight:700;color:#333;">🚨 [긴급] 내일 태풍으로 전국 초등학교 휴교 결정</div>
+                <div style="font-size:10px;color:#999;margin-top:4px;">출처 없음 · 날짜 없음 · 공식 로고 없음</div>
               </div>
             </div>
           </div>
@@ -2105,33 +2183,40 @@
 
     <!-- Q1 객관식 -->
     <div id="ai-q1-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q1. '속보'라고 올린 지호가 잘못한 점은 무엇일까요?</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q1. '속보'라고 올린 지호가 잘못한 점은 무엇일까?</div>
       <div id="ai-q1-choices" class="choices-list">
         <button class="choice-btn" onclick="selectAiQ1(0)"><span class="choice-num">①</span><span>확인되지 않은 정보를 '속보'라며 사실처럼 퍼뜨렸다</span></button>
         <button class="choice-btn" onclick="selectAiQ1(1)"><span class="choice-num">②</span><span>태풍 소식을 처음으로 단톡방에 꺼냈다</span></button>
-        <button class="choice-btn" onclick="selectAiQ1(2)"><span class="choice-num">③</span><span>내일 학교에 가기 싫어서 가짜 정보를 만들었다</span></button>
-        <button class="choice-btn" onclick="selectAiQ1(3)"><span class="choice-num">④</span><span>친구들에게 학교 소식을 빠르게 알려주려 했다</span></button>
+        <button class="choice-btn" onclick="selectAiQ1(2)"><span class="choice-num">③</span><span>친구들이 걱정할까봐 빠르게 알려주려 했다</span></button>
+        <button class="choice-btn" onclick="selectAiQ1(3)"><span class="choice-num">④</span><span>출처를 확인하고 사진을 올렸다</span></button>
       </div>
       <div id="ai-q1-feedback" style="display:none"></div>
     </div>
 
-    <!-- Q2 객관식 -->
+    <!-- Q2 복수선택형 -->
     <div id="ai-q2-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:16px;">Q2. 지호의 '속보' 메시지를 의심해야 하는 이유로 옳지 않은 것은?</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:6px;">Q2. 지호의 메시지가 허위정보일 수 있다는 단서를 모두 골라봐!</div>
+      <div style="font-size:13px;color:var(--color-text-sub);margin-bottom:12px;">여러 개 선택 가능해</div>
       <div id="ai-q2-choices" class="choices-list">
-        <button class="choice-btn" onclick="selectAiQ2(0)"><span class="choice-num">①</span><span>'속보'라는 자극적인 표현으로 긴급한 느낌을 준다</span></button>
-        <button class="choice-btn" onclick="selectAiQ2(1)"><span class="choice-num">②</span><span>공식 기관에서 직접 확인된 내용이다</span></button>
-        <button class="choice-btn" onclick="selectAiQ2(2)"><span class="choice-num">③</span><span>누가 처음 만든 정보인지 출처가 불분명하다</span></button>
-        <button class="choice-btn" onclick="selectAiQ2(3)"><span class="choice-num">④</span><span>뉴스나 공식 발표 없이 갑자기 올라온 정보다</span></button>
+        <button class="choice-btn" onclick="toggleAiQ2(0)"><span class="choice-num">①</span><span>'속보'라는 자극적인 표현으로 긴급한 느낌을 준다</span></button>
+        <button class="choice-btn" onclick="toggleAiQ2(1)"><span class="choice-num">②</span><span>어디서 처음 나온 정보인지 출처가 없다</span></button>
+        <button class="choice-btn" onclick="toggleAiQ2(2)"><span class="choice-num">③</span><span>공식적으로 발표된 내용이다</span></button>
+        <button class="choice-btn" onclick="toggleAiQ2(3)"><span class="choice-num">④</span><span>뉴스나 선생님 공지 없이 갑자기 올라온 정보다</span></button>
       </div>
       <div id="ai-q2-feedback" style="display:none"></div>
     </div>
 
     <!-- Q3 서술형 -->
     <div id="ai-q3-section" style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
-      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 단톡방에서 이런 메시지를 받으면 어떻게 해야 할까?<br>내가 할 행동을 써봐!</div>
-      <textarea id="ai-answer" class="answer-textarea" placeholder="(최소 10자 이상 입력)" oninput="checkAiBtn()"></textarea>
-      <div id="ai-char-counter" class="char-counter">0 / 10자 이상</div>
+      <div style="font-size:16px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 나도 6학년 1반 단톡방에 있어. 지호의 메시지를 보고 친구들이 "학교 안 가도 되겠다!"며 들떠있어. 나는 어떻게 해야 할까?</div>
+      <div style="background:#F0F4FF;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.7;color:var(--color-text-sub);">
+        💡 힌트:<br>
+        🔍 <b>확인 관점</b> — 이 정보가 사실인지 어떻게 확인할 수 있을까?<br>
+        🙅 <b>전파 관점</b> — 확인되지 않은 정보를 다른 곳에 퍼뜨리면 어떻게 될까?<br>
+        🤝 <b>행동 관점</b> — 주변 어른이나 공식 기관에 어떻게 도움을 구할 수 있을까?
+      </div>
+      <textarea id="ai-answer" class="answer-textarea" placeholder="(최소 15자 이상 입력)" oninput="checkAiBtn()"></textarea>
+      <div id="ai-char-counter" class="char-counter">0 / 15자 이상</div>
       <button id="ai-submit-btn" class="btn-submit" style="margin-top:16px" disabled onclick="submitAi()">탐정 보고서 제출하기! 🕵️</button>
     </div>
   </div>
@@ -2261,7 +2346,7 @@
         <span class="radar-result-grade" id="radar-grade-youtube"><img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 미완료</span>
       </div>
       <div class="radar-result-item">
-        <span class="radar-result-name">📰 뉴스 비교</span>
+        <span class="radar-result-name">📰 뉴스 탐정</span>
         <span class="radar-result-grade" id="radar-grade-news"><img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 미완료</span>
       </div>
       <div class="radar-result-item">
@@ -2269,7 +2354,7 @@
         <span class="radar-result-grade" id="radar-grade-ad"><img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 미완료</span>
       </div>
       <div class="radar-result-item">
-        <span class="radar-result-name">🤖 AI 탐정</span>
+        <span class="radar-result-name">🕵️ 허위정보 탐정</span>
         <span class="radar-result-grade" id="radar-grade-ai"><img src="icons/ui/icon_incomplete.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px;" alt=""> 미완료</span>
       </div>
       <div class="radar-result-item">
@@ -2286,6 +2371,9 @@
 
     <button class="btn-reset" onclick="resetApp()">처음부터 다시 도전하기! 🔄</button>
   </div>
+
+  </div><!-- /.game-canvas -->
+  </div><!-- /.game-container -->
 
   <!-- ============================
        JAVASCRIPT
@@ -2390,7 +2478,7 @@
           actionBtn:{ text:'탐정 본부로 돌아가기 🏠', fn:'goToHome' } },
       ],
       ai: [
-        { bg:'room', right:'miri', speaker:'miri', text:'AI가 만든 가짜 정보를\n꿰뚫어봤어! 🤖 대단한 탐정이야!' },
+        { bg:'room', right:'miri', speaker:'miri', text:'단톡방 허위정보를\n꿰뚫어봤어! 🕵️ 대단한 탐정이야!' },
         { bg:'room', right:'miri', speaker:'miri', text:'마지막 미션도 화이팅!',
           actionBtn:{ text:'탐정 본부로 돌아가기 🏠', fn:'goToHome' } },
       ],
@@ -2672,13 +2760,13 @@
         choices: [
           "기사를 쓴 매체가 어디인지 확인한다",
           "제목과 본문 내용이 일치하는지 살펴본다",
-          "구독자가 많은 유튜버가 말한 내용이면 믿어도 된다",
+          "한 매체의 기사만 읽고 사건을 판단한다",
           "같은 사건을 다른 매체에서도 어떻게 다루는지 비교해본다"
         ],
         answer: 2,
-        correct: "✅ 맞아! 구독자 수가 많다고 정보가 정확한 건 아니야!",
-        wrong: "❌ 다시 생각해봐! 구독자 수는 정보의 정확성과 관계없어.",
-        explanation: "이걸 '편향성'이라고 해요!\n\n편향성이란 한쪽 방향으로 치우쳐서 정보를 전달하는 것을 말해. 구독자 수나 유명함이 정보의 정확성을 보장하지 않아. 뉴스를 읽을 때는 누가 썼는지, 어떤 관점인지, 다른 매체는 어떻게 보도하는지 비교하는 습관이 중요해!"
+        correct: "✅ 맞아! 하나의 기사만 읽으면 한쪽 관점만 보게 돼. 여러 매체를 비교하는 습관이 중요해!",
+        wrong: "❌ 다시 생각해봐! 한 매체의 기사만 읽으면 편향된 정보를 그대로 받아들일 수 있어.",
+        explanation: "이걸 '편향성'이라고 해요!\n\n편향성이란 한쪽 방향으로 치우쳐서 정보를 전달하는 것을 말해. 뉴스를 읽을 때는 누가 썼는지, 어떤 관점인지, 다른 매체는 어떻게 보도하는지 비교하는 습관이 중요해!"
       },
       {
         q: "좋아하는 유튜버가 영상에서 특정 제품을 강력 추천하고 있어. 이때 가장 올바른 행동은?",
@@ -2746,8 +2834,10 @@
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       const el = document.getElementById(id);
-      if (el) el.classList.add('active');
-      window.scrollTo(0, 0);
+      if (el) {
+        el.classList.add('active');
+        el.scrollTop = 0;
+      }
     }
 
     /* ============================
@@ -2925,11 +3015,11 @@
     const ACTIVITY_INTRO = {
       youtube: { color:'var(--color-youtube)', icon:'📺', title:'유튜브 탐정 미션!',
         lines:['유튜브 영상 썸네일이 3개 있어!','그 중에서 <b>클릭베이트(과장·낚시 제목)</b> 영상을 찾아봐!','','✅ 할 일:','1️⃣ 썸네일 중 1개를 선택해줘','2️⃣ 왜 클릭베이트라고 생각했는지 이유도 써줘!'] },
-      news:    { color:'var(--color-news)',    icon:'📰', title:'뉴스 비교 미션!',
+      news:    { color:'var(--color-news)',    icon:'📰', title:'뉴스 탐정 미션!',
         lines:['같은 주제를 다룬 두 기사를 비교해봐!','','✅ 할 일:','1️⃣ <b>기사 A 탭, 기사 B 탭</b>을 모두 눌러 읽어봐','2️⃣ 아래 질문들에 차례로 모두 답해줘!'] },
       ad:      { color:'var(--color-ad)', textColor:'#2D2D2D', icon:'🔍', title:'광고 탐정 미션!',
         lines:['아래 3개 게시물 중 광고가 숨어있어!','⚠️ <b>복수 선택 가능</b> — 광고 게시물이 2개야!','','✅ 할 일:','1️⃣ 광고 게시물을 <b>모두</b> 선택해줘 (2개!)','2️⃣ 아래 질문들에도 모두 답해줘!'] },
-      ai:      { color:'var(--color-ai)',      icon:'🤖', title:'AI 탐정 미션!',
+      ai:      { color:'var(--color-ai)',      icon:'🕵️', title:'허위정보 탐정 미션!',
         lines:['단톡방에 <b>의심스러운 메시지</b>가 올라왔어!','','✅ 할 일:','1️⃣ 대화 내용을 읽어봐','2️⃣ 객관식 질문 2개에 답해줘','3️⃣ 내가 직접 어떻게 할지도 써줘!'] },
       cardnews:{ color:'var(--color-cardnews)',icon:'✏️', title:'카드뉴스 만들기 미션!',
         lines:['자료를 읽고 카드뉴스를 직접 만들어봐!','','✅ 할 일:','1️⃣ 클릭베이트 없는 <b>제목</b>을 선택해줘','2️⃣ 이미지를 고르고 이유를 써줘','3️⃣ 핵심 메시지도 작성해줘!'] },
@@ -3022,9 +3112,9 @@
     ============================ */
     const ACTIVITY_META = {
       youtube:  { title: '📺 유튜브 탐정 결과' },
-      news:     { title: '📰 뉴스 비교 결과' },
+      news:     { title: '📰 뉴스 탐정 결과' },
       ad:       { title: '🔍 광고 탐정 결과' },
-      ai:       { title: '🤖 AI 탐정 결과' },
+      ai:       { title: '🕵️ 허위정보 탐정 결과' },
       cardnews: { title: '✏️ 카드뉴스 만들기 결과' },
     };
 
@@ -3337,18 +3427,17 @@
       const q1Correct  = newsQ1Selected === 1;
       const q2aCorrect = newsQ2ASelected === 2;
       const q2bCorrect = newsQ2BSelected === 2;
-      const mcScore    = (q1Correct ? 20 : 0);
-      const q2Score    = (q2aCorrect ? 50 : 0) + (q2bCorrect ? 50 : 0);
+      const mcScore    = (q1Correct ? 10 : 0) + (q2aCorrect ? 10 : 0) + (q2bCorrect ? 10 : 0);
       const mcDetails  = [
         { q: 'Q1. 기사 내용은 모두 사실일까?', correct: q1Correct,
-          why: q1Correct ? '맞아! 기사에는 사실과 기자의 의견이 함께 있어. "~이 되어야 한다", "~우려된다" 같은 표현이 의견이야!'
+          why: q1Correct ? '맞아! 기사에는 사실과 기자의 의견이 함께 있어. "~이 되어야 한다", "~필요가 있다" 같은 표현이 의견이야!'
                          : '정답은 ②번이야. 기사에는 사실과 기자의 의견이 함께 담겨 있어.' },
         { q: 'Q2A. 기사 A에서 의견이 드러난 문장은?', correct: q2aCorrect,
-          why: q2aCorrect ? '맞아! "~이 되어야 한다"는 기자의 의견을 나타내는 표현이야!'
-                          : '정답은 ③번이야. "이를 적극 활용하도록 돕는 것이 교육의 방향이 되어야 한다"가 기자의 의견이야.' },
+          why: q2aCorrect ? '맞아! "~이 나아가야 할 방향이다"는 기자의 의견을 나타내는 표현이야!'
+                          : '정답은 ③번이야. "이를 적극 활용하도록 돕는 것이 앞으로 교육이 나아가야 할 방향이다"가 기자의 의견이야.' },
         { q: 'Q2B. 기사 B에서 의견이 드러난 문장은?', correct: q2bCorrect,
-          why: q2bCorrect ? '맞아! "~우려된다"는 기자의 걱정과 의견이 담긴 표현이야!'
-                          : '정답은 ③번이야. "잃어가고 있는 것은 아닌지 깊이 우려된다"가 기자의 의견이야.' },
+          why: q2bCorrect ? '맞아! "~살펴볼 필요가 있다"는 기자의 걱정과 의견이 담긴 표현이야!'
+                          : '정답은 ③번이야. "잃고 있는 것은 아닌지 살펴볼 필요가 있다"가 기자의 의견이야.' },
       ];
 
       setSubmitLoading('news-submit-btn', true);
@@ -3361,9 +3450,9 @@
           return;
         }
         const q3Score    = res.score || 0;
-        const finalScore = Math.round(mcScore + q2Score * 0.4 + q3Score * 0.4);
+        const finalScore = mcScore + q3Score;
         const pass       = finalScore >= 50;
-        localStorage.setItem(STORAGE_KEYS.ACTIVITY_NEWS, JSON.stringify({ mcScore, q2Score, q3Score, finalScore, pass, completed: true, feedback: res.feedback, mcDetails }));
+        localStorage.setItem(STORAGE_KEYS.ACTIVITY_NEWS, JSON.stringify({ mcScore, q3Score, finalScore, pass, completed: true, feedback: res.feedback, mcDetails }));
         goToResult('news');
       } catch (e) {
         showInlineMsg('news-submit-btn', getSubmitErrorMsg(e), true);
@@ -3375,16 +3464,44 @@
     /* ============================
        SCREEN 8 — 광고 탐정
     ============================ */
-    let adSelectedPosts = new Set();
+    const adClassify = { A: null, B: null, C: null, D: null };
     let adQ2Selected = null;
 
-    function toggleAdPost(id) {
-      if (adSelectedPosts.has(id)) {
-        adSelectedPosts.delete(id);
-        document.getElementById(`ad-post-${id}`).classList.remove('selected');
-      } else {
-        adSelectedPosts.add(id);
-        document.getElementById(`ad-post-${id}`).classList.add('selected');
+    function classifyPost(postId, choice) {
+      adClassify[postId] = choice;
+      const btns = document.querySelectorAll(`#ad-classify-${postId} .ad-cls-btn`);
+      btns.forEach(b => { b.classList.remove('selected-명확', 'selected-의심', 'selected-아님'); });
+      const choiceMap = { '명확': 0, '의심': 1, '아님': 2 };
+      btns[choiceMap[choice]].classList.add(`selected-${choice}`);
+      const fbEl = document.getElementById(`ad-cls-feedback-${postId}`);
+      if (fbEl) {
+        let msg = '';
+        if (postId === 'A') {
+          if (choice === '아님') msg = '✅ 맞아! 일반 일상 게시물이야.';
+          else if (choice === '의심') msg = '🤔 광고 표시도 없고 제품 추천도 없는 일반 게시물이야.';
+          else msg = '❌ 광고 표시도, 제품 홍보도 없는 일반 게시물이야.';
+        } else if (postId === 'B') {
+          if (choice === '명확') msg = '✅ 맞아! [협찬] 표시가 있어서 광고가 명확해!';
+          else if (choice === '의심') msg = '🤔 [협찬] 표시가 있으니 "광고 명확"이 더 정확해!';
+          else msg = '❌ [협찬] 표시가 있어. 이건 광고야!';
+        } else if (postId === 'C') {
+          if (choice === '명확') msg = '✅ 맞아! (광고) 표시가 있어서 광고가 명확해!';
+          else if (choice === '의심') msg = '🤔 (광고)라고 적혀 있으니 "광고 명확"이 더 정확해!';
+          else msg = '❌ 맨 앞에 (광고)라고 적혀있어. 이건 광고야!';
+        } else if (postId === 'D') {
+          if (choice === '의심') msg = '✅ 정확해! 표시가 없다고 광고가 아닌 건 아니야. 의심하는 습관이 중요해! 🔍';
+          else if (choice === '명확') msg = '🤔 광고일 수도 있어. 근데 확실하지 않을 땐 "의심해야 할 것"으로 보는 게 더 정확해!';
+          else msg = '❌ 광고 표시가 없다고 광고가 아닌 건 아니야. "세 번째 방문", "강추" 같은 표현이 있다면 의심해봐야 해!';
+        }
+        fbEl.innerHTML = msg;
+        fbEl.style.display = 'block';
+      }
+      if (Object.values(adClassify).every(v => v !== null)) {
+        const commonFb = document.getElementById('ad-q1-common-feedback');
+        if (commonFb) {
+          commonFb.innerHTML = '잘 봤어! B([협찬])와 C((광고))는 표시가 있어서 찾기 쉬워. 근데 D처럼 표시가 없어도 대가를 받고 올린 뒷광고가 훨씬 더 위험해. 항상 의심하는 눈이 필요해! 🔍';
+          commonFb.style.display = 'block';
+        }
       }
       checkAdBtn();
     }
@@ -3403,17 +3520,23 @@
       const len = q3.value.length;
       const counter = document.getElementById('ad-q3-counter');
       if (counter) { counter.textContent = `${len} / 10자 이상`; counter.className = 'char-counter' + (len >= 10 ? ' ok' : ''); }
+      const allClassified = Object.values(adClassify).every(v => v !== null);
       const submitBtn = document.getElementById('ad-submit-btn');
-      if (submitBtn) submitBtn.disabled = !(adSelectedPosts.size > 0 && adQ2Selected !== null && len >= 10);
+      if (submitBtn) submitBtn.disabled = !(allClassified && adQ2Selected !== null && len >= 10);
     }
 
     function resetAdScreen() {
-      adSelectedPosts = new Set();
+      ['A', 'B', 'C', 'D'].forEach(id => { adClassify[id] = null; });
       adQ2Selected = null;
-      ['A', 'B', 'C'].forEach(id => {
-        const el = document.getElementById(`ad-post-${id}`);
-        if (el) { el.classList.remove('selected'); el.style.pointerEvents = ''; }
+      ['A', 'B', 'C', 'D'].forEach(id => {
+        document.querySelectorAll(`#ad-classify-${id} .ad-cls-btn`).forEach(b => {
+          b.classList.remove('selected-명확', 'selected-의심', 'selected-아님');
+        });
+        const fb = document.getElementById(`ad-cls-feedback-${id}`);
+        if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
       });
+      const commonFb = document.getElementById('ad-q1-common-feedback');
+      if (commonFb) { commonFb.style.display = 'none'; commonFb.innerHTML = ''; }
       document.querySelectorAll('#ad-q2-choices .choice-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
       const q2fb = document.getElementById('ad-q2-feedback');
       if (q2fb) { q2fb.style.display = 'none'; q2fb.textContent = ''; }
@@ -3423,26 +3546,26 @@
     }
 
     async function submitAd() {
-      const q3 = document.getElementById('ad-q3').value;
-      const hasB = adSelectedPosts.has('B');
-      const hasC = adSelectedPosts.has('C');
-      const hasA = adSelectedPosts.has('A');
-      const q1Correct  = hasB && hasC && !hasA;
-      const q2Correct  = adQ2Selected === 1;
-      const postLabels = [...adSelectedPosts].sort().join(', ');
-      const mcDetails  = [
-        { q: 'Q1. 광고/협찬이 포함된 게시물을 모두 골라봐!', correct: q1Correct,
-          why: q1Correct ? '맞아! B는 [협찬] 표시, C는 (광고) 표시가 있어. 둘 다 광고야!'
-                         : `선택한 게시물: ${postLabels}번. 정답은 B, C야. B는 [협찬], C는 (광고) 표시가 있어.` },
-        { q: 'Q2. 게시물 C가 광고처럼 안 느껴지는 이유는?', correct: q2Correct,
-          why: q2Correct ? '정답! 자연스러운 일상 말투로 써서 광고인지 모르기 쉬워. 항상 (광고), [협찬] 표시를 확인하자!'
-                         : '정답은 ②번이야. 자연스러운 일상 말투로 써서 광고인지 알아채기 어려운 거야.' },
+      const q3text = document.getElementById('ad-q3').value;
+      const scoreA = adClassify['A'] === '아님' ? 4 : 0;
+      const scoreB = adClassify['B'] === '명확' ? 6 : 0;
+      const scoreC = adClassify['C'] === '명확' ? 6 : 0;
+      const scoreD = adClassify['D'] === '의심' ? 4 : adClassify['D'] === '명확' ? 2 : 0;
+      const q1Score   = scoreA + scoreB + scoreC + scoreD;
+      const q2Correct = adQ2Selected === 1;
+      const q2Score   = q2Correct ? 10 : 0;
+      const mcScore   = q1Score + q2Score;
+      const mcDetails = [
+        { q: 'Q1. 각 게시물 분류', correct: q1Score >= 16,
+          why: `A:${adClassify['A']} B:${adClassify['B']} C:${adClassify['C']} D:${adClassify['D']} (${q1Score}/20점) — A는 광고아님, B·C는 광고명확, D는 의심해야할것이 정답이야.` },
+        { q: 'Q2. 광고 표시 없는 게시물을 의심해야 하는 이유', correct: q2Correct,
+          why: q2Correct ? '정답! 광고 표시가 없어도 대가를 받고 홍보하는 뒷광고일 수 있어. 자연스러운 말투일수록 더 꼼꼼히 살펴봐야 해!'
+                         : '정답은 ②번이야. 표시가 없어도 광고인 척 숨기고 홍보할 수 있어. 이게 바로 뒷광고가 위험한 이유야!' },
       ];
-      const mcScore   = (q1Correct ? 30 : 0) + (q2Correct ? 20 : 0);
 
       setSubmitLoading('ad-submit-btn', true);
       try {
-        const res = await callClaudeAPI('ad', q3);
+        const res = await callClaudeAPI('ad', q3text);
         if (res.unsafe) {
           showInlineMsg('ad-submit-btn', '⚠️ 다시 써줘! 좋은 말로 이유를 설명해줘 😊', true);
           setSubmitLoading('ad-submit-btn', false);
@@ -3450,7 +3573,7 @@
           return;
         }
         const essayScore = res.score || 0;
-        const finalScore = Math.round(mcScore + essayScore * 0.5);
+        const finalScore = mcScore + essayScore;
         const pass       = finalScore >= 50;
         localStorage.setItem(STORAGE_KEYS.ACTIVITY_AD, JSON.stringify({ mcScore, essayScore, finalScore, pass, completed: true, feedback: res.feedback, mcDetails }));
         goToResult('ad');
@@ -3462,10 +3585,10 @@
     }
 
     /* ============================
-       SCREEN 9 — AI 탐정
+       SCREEN 9 — 허위정보 탐정
     ============================ */
     let aiQ1Selected = null;
-    let aiQ2Selected = null;
+    const aiQ2Selected = new Set();
 
     function selectAiQ1(idx) {
       aiQ1Selected = idx;
@@ -3475,11 +3598,14 @@
       checkAiBtn();
     }
 
-    function selectAiQ2(idx) {
-      aiQ2Selected = idx;
-      document.querySelectorAll('#ai-q2-choices .choice-btn').forEach((b, i) => {
-        b.classList.toggle('selected', i === idx);
-      });
+    function toggleAiQ2(idx) {
+      if (aiQ2Selected.has(idx)) {
+        aiQ2Selected.delete(idx);
+        document.querySelectorAll('#ai-q2-choices .choice-btn')[idx].classList.remove('selected');
+      } else {
+        aiQ2Selected.add(idx);
+        document.querySelectorAll('#ai-q2-choices .choice-btn')[idx].classList.add('selected');
+      }
       checkAiBtn();
     }
 
@@ -3487,14 +3613,14 @@
       const text = document.getElementById('ai-answer').value;
       const len  = text.length;
       const counter = document.getElementById('ai-char-counter');
-      counter.textContent = `${len} / 10자 이상`;
-      counter.className = 'char-counter' + (len >= 10 ? ' ok' : '');
-      document.getElementById('ai-submit-btn').disabled = !(aiQ1Selected !== null && aiQ2Selected !== null && len >= 10);
+      counter.textContent = `${len} / 15자 이상`;
+      counter.className = 'char-counter' + (len >= 15 ? ' ok' : '');
+      document.getElementById('ai-submit-btn').disabled = !(aiQ1Selected !== null && aiQ2Selected.size > 0 && len >= 15);
     }
 
     function resetAiScreen() {
       aiQ1Selected = null;
-      aiQ2Selected = null;
+      aiQ2Selected.clear();
       document.querySelectorAll('#ai-q1-choices .choice-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
       const q1fb = document.getElementById('ai-q1-feedback');
       if (q1fb) { q1fb.style.display = 'none'; q1fb.textContent = ''; }
@@ -3508,16 +3634,20 @@
     async function submitAi() {
       const answer    = document.getElementById('ai-answer').value;
       const q1Correct = aiQ1Selected === 0;
-      const q2Correct = aiQ2Selected === 1;
+      const correctQ2Set = new Set([0, 1, 3]);
+      const q2CorrectCount = [...aiQ2Selected].filter(i => correctQ2Set.has(i)).length;
+      const q2WrongCount   = [...aiQ2Selected].filter(i => !correctQ2Set.has(i)).length;
+      const q2Score = (q2CorrectCount === 3 && q2WrongCount === 0) ? 20 : (q2CorrectCount === 2 && q2WrongCount === 0) ? 10 : 0;
+      const q2Correct = q2Score === 20;
       const mcDetails = [
         { q: 'Q1. 지호가 잘못한 점은?', correct: q1Correct,
-          why: q1Correct ? '맞아! 확인되지 않은 정보를 사실처럼 퍼뜨리면 안 돼!'
-                         : '정답은 ①번이야. 출처 없는 정보를 "속보"라며 사실처럼 퍼뜨린 게 문제야.' },
-        { q: 'Q2. 의심해야 하는 이유로 옳지 않은 것은?', correct: q2Correct,
-          why: q2Correct ? '정답! "공식 기관에서 직접 확인된 내용이다"는 사실이 아니야. 출처를 항상 확인하자!'
-                         : '정답은 ②번이야. 지호의 정보는 공식 기관에서 확인된 내용이 아니었어.' },
+          why: q1Correct ? '맞아! 아무리 선의라도 확인되지 않은 정보를 사실처럼 퍼뜨리면 안 돼!'
+                         : '정답은 ①번이야. 출처 없는 정보를 "속보"라며 사실처럼 퍼뜨린 게 문제야. 선의라도 확인은 꼭 해야 해.' },
+        { q: `Q2. 허위정보 단서 복수선택 (${q2Score}/20점)`, correct: q2Score > 0,
+          why: q2Score === 20 ? '맞아! ①②④가 모두 허위정보 단서야. 자극적인 표현, 출처 없음, 공식 확인 없음 — 이 세 가지가 보이면 일단 의심해봐!'
+                              : '정답은 ①②④번이야. 지호의 메시지는 공식 발표가 아니야. 출처와 공식 확인이 없는 정보는 항상 의심해봐야 해!' },
       ];
-      const mcScore   = (q1Correct ? 20 : 0) + (q2Correct ? 20 : 0);
+      const mcScore   = (q1Correct ? 10 : 0) + q2Score;
 
       setSubmitLoading('ai-submit-btn', true);
       try {
@@ -3529,7 +3659,7 @@
           return;
         }
         const essayScore = res.score || 0;
-        const finalScore = Math.round(mcScore + essayScore * 0.6);
+        const finalScore = mcScore + essayScore;
         const pass       = finalScore >= 50;
         localStorage.setItem(STORAGE_KEYS.ACTIVITY_AI, JSON.stringify({ mcScore, essayScore, finalScore, pass, completed: true, feedback: res.feedback, mcDetails }));
         goToResult('ai');
@@ -3717,7 +3847,7 @@
       const summaryEl = document.getElementById('radar-summary');
       summaryEl.textContent = 'AI 선생님이 열심히 분석 중이야... ⏳';
 
-      const labels = { youtube: '유튜브 탐정', news: '뉴스 비교', ad: '광고 탐정', ai: 'AI 탐정', cardnews: '카드뉴스' };
+      const labels = { youtube: '유튜브 탐정', news: '뉴스 탐정', ad: '광고 탐정', ai: '허위정보 탐정', cardnews: '카드뉴스' };
       const lines = Object.keys(labels).map(function(key) {
         const d = activityResults[key];
         if (!d || !d.completed) return labels[key] + ': 미완료';
@@ -3749,7 +3879,7 @@
       function ang(i) { return (Math.PI * 2 * i) / n - Math.PI / 2; }
 
       // 배경 격자
-      [50, 65, 85].forEach(level => {
+      [25, 50, 75].forEach(level => {
         ctx.beginPath();
         const ratio = level / 100;
         for (let i = 0; i < n; i++) {
