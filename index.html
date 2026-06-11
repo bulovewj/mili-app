@@ -1914,8 +1914,8 @@
       <div class="news-img-a" style="background:linear-gradient(135deg,#E3F2FD 0%,#90CAF9 100%)">💻</div>
       <div class="news-headline">AI 검색으로 궁금증 바로 해결,<br>학생 학습 효율 높아졌다</div>
       <hr class="news-divider">
-      <div class="news-body">한국교육개발원이 발표한 설문 결과에 따르면 초등학생의 74%가 "AI 검색 덕분에 공부할 때 막히는 부분을 빠르게 해결할 수 있다"고 응답했다. 교사들도 "학생들이 스스로 궁금증을 해결하려는 시도가 늘었다"고 밝혔다. AI 검색은 이제 학생들에게 없어서는 안 될 학습 도구가 되었으며, 이를 적극 활용하도록 돕는 것이 교육의 방향이 되어야 한다.</div>
-      <div class="news-byline">2025.05.12 &nbsp;|&nbsp; 교육팀 기자</div>
+      <div class="news-body">한국교육개발원이 발표한 설문 결과에 따르면 초등학생의 74%가 "AI 검색 덕분에 공부할 때 막히는 부분을 빠르게 해결할 수 있다"고 응답했다. 또한 AI 검색 도입 이후 학생들의 자기주도학습 시간이 평균 18% 증가한 것으로 나타났다. 이를 적극 활용하도록 돕는 것이 앞으로 교육이 나아가야 할 방향이다.</div>
+      <div class="news-byline">2025.05.12 오전 9:32 &nbsp;|&nbsp; 교육팀 기자</div>
     </div>
 
     <!-- 기사 B -->
@@ -1924,10 +1924,10 @@
         <span class="news-dot" style="background:#FF4444"></span>🔴 책사랑뉴스
       </div>
       <div class="news-img-b" style="background:linear-gradient(135deg,#4E342E 0%,#795548 100%);font-size:56px;height:160px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">📚</div>
-      <div class="news-headline">AI만 찾는 아이들, 도서관 텅텅…<br>깊이 있는 사고력 잃어가</div>
+      <div class="news-headline">AI만 찾는 아이들, 도서관 이용 급감…<br>깊이 있는 사고력 잃어가</div>
       <hr class="news-divider">
-      <div class="news-body">전국 초등학교 도서관 이용률이 3년 새 41% 감소한 것으로 나타났다. 한 초등학교 사서 교사는 "예전엔 쉬는 시간마다 아이들로 북적였는데 요즘은 하루 종일 손님이 없는 날도 있다"고 말했다. 빠른 답을 주는 AI 검색에 익숙해진 아이들이 책을 통해 스스로 생각하는 힘을 잃어가고 있는 것은 아닌지 깊이 우려된다.</div>
-      <div class="news-byline">2025.05.12 &nbsp;|&nbsp; 사회팀 기자</div>
+      <div class="news-body">전국 초등학교 도서관 이용률이 3년 새 41% 감소한 것으로 나타났다. 같은 기간 초등학생의 하루 평균 독서 시간은 23분에서 11분으로 절반 이하로 줄었다. 빠른 답을 주는 AI 검색에 익숙해진 학생들이 책을 통해 스스로 생각하는 훈련 기회를 잃고 있는 것은 아닌지 살펴볼 필요가 있다.</div>
+      <div class="news-byline">2025.05.12 오후 2:15 &nbsp;|&nbsp; 사회팀 기자</div>
     </div>
 
     <!-- Q1 객관식 -->
@@ -2284,7 +2284,7 @@
       <div id="cn-title-feedback" style="display:none;margin-bottom:12px;"></div>
 
       <!-- 이미지 선택 -->
-      <div id="cn-rest-form">
+      <div id="cn-rest-form" style="display:none">
         <!-- 2. 이미지 선택 -->
         <span class="cn-form-label" style="margin-top:16px;display:block;">2️⃣ 이미지 선택</span>
         <div class="cn-img-options">
@@ -2758,7 +2758,7 @@
         answer: 1,
         correct: "✅ 맞아! 공유 횟수가 많다고 해서 사실인 건 아니야. 가짜 정보도 빠르게 퍼질 수 있어!",
         wrong: "❌ 다시 생각해봐! 공유 횟수가 많다고 사실인 건 아니야.",
-        explanation: null
+        explanation: "이걸 '허위정보'라고 해요!\n\n허위정보란 사실이 아닌 내용을 마치 사실인 것처럼 만들어 퍼뜨리는 정보야. 공유 횟수가 많거나 유명한 사람이 올린 정보라도 틀릴 수 있어. 정보를 볼 때는 항상 \"이게 사실일까? 어디서 나온 정보일까?\"를 먼저 생각하는 습관이 중요해!"
       },
       {
         q: "유튜브에서 \"이걸 보면 인생이 바뀜!! (100% 실화)\"라는 제목의 영상을 발견했어. 이때 가장 올바른 행동은?",
@@ -3265,8 +3265,9 @@
         img: 'contents/youtube1.png',
         title: '[단독] 교육부, 초등학교 스마트폰 수업 중 사용 전면 금지 추진',
         channel: 'KBS 뉴스',
-        views: '87만회',
+        views: '87만회', uploadTime: '3일 전', duration: '4:32', verified: true,
         badge: { text: '단독', bg: '#FF0000', color: '#FFFFFF' },
+        content: '교육부가 수업 중 스마트폰 사용을 금지하는 방안을 검토 중이며, 내년부터 시범 운영할 예정이라는 공식 발표 내용',
         isClickbait: false,
       },
       {
@@ -3274,8 +3275,9 @@
         img: 'contents/youtube2.png',
         title: '학교 스마트폰 사용 어떻게 바뀌나? | 교육부 공식 발표',
         channel: '교육부 공식채널',
-        views: '31만회',
+        views: '31만회', uploadTime: '2일 전', duration: '8:14', verified: true,
         badge: { text: '공식', bg: '#003580', color: '#FFFFFF' },
+        content: '교육부 담당자가 직접 스마트폰 정책 변경 사항을 설명하는 공식 안내 영상',
         isClickbait: false,
       },
       {
@@ -3283,8 +3285,9 @@
         img: 'contents/youtube3.png',
         title: '[안보면 손해!] 교실에서 스마트폰 무조건 쓰세요!! 🔥 (충격 실화)',
         channel: '어린이크리에이터_뚜뚜',
-        views: '1,204만회',
+        views: '1,204만회', uploadTime: '1일 전', duration: '12:47', verified: false,
         badge: null,
+        content: '스마트폰 사용은 어린이의 당연한 권리이며 학교에서 막는 건 부당하다는 주장. 출처나 근거 없이 감정적 주장만 이어짐',
         isClickbait: true,
       },
     ];
@@ -3299,17 +3302,33 @@
           <div class="yt-thumb" style="position:relative;overflow:hidden;">
             <img src="${t.img}" style="width:100%;height:100%;object-fit:contain;display:block;" alt="${t.title}">
             ${t.badge ? `<div style="position:absolute;top:8px;left:8px;background:${t.badge.bg};color:${t.badge.color};font-size:11px;font-weight:900;padding:3px 8px;border-radius:4px;">${t.badge.text}</div>` : ''}
+            <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.75);color:#fff;font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;">${t.duration}</div>
             <div class="yt-check-badge">✓</div>
           </div>
           <div class="yt-video-meta">
-            <div class="yt-channel-avatar" style="background:#888;font-size:12px;font-weight:700;">${t.channel.charAt(0)}</div>
+            <div class="yt-channel-avatar" style="background:${t.verified ? '#1565C0' : '#888'};font-size:12px;font-weight:700;">${t.channel.charAt(0)}</div>
             <div class="yt-video-info">
               <div class="yt-video-title">${t.title}</div>
-              <div class="yt-video-sub">${t.channel} · 조회수 ${t.views}</div>
+              <div class="yt-video-sub">${t.channel}${t.verified ? ' <span style="color:#1565C0;font-size:11px;font-weight:900;">✓</span>' : ''} · 조회수 ${t.views} · ${t.uploadTime}</div>
             </div>
+          </div>
+          <div style="margin:0 12px 10px;border-top:1px solid #f0f0f0;padding-top:8px;">
+            <button onclick="event.stopPropagation();toggleYtContent('${t.id}')" id="yt-toggle-btn-${t.id}" style="background:#f5f5f5;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;color:#555;width:100%;text-align:left;">
+              📄 영상 내용 보기 ▼
+            </button>
+            <div id="yt-content-${t.id}" style="display:none;background:#f9f9f9;border-radius:0 0 8px 8px;padding:10px 12px;font-size:12px;color:#555;line-height:1.6;">${t.content}</div>
           </div>
         </div>
       `).join('');
+    }
+
+    function toggleYtContent(id) {
+      const el  = document.getElementById(`yt-content-${id}`);
+      const btn = document.getElementById(`yt-toggle-btn-${id}`);
+      if (!el || !btn) return;
+      const open = el.style.display === 'none';
+      el.style.display  = open ? 'block' : 'none';
+      btn.textContent   = open ? '📄 영상 내용 닫기 ▲' : '📄 영상 내용 보기 ▼';
     }
 
     function resetYoutubeScreen() {
@@ -3741,6 +3760,19 @@
       });
       const titleData = CN_TITLES.find(t => t.id === id);
       if (titleData) document.getElementById('cn-prev-title').textContent = titleData.text;
+
+      // 피드백 표시
+      const fbEl = document.getElementById('cn-title-feedback');
+      if (fbEl && titleData) {
+        fbEl.style.display = 'block';
+        fbEl.style.cssText = `display:block;margin-bottom:12px;padding:10px 14px;border-radius:10px;font-size:14px;line-height:1.5;${titleData.isClickbait ? 'background:#FFF0F0;color:#D32F2F;' : 'background:#F0FFF4;color:#1B5E20;'}`;
+        fbEl.textContent = titleData.feedback;
+      }
+
+      // Step 1 관문: C(정답)일 때만 Step 2 이후 활성화
+      const restForm = document.getElementById('cn-rest-form');
+      if (restForm) restForm.style.display = (titleData && !titleData.isClickbait) ? 'block' : 'none';
+
       checkCnBtn();
     }
 
@@ -3793,6 +3825,8 @@
       });
       const fbEl = document.getElementById('cn-title-feedback');
       if (fbEl) { fbEl.style.display = 'none'; fbEl.textContent = ''; }
+      const restForm = document.getElementById('cn-rest-form');
+      if (restForm) restForm.style.display = 'none';
       CN_IMAGES.forEach(img => {
         const el = document.getElementById(`cn-img-${img.id}`);
         if (el) el.classList.remove('selected');
