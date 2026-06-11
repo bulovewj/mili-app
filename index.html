@@ -1835,12 +1835,12 @@
       <div class="mission-banner-title">📺 유튜브 탐정</div>
       <div class="mission-banner-desc">
         클릭베이트 영상을 찾아라!<br>
-        아래 3개 영상 중 클릭베이트가 숨어있어.<br>
-        찾아서 이유를 써봐! 🔍
+        Q1·Q2 객관식 + Q3 서술형을 모두 풀어봐! 🔍
       </div>
     </div>
 
-    <!-- 유튜브 UI 재현 -->
+    <!-- Q1 라벨 + 유튜브 UI 재현 -->
+    <div style="font-size:15px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q1. 세 영상 중 클릭베이트인 것을 골라봐! (10점)</div>
     <div style="border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08)">
       <div class="yt-bar">
         <div class="yt-logo">
@@ -1854,16 +1854,34 @@
       </div>
     </div>
 
-    <!-- 서술형 입력 -->
-    <div class="answer-section">
-      <div class="answer-label">왜 클릭베이트라고 생각했어? 이유를 써봐! ✍️</div>
+    <!-- Q2: 클릭베이트 이유 (객관식) -->
+    <div style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
+      <div style="font-size:15px;font-weight:700;color:var(--color-text);margin-bottom:12px;">Q2. C 영상이 클릭베이트인 이유로 가장 알맞은 것은? (20점)</div>
+      <div id="yt-q2-choices" class="choices-list">
+        <button class="choice-btn" onclick="selectYoutubeQ2(0)"><span class="choice-num">①</span><span>조회수가 가장 많아서 사람들이 많이 봤기 때문이다</span></button>
+        <button class="choice-btn" onclick="selectYoutubeQ2(1)"><span class="choice-num">②</span><span>제목에 과장된 표현을 써서 클릭을 유도하고, 근거 없는 주장만 담겨있기 때문이다</span></button>
+        <button class="choice-btn" onclick="selectYoutubeQ2(2)"><span class="choice-num">③</span><span>인증마크가 없는 채널이라 믿을 수 없기 때문이다</span></button>
+        <button class="choice-btn" onclick="selectYoutubeQ2(3)"><span class="choice-num">④</span><span>영상 길이가 가장 길어서 내용이 많기 때문이다</span></button>
+      </div>
+      <div id="yt-q2-feedback" style="display:none;margin-top:8px;font-size:13px;line-height:1.6;"></div>
+    </div>
+
+    <!-- Q3: 서술형 입력 -->
+    <div style="background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-top:16px;">
+      <div style="font-size:15px;font-weight:700;color:var(--color-text);margin-bottom:8px;">Q3. 친구 민준이가 "이 영상 조회수가 1,204만이니까 진짜지!"라고 했어. 어떻게 말해줄래? (70점)</div>
+      <div style="background:#FFF3E0;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.7;color:var(--color-text-sub);">
+        💡 힌트:<br>
+        📢 <b>제목 관점</b> — 제목에 어떤 표현이 들어있어? 그게 왜 문제일까?<br>
+        🎬 <b>내용 관점</b> — 실제 영상 내용이 믿을 만한 근거가 있을까?<br>
+        🔢 <b>조회수 관점</b> — 조회수가 많으면 정말 믿을 수 있는 걸까?
+      </div>
       <textarea
         id="yt-answer"
         class="answer-textarea"
-        placeholder="영상 제목이나 내용에서 수상한 점을 써봐!"
+        placeholder="(최소 15자 이상 입력)"
         oninput="checkYoutubeBtn()"
       ></textarea>
-      <div class="char-counter" id="yt-char-counter">0 / 10자 이상</div>
+      <div class="char-counter" id="yt-char-counter">0 / 15자 이상</div>
       <button id="yt-submit-btn" class="btn-submit" disabled onclick="submitYoutube()">
         탐정 보고서 제출하기! 🕵️
       </button>
@@ -3014,7 +3032,7 @@
 
     const ACTIVITY_INTRO = {
       youtube: { color:'var(--color-youtube)', icon:'📺', title:'유튜브 탐정 미션!',
-        lines:['유튜브 영상 썸네일이 3개 있어!','그 중에서 <b>클릭베이트(과장·낚시 제목)</b> 영상을 찾아봐!','','✅ 할 일:','1️⃣ 썸네일 중 1개를 선택해줘','2️⃣ 왜 클릭베이트라고 생각했는지 이유도 써줘!'] },
+        lines:['유튜브 영상 썸네일이 3개 있어!','그 중에서 <b>클릭베이트(과장·낚시 제목)</b> 영상을 찾아봐!','','✅ 할 일:','1️⃣ Q1: 클릭베이트 썸네일 1개를 선택해줘 (10점)','2️⃣ Q2: 클릭베이트인 이유를 골라봐! (20점)','3️⃣ Q3: 친구에게 어떻게 설명할지 써줘! (70점)'] },
       news:    { color:'var(--color-news)',    icon:'📰', title:'뉴스 탐정 미션!',
         lines:['같은 주제를 다룬 두 기사를 비교해봐!','','✅ 할 일:','1️⃣ <b>기사 A 탭, 기사 B 탭</b>을 모두 눌러 읽어봐','2️⃣ 아래 질문들에 차례로 모두 답해줘!'] },
       ad:      { color:'var(--color-ad)', textColor:'#2D2D2D', icon:'🔍', title:'광고 탐정 미션!',
@@ -3263,7 +3281,7 @@
       {
         id: 'C',
         img: 'contents/youtube3.png',
-        title: '⚡무조건 시청!! 교실 스마트폰 전면 허용?! 안보면 손해!! 🔥 (충격 실화)',
+        title: '[안보면 손해!] 교실에서 스마트폰 무조건 쓰세요!! 🔥 (충격 실화)',
         channel: '어린이크리에이터_뚜뚜',
         views: '1,204만회',
         badge: null,
@@ -3272,6 +3290,7 @@
     ];
     let ytShuffled = [];
     let ytSelectedThumb = null;
+    let ytQ2Selected = null;
 
     function renderYtFeed() {
       const feed = document.getElementById('yt-feed');
@@ -3296,8 +3315,20 @@
     function resetYoutubeScreen() {
       ytShuffled = [...YT_THUMBNAILS].sort(() => Math.random() - 0.5);
       ytSelectedThumb = null;
+      ytQ2Selected = null;
       renderYtFeed();
+      document.querySelectorAll('#yt-q2-choices .choice-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
+      const fb = document.getElementById('yt-q2-feedback');
+      if (fb) fb.style.display = 'none';
       document.getElementById('yt-answer').value = '';
+      checkYoutubeBtn();
+    }
+
+    function selectYoutubeQ2(idx) {
+      ytQ2Selected = idx;
+      document.querySelectorAll('#yt-q2-choices .choice-btn').forEach((btn, i) => {
+        btn.classList.toggle('selected', i === idx);
+      });
       checkYoutubeBtn();
     }
 
@@ -3314,33 +3345,49 @@
       const text = document.getElementById('yt-answer').value;
       const len  = text.length;
       const counter = document.getElementById('yt-char-counter');
-      counter.textContent = `${len} / 10자 이상`;
-      counter.className = 'char-counter' + (len >= 10 ? ' ok' : '');
-      document.getElementById('yt-submit-btn').disabled = !(ytSelectedThumb && len >= 10);
+      counter.textContent = `${len} / 15자 이상`;
+      counter.className = 'char-counter' + (len >= 15 ? ' ok' : '');
+      document.getElementById('yt-submit-btn').disabled = !(ytSelectedThumb && ytQ2Selected !== null && len >= 15);
     }
 
     async function submitYoutube() {
       const answer    = document.getElementById('yt-answer').value;
       const thumbData = ytShuffled.find(t => t.id === ytSelectedThumb);
-      const isCorrect = thumbData ? thumbData.isClickbait : false;
-      const mcScore   = isCorrect ? 30 : 0;
+      const q1Correct = thumbData ? thumbData.isClickbait : false;
+      const q2Correct = ytQ2Selected === 1;
+      const mcScore   = (q1Correct ? 10 : 0) + (q2Correct ? 20 : 0);
       const mcDetails = [
-        { q: '클릭베이트 썸네일 선택', correct: isCorrect,
-          why: isCorrect ? '정확해! C번 영상이 클릭베이트야. "무조건 시청!!", "충격 실화" 같은 과장된 표현을 잘 찾았어!'
-                         : '아직이야. 정답은 C번 "⚡무조건 시청!! 교실 스마트폰 전면 허용?! 안보면 손해!! 🔥 (충격 실화)"야. 이런 과장된 표현이 클릭베이트야.' },
+        { q: 'Q1. 클릭베이트 썸네일 선택', correct: q1Correct,
+          why: q1Correct
+            ? '정확해! C번 영상이 클릭베이트야. "안보면 손해!", "무조건 쓰세요!!" 같은 과장된 표현을 잘 찾았어!'
+            : '정답은 C번이야. "[안보면 손해!] 교실에서 스마트폰 무조건 쓰세요!! 🔥" — 이런 과장된 표현이 클릭베이트야.' },
+        { q: 'Q2. 클릭베이트 이유', correct: q2Correct,
+          why: q2Correct
+            ? '정답! "안보면 손해!!", "충격 실화" 같은 과장된 표현으로 클릭을 유도하고, 실제 내용은 근거 없는 주장만 담겨있어.'
+            : '정답은 ②번이야. 클릭베이트는 조회수나 채널 인증과 관계없어.' },
       ];
+
+      // Q2 피드백 즉시 표시
+      const fb = document.getElementById('yt-q2-feedback');
+      if (fb) {
+        fb.style.display = 'block';
+        fb.innerHTML = q2Correct
+          ? '<span style="color:#27AE60;">✅ 정답! "안보면 손해!!", "충격 실화" 같은 과장된 표현으로 클릭을 유도하고, 실제 내용은 근거 없는 주장만 담겨있어.</span>'
+          : '<span style="color:#FF4444;">❌ 정답은 ②번이야. 클릭베이트는 조회수나 채널 인증과 관계없어.</span>';
+        document.querySelectorAll('#yt-q2-choices .choice-btn').forEach(b => b.disabled = true);
+      }
 
       setSubmitLoading('yt-submit-btn', true);
       try {
-        const res = await callClaudeAPI('youtube', '선택한 썸네일: ' + ytSelectedThumb + (isCorrect ? '(클릭베이트)' : '(정상)') + '\n이유: ' + answer);
+        const res = await callClaudeAPI('youtube', '선택한 썸네일: ' + ytSelectedThumb + (q1Correct ? '(클릭베이트)' : '(정상)') + '\n이유: ' + answer);
         if (res.unsafe) {
           showInlineMsg('yt-submit-btn', '⚠️ 다시 써줘! 좋은 말로 이유를 설명해줘 😊', true);
           setSubmitLoading('yt-submit-btn', false);
           checkYoutubeBtn();
           return;
         }
-        const essayScore = res.score || 0;
-        const finalScore = Math.round(mcScore + essayScore * 0.7);
+        const essayScore = res.score || 0; // 0/10/40/70
+        const finalScore = mcScore + essayScore;
         const pass       = finalScore >= 50;
         localStorage.setItem(STORAGE_KEYS.ACTIVITY_YOUTUBE, JSON.stringify({ mcScore, essayScore, finalScore, pass, completed: true, feedback: res.feedback, mcDetails }));
         goToResult('youtube');
