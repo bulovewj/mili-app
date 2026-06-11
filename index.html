@@ -1440,7 +1440,7 @@
     .room-hotspot { position:absolute; cursor:pointer; z-index:5; display:flex; flex-direction:column; align-items:center; gap:5px; transition:transform 0.15s; }
     .room-hotspot:active { transform:scale(0.88) !important; }
     .room-hs-inner { position:relative; display:inline-block; }
-    .room-hs-icon { width:52px; height:52px; object-fit:contain; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.6)); transition:filter 0.3s; }
+    .room-hs-icon { width:72px; height:72px; object-fit:contain; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.6)); transition:filter 0.3s; }
     .room-hotspot.completed .room-hs-icon { filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3)) saturate(0.45) brightness(0.8); }
     .room-hs-done { position:absolute; top:-5px; right:-5px; background:#27AE60; color:white; font-size:9px; font-weight:900; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; }
     .room-hs-label { background:rgba(0,0,0,0.75); color:white; font-size:11px; font-weight:800; padding:3px 10px; border-radius:8px; white-space:nowrap; }
@@ -1767,7 +1767,7 @@
       <!-- 위치는 배경 이미지에 맞게 조정 필요 -->
       <!-- 유튜브: 컴퓨터 모니터 (중앙 오른쪽 책상) -->
       <!-- 유튜브: 축구 포스터 아래 -->
-      <div class="room-hotspot" id="hs-youtube" style="top:30%;left:62%;border:2px solid red;" onclick="goToActivity('screen-youtube')">
+      <div class="room-hotspot" id="hs-youtube" style="top:35%;left:50%;" onclick="goToActivity('screen-youtube')">
         <div class="room-hs-inner">
           <img src="icons/cursor.png" class="room-hs-icon" alt="유튜브">
           <div class="room-hs-done" id="hsdone-youtube" style="display:none">✓</div>
@@ -1776,7 +1776,7 @@
       </div>
 
       <!-- 뉴스: TV 화면 중앙 -->
-      <div class="room-hotspot" id="hs-news" style="top:47%;left:17%;border:2px solid red;" onclick="goToActivity('screen-news')">
+      <div class="room-hotspot" id="hs-news" style="top:47%;left:17%;" onclick="goToActivity('screen-news')">
         <div class="room-hs-inner">
           <img src="icons/cursor.png" class="room-hs-icon" alt="뉴스">
           <div class="room-hs-done" id="hsdone-news" style="display:none">✓</div>
@@ -1785,7 +1785,7 @@
       </div>
 
       <!-- 광고: 소파 오른쪽 태블릿 -->
-      <div class="room-hotspot" id="hs-ad" style="top:75%;left:90%;border:2px solid red;" onclick="goToActivity('screen-ad')">
+      <div class="room-hotspot" id="hs-ad" style="top:75%;left:90%;" onclick="goToActivity('screen-ad')">
         <div class="room-hs-inner">
           <img src="icons/cursor.png" class="room-hs-icon" alt="광고">
           <div class="room-hs-done" id="hsdone-ad" style="display:none">✓</div>
@@ -1794,7 +1794,7 @@
       </div>
 
       <!-- 허위정보 탐정: 현재 위치 유지 -->
-      <div class="room-hotspot" id="hs-ai" style="top:38%;right:20%;border:2px solid red;" onclick="goToActivity('screen-ai')">
+      <div class="room-hotspot" id="hs-ai" style="top:38%;left:82%;" onclick="goToActivity('screen-ai')">
         <div class="room-hs-inner">
           <img src="icons/cursor.png" class="room-hs-icon" alt="허위정보탐정">
           <div class="room-hs-done" id="hsdone-ai" style="display:none">✓</div>
@@ -1803,7 +1803,7 @@
       </div>
 
       <!-- 카드뉴스: 노트북 화면 중앙 -->
-      <div class="room-hotspot" id="hs-cardnews" style="top:72%;left:38%;border:2px solid red;" onclick="goToActivity('screen-cardnews')">
+      <div class="room-hotspot" id="hs-cardnews" style="top:72%;left:38%;" onclick="goToActivity('screen-cardnews')">
         <div class="room-hs-inner">
           <img src="icons/cursor.png" class="room-hs-icon" alt="카드뉴스">
           <div class="room-hs-done" id="hsdone-cardnews" style="display:none">✓</div>
@@ -2917,6 +2917,16 @@
       // 정답/오답 피드백 표시
       const isCorrect = (idx === q.answer);
       const feedbackText = isCorrect ? q.correct : q.wrong;
+
+      // 오답일 때 정답 선택지 초록으로 표시
+      if (!isCorrect) {
+        const btns = document.querySelectorAll('.choice-btn');
+        if (btns[q.answer]) {
+          btns[q.answer].style.cssText += 'background:#E8F8EE;border-color:#52C87A;color:#1A7A3C;';
+          btns[q.answer].insertAdjacentHTML('beforeend', '<span style="margin-left:8px;font-size:13px;font-weight:900;color:#1A7A3C;">← 정답</span>');
+        }
+      }
+
       const fb = document.createElement('div');
       fb.id = 'quiz-feedback-box';
       fb.style.cssText = 'border-radius:12px;padding:14px 16px;margin-bottom:12px;font-size:15px;font-weight:700;line-height:1.6;' +
@@ -3764,9 +3774,11 @@
       // 피드백 표시
       const fbEl = document.getElementById('cn-title-feedback');
       if (fbEl && titleData) {
-        fbEl.style.display = 'block';
-        fbEl.style.cssText = `display:block;margin-bottom:12px;padding:10px 14px;border-radius:10px;font-size:14px;line-height:1.5;${titleData.isClickbait ? 'background:#FFF0F0;color:#D32F2F;' : 'background:#F0FFF4;color:#1B5E20;'}`;
-        fbEl.textContent = titleData.feedback;
+        const isClickbait = titleData.isClickbait;
+        fbEl.style.cssText = `display:block;margin-bottom:12px;padding:14px 16px;border-radius:12px;font-size:15px;font-weight:700;line-height:1.6;border:2px solid ${isClickbait ? '#E74C3C' : '#52C87A'};background:${isClickbait ? '#FFE8E8' : '#E8F8EE'};color:${isClickbait ? '#C0392B' : '#1A7A3C'};`;
+        fbEl.innerHTML = `${isClickbait ? '❌' : '✅'} ${titleData.feedback}${isClickbait ? '<br><small style="font-weight:400;margin-top:4px;display:block;">👇 정답인 제목을 다시 골라봐!</small>' : ''}`;
+        // 피드백으로 부드럽게 스크롤
+        setTimeout(() => fbEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
       }
 
       // Step 1 관문: C(정답)일 때만 Step 2 이후 활성화
